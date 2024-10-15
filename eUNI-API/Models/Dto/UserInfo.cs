@@ -1,6 +1,6 @@
 namespace eUNI_API.Models.Dto;
 
-public class AllUserInfo
+public class UserInfo
 {
     public Guid Id { get; set; }
     public string Firstname { get; set; }

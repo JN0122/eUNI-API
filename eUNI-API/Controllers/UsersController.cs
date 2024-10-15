@@ -18,12 +18,12 @@ public class UsersController
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AllUserInfo>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<UserInfo>>> GetUsers()
     {
         var user = await _context.Users
             .Include(u => u.Role)
             .ThenInclude(r => r.RoleType) 
-            .Select(u => new AllUserInfo
+            .Select(u => new UserInfo
             {
                 Id = u.Id,
                 Firstname = u.Firstname,
