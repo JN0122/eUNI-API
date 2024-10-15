@@ -1,3 +1,4 @@
+using eUNI_API.Enums;
 using eUNI_API.Models.Entities.User;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,10 +16,10 @@ public class AppDbContext: DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<RoleType>().HasData(
-            new RoleType { Id = 1, Name = "SuperAdmin" },
-            new RoleType { Id = 2, Name = "Admin" },
-            new RoleType { Id = 3, Name = "Wykładowca" },
-            new RoleType { Id = 4, Name = "Student" }
+            new RoleType { Id = (int)UserRole.SuperAdmin, Name = "SuperAdmin" },
+            new RoleType { Id = (int)UserRole.Admin, Name = "Admin" },
+            new RoleType { Id = (int)UserRole.Lecturer, Name = "Lecturer" },
+            new RoleType { Id = (int)UserRole.Student, Name = "Student" }
         );
 
         modelBuilder.Entity<Role>().HasData(
