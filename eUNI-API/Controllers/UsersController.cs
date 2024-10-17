@@ -22,14 +22,14 @@ public class UsersController
     {
         var user = await _context.Users
             .Include(u => u.Role)
-            .ThenInclude(r => r.RoleType) 
+            .ThenInclude(r => r.Users) 
             .Select(u => new UserInfo
             {
                 Id = u.Id,
                 Firstname = u.Firstname,
                 Lastname = u.Lastname,
                 Email = u.Email,
-                RoleName = u.Role.RoleType.Name,
+                RoleName = u.Role.Name,
             }).ToListAsync();
         return user;
     }
