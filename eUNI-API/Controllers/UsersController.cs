@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Enums;
 using eUNI_API.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,20 +19,25 @@ public class UsersController
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserInfo>>> GetUsers()
+    [Route("Lecturers")]
+    public async Task<ActionResult<IEnumerable<LecturerInfo>>> GetLecturers()
     {
-        var user = await _context.Users
-            .Include(u => u.Role)
-            .ThenInclude(r => r.Users) 
-            .Select(u => new UserInfo
+        var lecturers = await _context.Users
+            .Include(u=>u.Lecturer)
+            .ThenInclude(l=>l.EmploymentUnit)
+            .ThenInclude(e => e.AcademicDepartment)
+            .Where(u=>u.Lecturer != null)
+            .Select(u => new LecturerInfo
             {
                 Id = u.Id,
                 Firstname = u.Firstname,
                 Lastname = u.Lastname,
                 Email = u.Email,
                 RoleName = u.Role.Name,
+                EmploymentUnit = u.Lecturer.EmploymentUnit.Abbr,
+                AcademicDepartment = u.Lecturer.EmploymentUnit.AcademicDepartment.Abbr
             }).ToListAsync();
-        return user;
+        return lecturers;
     }
     
     [HttpPost]
