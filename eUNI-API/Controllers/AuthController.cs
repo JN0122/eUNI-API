@@ -92,7 +92,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         
         try
         {
-            var user = await _userService.FindByEmailAsync(userIdClaim);
+            var user = await _userService.FindUserByClaimId(userIdClaim);
             return Ok(user);
         }
         catch (InvalidOperationException ex)

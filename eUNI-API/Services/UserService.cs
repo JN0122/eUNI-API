@@ -34,7 +34,13 @@ public class UserService(AppDbContext context): IUserService
 
     public async Task<User?> FindUserByClaimId(string claimId)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (!Guid.TryParse(claimId, out var userId)){
+            return null;
+        }
+
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
         return user;
     }
 }
