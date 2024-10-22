@@ -7,6 +7,7 @@ using eUNI_API.Models.Dto.Auth;
 using eUNI_API.Models.Entities.User;
 using eUNI_API.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Controllers;
 
@@ -51,10 +52,12 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        User? user = await _userService.FindByEmailAsync(request.Email);        
+        User? user = await _context.Users
+            .Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Email == request.Email);
 
         if (user == null) {
-            return Unauthorized("Invalid credentials!");
+            return Unauthorized("User not found!");
         }
     
         var isValidPassword = PasswordHasher.VerifyHashedPassword(request.Password, user.Salt, user.PasswordHash);
