@@ -78,21 +78,17 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
     }
     
     [HttpGet("getuser")]
-    [Authorize(Roles = "USER")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public async Task<ActionResult<User>> GetUser()
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         
         Console.WriteLine("Claims received:");
         foreach (var claim in User.Claims)
-        {
             Console.WriteLine($"{claim.Type}: {claim.Value}");
-        }
 
         if(userIdClaim == null)
-        {
             return Unauthorized("No user ID claim present in token.");
-        }
         
         try
         {
