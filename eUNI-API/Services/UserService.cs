@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class UserService(AppDbContext context)
+public class UserService(AppDbContext context): IUserService
 {
     private readonly AppDbContext _context = context;
 
@@ -31,10 +31,16 @@ public class UserService(AppDbContext context)
         _context.SaveChanges();
         return newUser;
     }
-    
-    public async Task<User?> FindByEmailAsync(string email)
+
+    public async Task<User?> FindUserByClaimId(string claimId)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         return user;
     }
+}
+
+public interface IUserService
+{
+    Task<User> CreateUser(UserCreate user);
+    Task<User?> FindUserByClaimId(string claimId);
 }

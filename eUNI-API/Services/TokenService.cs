@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace eUNI_API.Services;
 
-public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSettings)
+public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSettings): ITokenService
 {
     private readonly AppDbContext _context = context;
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
@@ -35,4 +35,9 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+}
+
+public interface ITokenService
+{
+    public string CreateToken(User user);
 }
