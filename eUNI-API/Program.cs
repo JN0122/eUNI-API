@@ -1,5 +1,11 @@
+using System.Text;
 using eUNI_API.Data;
+using eUNI_API.Models.Entities.JWT;
+using eUNI_API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +20,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
