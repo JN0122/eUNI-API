@@ -9,14 +9,9 @@ namespace eUNI_API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UsersController
+public class UsersController(AppDbContext context)
 {
-    private readonly AppDbContext _context;
-
-    public UsersController(AppDbContext context)
-    {
-        _context = context;
-    }
+    private readonly AppDbContext _context = context;
     
     [HttpGet]
     [Route("Lecturers")]
@@ -39,7 +34,7 @@ public class UsersController
             }).ToListAsync();
         return lecturers;
     }
-    
+    /*
     [HttpPost]
     public async Task<IResult> CreateStudent(User user)
     {
@@ -47,5 +42,5 @@ public class UsersController
         _context.SaveChanges();
         
         return Results.Ok();
-    }
+    }*/
 }
