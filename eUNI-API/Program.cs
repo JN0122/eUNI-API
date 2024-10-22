@@ -9,18 +9,16 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var Configuration = builder.Configuration;
+var configuration = builder.Configuration;
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
-
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
+builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -73,7 +71,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -81,9 +78,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
