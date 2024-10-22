@@ -28,23 +28,23 @@ public class AppDbContext: DbContext
         modelBuilder.Entity<User>().HasData(
             new User
             {
-                Id = new Guid("cc24a526-369e-46e0-a8d0-e179334ed456"), 
+                Id = new Guid("c49c2319-2e87-45fe-be3b-1d9e724df781"), 
                 Firstname = "Jan", 
                 Lastname = "Kowalski", 
                 Email = "root@euni.com", 
                 RoleId = (int)UserRole.SuperAdmin,
-                PasswordHash = "f7f376a1fcd0d0e11a10ed1b6577c99784d3a6bbe669b1d13fae43eb64634f6e", 
-                Salt = new byte[2]
+                PasswordHash =  "kNgDO1ontudsm8a3bfW6o+iLQ2fT3W9W+Ug389WIOYk=", 
+                Salt = "G1acytSicH3K5PZqGo35RQ=="
             },
             new User
             {
-                Id = new Guid("cc24a526-369e-46e0-a8d0-e111111ed426"),
+                Id = new Guid("dd205297-4d6d-4ef3-a139-350c55518085"),
                 Firstname = "Adam", 
                 Lastname = "Nowak", 
                 Email = "adam.nowak@pk.edu.pl", 
                 RoleId = (int)UserRole.Lecturer,
-                PasswordHash = "f7f386a1fcd0d0e11210ed1b6577c99784d3a6bce669b1d13fae43eb64634f6e", 
-                Salt = new byte[2]
+                PasswordHash = "4QQOqhGWUw4eHTZQdzStsPlGCtmiJ6Tz6bF9mwYXiVg=", 
+                Salt = "f/5Yd/pRp65N6nbMHH8wlg=="
             }
         );
         
@@ -65,7 +65,7 @@ public class AppDbContext: DbContext
             new Lecturer
             {
                 Id = 1,
-                UserId = new Guid("cc24a526-369e-46e0-a8d0-e111111ed426"),
+                UserId = new Guid("dd205297-4d6d-4ef3-a139-350c55518085"),
                 EmploymentUnitId = 1,
             }
         );
