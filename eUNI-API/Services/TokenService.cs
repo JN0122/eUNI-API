@@ -26,7 +26,7 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Role.Name)
             }),
-            Expires = DateTime.UtcNow.AddHours(24),
+            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationMinutes),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             Issuer = _jwtSettings.Issuer,
             Audience = _jwtSettings.Audience 
