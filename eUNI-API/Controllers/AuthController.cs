@@ -67,6 +67,15 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         }
         
         var token = _tokenService.CreateToken(user);
+        
+        Response.Cookies.Append("auth-token", token, new CookieOptions
+        {
+            HttpOnly = true,
+            //Secure = true, //https
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddMinutes(30)
+        });
+        
         var response = new AuthResponse
         {
             UserId = user.Id,
@@ -75,6 +84,13 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
             Token = token
         };
         return Ok(response);
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        Response.Cookies.Delete("auth-token");
+        return Ok(new { message = "Logged out successfully" });
     }
     
     [HttpGet("getuser")]
