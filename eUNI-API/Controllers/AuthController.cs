@@ -41,10 +41,10 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         var token = _tokenService.CreateToken(user);
         var response = new AuthResponse
         {
-            UserId = user.Id,
+            Firstname = user.Firstname,
+            Lastname = user.Lastname,
             Email = user.Email,
-            Role = user.Role.Name,
-            Token = token
+            Role = user.Role.Name
         };
         return Ok(response);
     }
@@ -78,10 +78,10 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         
         var response = new AuthResponse
         {
-            UserId = user.Id,
+            Firstname = user.Firstname, 
+            Lastname = user.Lastname,
             Email = user.Email,
-            Role = user.Role.Name,
-            Token = token
+            Role = user.Role.Name
         };
         return Ok(response);
     }
