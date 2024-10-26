@@ -2,7 +2,7 @@ using eUNI_API.Models.Entities.User;
 
 namespace eUNI_API.Models.Dto;
 
-public class BasicUser
+public class BasicUserDto
 {
     public string Firstname { get; set; }
     public string Lastname { get; set; }

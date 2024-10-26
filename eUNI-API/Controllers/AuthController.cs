@@ -19,7 +19,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
     private readonly ITokenService _tokenService = tokenService;
     
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] Registration registrationDto)
+    public async Task<IActionResult> Register([FromBody] RegistrationDto registrationDto)
     {
         // TODO check if the user has proper permissions
         
@@ -38,7 +38,8 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
 
         var user = await _userService.CreateUser(userCreate);
         var token = _tokenService.CreateAccessToken(user);
-        var response = new BasicUser
+        
+        var response = new BasicUserDto
         {
             Firstname = user.Firstname,
             Lastname = user.Lastname,
@@ -49,7 +50,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
     }
     
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] Login loginDto)
+    public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
         User? user = await _context.Users
             .Include(u => u.Role)
@@ -75,7 +76,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
             Expires = DateTimeOffset.UtcNow.AddMinutes(30)
         });
         
-        var response = new BasicUser
+        var response = new BasicUserDto
         {
             Firstname = user.Firstname, 
             Lastname = user.Lastname,

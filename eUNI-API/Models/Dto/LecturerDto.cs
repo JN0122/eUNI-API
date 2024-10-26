@@ -1,6 +1,6 @@
 namespace eUNI_API.Models.Dto;
 
-public class Lecturer
+public class LecturerDto
 {
     public Guid Id { get; set; }
     public string Firstname { get; set; }

@@ -11,7 +11,7 @@ public class UserService(AppDbContext context): IUserService
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<User> CreateUser(CreateUser createUser)
+    public async Task<User> CreateUser(CreateUserDto createUserDto)
     {
         var studentRole = _context.Roles.FirstOrDefault(role => role.Id == (int)UserRole.Student);
 
@@ -20,11 +20,11 @@ public class UserService(AppDbContext context): IUserService
 
         var newUser = new User
         {
-            Email = createUser.Email,
-            Firstname = createUser.Firstname,
-            Lastname = createUser.Lastname,
-            PasswordHash = createUser.PasswordHash,
-            Salt = createUser.Salt,
+            Email = createUserDto.Email,
+            Firstname = createUserDto.Firstname,
+            Lastname = createUserDto.Lastname,
+            PasswordHash = createUserDto.PasswordHash,
+            Salt = createUserDto.Salt,
             Role = studentRole,
         };
         

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace eUNI_API.Models.Dto;
 
-public class Registration
+public class RegistrationDto
 {
     [Required]
     public string? Firstname { get; set; }

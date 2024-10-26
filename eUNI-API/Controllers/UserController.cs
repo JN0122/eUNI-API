@@ -19,14 +19,14 @@ public class UserController(AppDbContext context, IUserService userService): Con
     
     [HttpGet]
     [Route("Lecturers")]
-    public async Task<ActionResult<IEnumerable<Lecturer>>> GetLecturers()
+    public async Task<ActionResult<IEnumerable<LecturerDto>>> GetLecturers()
     {
         var lecturers = await _context.Users
             .Include(u=>u.Lecturer)
             .ThenInclude(l=>l.EmploymentUnit)
             .ThenInclude(e => e.AcademicDepartment)
             .Where(u=>u.Lecturer != null)
-            .Select(u => new Lecturer
+            .Select(u => new LecturerDto
             {
                 Id = u.Id,
                 Firstname = u.Firstname,
