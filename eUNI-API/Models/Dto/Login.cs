@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace eUNI_API.Models.Dto;
 
-public class LoginRequest
+public class Login
 {
     [Required]
     [EmailAddress]

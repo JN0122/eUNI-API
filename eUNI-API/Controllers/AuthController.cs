@@ -19,26 +19,26 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
     private readonly ITokenService _tokenService = tokenService;
     
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegistrationRequest request)
+    public async Task<IActionResult> Register([FromBody] Registration registrationDto)
     {
         // TODO check if the user has proper permissions
         
-        if(!request.Password.Equals(request.ConfirmPassword))
+        if(!registrationDto.Password.Equals(registrationDto.ConfirmPassword))
             return BadRequest("Passwords do not match!");
 
         var salt = PasswordHasher.GenerateSalt();
-        var userCreate = new UserCreate
+        var userCreate = new CreateUser
         {
-            Firstname = request.Firstname,
-            Lastname = request.Lastname,
-            Email = request.Email,
-            PasswordHash = PasswordHasher.HashPassword(request.Password, salt),
+            Firstname = registrationDto.Firstname,
+            Lastname = registrationDto.Lastname,
+            Email = registrationDto.Email,
+            PasswordHash = PasswordHasher.HashPassword(registrationDto.Password, salt),
             Salt = salt
         };
 
         var user = await _userService.CreateUser(userCreate);
         var token = _tokenService.CreateAccessToken(user);
-        var response = new AuthResponse
+        var response = new BasicUser
         {
             Firstname = user.Firstname,
             Lastname = user.Lastname,
@@ -49,17 +49,17 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
     }
     
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] Login loginDto)
     {
         User? user = await _context.Users
             .Include(u => u.Role)
-            .FirstOrDefaultAsync(u => u.Email == request.Email);
+            .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
         if (user == null) {
             return Unauthorized("User not found!");
         }
     
-        var isValidPassword = PasswordHasher.VerifyHashedPassword(request.Password, user.Salt, user.PasswordHash);
+        var isValidPassword = PasswordHasher.VerifyHashedPassword(loginDto.Password, user.Salt, user.PasswordHash);
 
         if (!isValidPassword) {
             return Unauthorized("Invalid credentials!");
@@ -75,7 +75,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
             Expires = DateTimeOffset.UtcNow.AddMinutes(30)
         });
         
-        var response = new AuthResponse
+        var response = new BasicUser
         {
             Firstname = user.Firstname, 
             Lastname = user.Lastname,
