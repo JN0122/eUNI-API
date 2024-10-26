@@ -1,3 +1,4 @@
+namespace eUNI_API.Configuration;
 public class JwtSettings
 {
    public string Key { get; set; }

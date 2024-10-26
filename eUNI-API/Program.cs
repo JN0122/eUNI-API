@@ -1,4 +1,5 @@
 using System.Text;
+using eUNI_API.Configuration;
 using eUNI_API.Data;
 using eUNI_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

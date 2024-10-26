@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using eUNI_API.Configuration;
 using eUNI_API.Data;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Entities.User;
