@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using eUNI_API.Data;
+using eUNI_API.Helpers;
 using eUNI_API.Models.Entities.JWT;
 using eUNI_API.Models.Entities.User;
 using Microsoft.Extensions.Options;
@@ -14,7 +15,7 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
     private readonly AppDbContext _context = context;
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
-    public string CreateToken(User user)
+    public string CreateAccessToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
@@ -35,9 +36,18 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+    
+    public string CreateRefreshToken()
+    {
+        var token = TokenGenerator.GenerateRefreshToken();
+        
+        
+        return token;
+    }
 }
 
 public interface ITokenService
 {
-    public string CreateToken(User user);
+    public string CreateAccessToken(User user);
+    public string CreateRefreshToken();
 }

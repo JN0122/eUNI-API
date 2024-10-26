@@ -38,7 +38,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         };
 
         var user = await _userService.CreateUser(userCreate);
-        var token = _tokenService.CreateToken(user);
+        var token = _tokenService.CreateAccessToken(user);
         var response = new AuthResponse
         {
             Firstname = user.Firstname,
@@ -66,7 +66,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
             return Unauthorized("Invalid credentials!");
         }
         
-        var token = _tokenService.CreateToken(user);
+        var token = _tokenService.CreateAccessToken(user);
         
         Response.Cookies.Append("auth-token", token, new CookieOptions
         {
