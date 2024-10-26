@@ -1,6 +1,6 @@
 using eUNI_API.Data;
 using eUNI_API.Enums;
-using eUNI_API.Models.Dto.Auth;
+using eUNI_API.Models.Dto;
 using eUNI_API.Models.Entities.User;
 using Microsoft.EntityFrameworkCore;
 

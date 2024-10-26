@@ -3,7 +3,6 @@ using eUNI_API.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using eUNI_API.Data;
 using eUNI_API.Helpers;
-using eUNI_API.Models.Dto.Auth;
 using eUNI_API.Models.Entities.User;
 using eUNI_API.Services;
 using Microsoft.AspNetCore.Authorization;

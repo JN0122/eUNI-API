@@ -1,4 +1,4 @@
-namespace eUNI_API.Models.Dto.Auth;
+namespace eUNI_API.Models.Dto;
 
 public class UserCreate
 {
