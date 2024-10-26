@@ -1,6 +1,7 @@
 using eUNI_API.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using eUNI_API.Data;
+using eUNI_API.Helpers;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
@@ -23,15 +24,8 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         {
             var user = await _authService.Register(registrationDto);
             var token = _tokenService.CreateAccessToken(user);
-        
-            var response = new BasicUserDto
-            {
-                Firstname = user.Firstname,
-                Lastname = user.Lastname,
-                Email = user.Email,
-                AuthToken = token
-            };
-            return Ok(response);
+            
+            return Ok(ConvertDtos.ToBasicUserDto(user, token));
         }
         catch (Exception e)
         {
@@ -48,15 +42,8 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
             var accessToken = _tokenService.CreateAccessToken(user);
             
             _authService.AddRefreshToken(Response.Cookies, accessToken);
-            
-            var response = new BasicUserDto
-            {
-                Firstname = user.Firstname,
-                Lastname = user.Lastname,
-                Email = user.Email,
-                AuthToken = accessToken
-            };
-            return Ok(response);
+
+            return Ok(ConvertDtos.ToBasicUserDto(user, accessToken));
         }
         catch (Exception e)
         {
