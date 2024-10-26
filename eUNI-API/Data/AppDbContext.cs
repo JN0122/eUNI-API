@@ -33,8 +33,8 @@ public class AppDbContext: DbContext
                 Lastname = "Kowalski", 
                 Email = "root@euni.com", 
                 RoleId = (int)UserRole.SuperAdmin,
-                PasswordHash =  "kNgDO1ontudsm8a3bfW6o+iLQ2fT3W9W+Ug389WIOYk=", 
-                Salt = "G1acytSicH3K5PZqGo35RQ=="
+                PasswordHash =  "NTWxiNrLLLT2HkXuG9JiPYN0z5UN2eHW5gMsxbP4ATY=", 
+                Salt = "mwmeU7TZlMdR/NMWAJMzrQ=="
             },
             new User
             {
