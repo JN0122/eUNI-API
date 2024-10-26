@@ -12,11 +12,12 @@ namespace eUNI_API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(AppDbContext context, IUserService userService, ITokenService tokenService) : ControllerBase
+public class AuthController(AppDbContext context, IUserService userService, ITokenService tokenService, IAuthService authService) : ControllerBase
 {
     private readonly AppDbContext _context = context;
     private readonly IUserService _userService = userService;
     private readonly ITokenService _tokenService = tokenService;
+    private readonly IAuthService _authService = authService;
     
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegistrationDto registrationDto)
