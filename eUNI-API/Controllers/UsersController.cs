@@ -1,17 +1,20 @@
+using System.Security.Claims;
 using eUNI_API.Data;
-using eUNI_API.Enums;
 using eUNI_API.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using eUNI_API.Models.Entities.User;
+using eUNI_API.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace eUNI_API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UsersController(AppDbContext context)
+public class UsersController(AppDbContext context, IUserService userService): ControllerBase
 {
     private readonly AppDbContext _context = context;
+    private readonly IUserService _userService = userService;
     
     [HttpGet]
     [Route("Lecturers")]
@@ -34,13 +37,24 @@ public class UsersController(AppDbContext context)
             }).ToListAsync();
         return lecturers;
     }
-    /*
-    [HttpPost]
-    public async Task<IResult> CreateStudent(User user)
+
+    [HttpGet("getuser")]
+    [Authorize(Roles = "SuperAdmin")]
+    public async Task<ActionResult<User>> GetUser()
     {
-        _context.Users.Add(user);
-        _context.SaveChanges();
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         
-        return Results.Ok();
-    }*/
+        if(userIdClaim == null)
+            return Unauthorized("No user ID claim present in token.");
+        
+        try
+        {
+            var user = await _userService.FindUserByClaimId(userIdClaim);
+            return Ok(user);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

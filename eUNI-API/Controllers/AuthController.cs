@@ -92,28 +92,4 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         Response.Cookies.Delete("auth-token");
         return Ok(new { message = "Logged out successfully" });
     }
-    
-    [HttpGet("getuser")]
-    [Authorize(Roles = "SuperAdmin,Admin")]
-    public async Task<ActionResult<User>> GetUser()
-    {
-        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-        
-        Console.WriteLine("Claims received:");
-        foreach (var claim in User.Claims)
-            Console.WriteLine($"{claim.Type}: {claim.Value}");
-
-        if(userIdClaim == null)
-            return Unauthorized("No user ID claim present in token.");
-        
-        try
-        {
-            var user = await _userService.FindUserByClaimId(userIdClaim);
-            return Ok(user);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
 }
