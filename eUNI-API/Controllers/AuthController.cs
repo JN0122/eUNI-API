@@ -1,12 +1,8 @@
 using eUNI_API.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using eUNI_API.Data;
-using eUNI_API.Helpers;
-using eUNI_API.Models.Entities.User;
-using eUNI_API.Services;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Controllers;
 
@@ -23,75 +19,56 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
     public async Task<IActionResult> Register([FromBody] RegistrationDto registrationDto)
     {
         // TODO check if the user has proper permissions
-        
-        if(!registrationDto.Password.Equals(registrationDto.ConfirmPassword))
-            return BadRequest("Passwords do not match!");
-
-        var salt = PasswordHasher.GenerateSalt();
-        var userCreate = new CreateUser
+        try
         {
-            Firstname = registrationDto.Firstname,
-            Lastname = registrationDto.Lastname,
-            Email = registrationDto.Email,
-            PasswordHash = PasswordHasher.HashPassword(registrationDto.Password, salt),
-            Salt = salt
-        };
-
-        var user = await _userService.CreateUser(userCreate);
-        var token = _tokenService.CreateAccessToken(user);
+            var user = await _authService.Register(registrationDto);
+            var token = _tokenService.CreateAccessToken(user);
         
-        var response = new BasicUserDto
+            var response = new BasicUserDto
+            {
+                Firstname = user.Firstname,
+                Lastname = user.Lastname,
+                Email = user.Email,
+                Role = user.Role.Name
+            };
+            return Ok(response);
+        }
+        catch (Exception e)
         {
-            Firstname = user.Firstname,
-            Lastname = user.Lastname,
-            Email = user.Email,
-            Role = user.Role.Name
-        };
-        return Ok(response);
+            return BadRequest(e.Message);
+        }
     }
     
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
-        User? user = await _context.Users
-            .Include(u => u.Role)
-            .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
-
-        if (user == null) {
-            return Unauthorized("User not found!");
-        }
-    
-        var isValidPassword = PasswordHasher.VerifyHashedPassword(loginDto.Password, user.Salt, user.PasswordHash);
-
-        if (!isValidPassword) {
-            return Unauthorized("Invalid credentials!");
-        }
-        
-        var token = _tokenService.CreateAccessToken(user);
-        
-        Response.Cookies.Append("auth-token", token, new CookieOptions
+        try
         {
-            HttpOnly = true,
-            //Secure = true, //https
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddMinutes(30)
-        });
-        
-        var response = new BasicUserDto
+            var user = await _authService.Login(loginDto);
+            var accessToken = _tokenService.CreateAccessToken(user);
+            
+            _authService.AddRefreshToken(Response.Cookies, accessToken);
+            
+            var response = new BasicUserDto
+            {
+                Firstname = user.Firstname,
+                Lastname = user.Lastname,
+                Email = user.Email,
+                Role = user.Role.Name
+            };
+            return Ok(response);
+        }
+        catch (Exception e)
         {
-            Firstname = user.Firstname, 
-            Lastname = user.Lastname,
-            Email = user.Email,
-            Role = user.Role.Name
-        };
-        return Ok(response);
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
-        Response.Cookies.Delete("auth-token");
-        return Ok(new { message = "Logged out successfully" });
+        _authService.RemoveRefreshToken(Response.Cookies);
+        return Ok();
     }
         
     [HttpGet("validate-session")]
