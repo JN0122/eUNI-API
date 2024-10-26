@@ -92,4 +92,11 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         Response.Cookies.Delete("auth-token");
         return Ok(new { message = "Logged out successfully" });
     }
+        
+    [HttpGet("validate-session")]
+    [Authorize]
+    public IActionResult ValidateSession()
+    {
+        return Ok(new { isAuthenticated = true });
+    }
 }
