@@ -1,11 +1,9 @@
 using System.Text;
 using eUNI_API.Data;
-using eUNI_API.Models.Entities.JWT;
 using eUNI_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

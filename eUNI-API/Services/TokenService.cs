@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using eUNI_API.Data;
 using eUNI_API.Helpers;
-using eUNI_API.Models.Entities.JWT;
 using eUNI_API.Models.Entities.User;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -27,7 +26,7 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Role.Name)
             }),
-            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationMinutes),
+            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             Issuer = _jwtSettings.Issuer,
             Audience = _jwtSettings.Audience 
