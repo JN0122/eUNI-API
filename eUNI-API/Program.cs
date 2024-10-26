@@ -2,6 +2,7 @@ using System.Text;
 using eUNI_API.Configuration;
 using eUNI_API.Data;
 using eUNI_API.Services;
+using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

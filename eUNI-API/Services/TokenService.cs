@@ -5,6 +5,7 @@ using eUNI_API.Configuration;
 using eUNI_API.Data;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Entities.User;
+using eUNI_API.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -44,10 +45,4 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         
         return token;
     }
-}
-
-public interface ITokenService
-{
-    public string CreateAccessToken(User user);
-    public string CreateRefreshToken();
 }
