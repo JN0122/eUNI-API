@@ -29,7 +29,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
                 Email = user.Email,
-                Role = user.Role.Name
+                AuthToken = token
             };
             return Ok(response);
         }
@@ -54,7 +54,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
                 Email = user.Email,
-                Role = user.Role.Name
+                AuthToken = accessToken
             };
             return Ok(response);
         }
