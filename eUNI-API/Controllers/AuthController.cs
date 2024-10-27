@@ -40,7 +40,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         {
             var user = await _authService.Login(loginDto);
             var accessToken = _tokenService.CreateAccessToken(user);
-            var refreshToken = _tokenService.CreateRefreshToken();
+            var refreshToken = _tokenService.CreateRefreshToken(user);
             
             _authService.AddRefreshToken(Response.Cookies, refreshToken);
 

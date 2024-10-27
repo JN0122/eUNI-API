@@ -6,6 +6,7 @@ using eUNI_API.Data;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Entities.User;
 using eUNI_API.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -38,11 +39,35 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         return tokenHandler.WriteToken(token);
     }
     
-    public string CreateRefreshToken()
+    public string CreateRefreshToken(User user)
     {
-        var token = TokenGenerator.GenerateRefreshToken();
+        var token = GenerateUniqueRefreshToken();
+
+        _context.RefreshTokens.Add(new RefreshToken
+        {
+            Token = token,
+            User = user,
+            Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays),
+            IsRevoked = false,
+        });
+        _context.SaveChanges();
         
-        
+        return token;
+    }
+
+    public string GenerateUniqueRefreshToken()
+    {
+        string token;
+        while(true)
+        {
+            token = TokenGenerator.GenerateRefreshToken();
+            var rTokenEntitie = _context.RefreshTokens
+                .AsNoTracking()
+                .FirstOrDefault(rtoken => rtoken.Token == token);
+
+            if (rTokenEntitie == null)
+                break;
+        }
         return token;
     }
 }

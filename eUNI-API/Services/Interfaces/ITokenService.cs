@@ -5,5 +5,7 @@ namespace eUNI_API.Services.Interfaces;
 public interface ITokenService
 {
     public string CreateAccessToken(User user);
-    public string CreateRefreshToken();
+    public string CreateRefreshToken(User user);
+
+    public string GenerateUniqueRefreshToken();
 }
