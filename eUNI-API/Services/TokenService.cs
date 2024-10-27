@@ -59,6 +59,15 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         return token;
     }
 
+    public void RevokeUserToken(Guid userId)
+    {
+        var token = _context.RefreshTokens.FirstOrDefault(r => r.UserId == userId);
+        if (token == null)
+            return;
+        _context.RefreshTokens.Remove(token);
+        _context.SaveChanges();
+    }
+
     public User GetUserByRefreshToken(string refreshToken)
     {
         RefreshToken? refreshTokenEntity = _context.RefreshTokens

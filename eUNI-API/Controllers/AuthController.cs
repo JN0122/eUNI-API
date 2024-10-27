@@ -39,6 +39,9 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         try
         {
             var user = await _authService.Login(loginDto);
+            
+            _tokenService.RevokeUserToken(user.Id);
+            
             var accessToken = _tokenService.CreateAccessToken(user.Id);
             var refreshToken = _tokenService.CreateRefreshToken(user.Id);
             
