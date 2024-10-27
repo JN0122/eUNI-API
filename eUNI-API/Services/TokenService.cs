@@ -54,6 +54,36 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         return token;
     }
 
+    public User GetUserByRefreshToken(string refreshToken)
+    {
+        RefreshToken? refreshTokenEntite = _context.RefreshTokens
+            .Include(r => r.User)
+            .FirstOrDefault(r => r.Token == refreshToken);
+        
+        if(refreshTokenEntite == null)
+            throw new Exception("Refresh token doesn't exist");
+        
+        return refreshTokenEntite.User;
+    }
+
+    public void DeleteRefreshToken(string refreshToken)
+    {
+        RefreshToken? refreshTokenEntite = _context.RefreshTokens
+            .FirstOrDefault(r => r.Token == refreshToken);
+        
+        if(refreshTokenEntite == null)
+            throw new Exception("Refresh token doesn't exist");
+        
+        _context.RefreshTokens.Remove(refreshTokenEntite);
+        _context.SaveChanges();
+    }
+
+    public bool IsRefreshTokenValid(string refreshToken)
+    {
+        var refreshTokenEntity = _context.RefreshTokens.AsNoTracking().FirstOrDefault(t => t.Token == refreshToken);
+        return refreshTokenEntity != null && refreshTokenEntity.Expires > DateTime.UtcNow;
+    }
+
     public string GenerateUniqueRefreshToken()
     {
         string token;
