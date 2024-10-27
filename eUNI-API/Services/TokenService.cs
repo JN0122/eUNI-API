@@ -17,8 +17,13 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
     private readonly AppDbContext _context = context;
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
-    public string CreateAccessToken(User user)
+    public string CreateAccessToken(Guid userId)
     {
+        var user = _context.Users.AsNoTracking().Include(u => u.Role).FirstOrDefault(u => u.Id == userId); 
+        
+        if (user == null)
+            throw new Exception("User not found");
+        
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
         
@@ -39,14 +44,14 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         return tokenHandler.WriteToken(token);
     }
     
-    public string CreateRefreshToken(User user)
+    public string CreateRefreshToken(Guid userId)
     {
         var token = GenerateUniqueRefreshToken();
 
         _context.RefreshTokens.Add(new RefreshToken
         {
             Token = token,
-            User = user,
+            UserId = userId,
             Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays)
         });
         _context.SaveChanges();

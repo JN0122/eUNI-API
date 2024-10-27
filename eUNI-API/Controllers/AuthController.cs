@@ -23,7 +23,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         try
         {
             var user = await _authService.Register(registrationDto);
-            var token = _tokenService.CreateAccessToken(user);
+            var token = _tokenService.CreateAccessToken(user.Id);
             
             return Ok(ConvertDtos.ToBasicUserDto(user, token));
         }
@@ -39,8 +39,8 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         try
         {
             var user = await _authService.Login(loginDto);
-            var accessToken = _tokenService.CreateAccessToken(user);
-            var refreshToken = _tokenService.CreateRefreshToken(user);
+            var accessToken = _tokenService.CreateAccessToken(user.Id);
+            var refreshToken = _tokenService.CreateRefreshToken(user.Id);
             
             _authService.AddRefreshToken(Response.Cookies, refreshToken);
 
@@ -68,18 +68,16 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
             return Unauthorized();
 
         var user = _tokenService.GetUserByRefreshToken(token);
-        if (user == null)
-            return Unauthorized(new { message = "User not found." });
         
         _tokenService.DeleteRefreshToken(token);
-        var newRefreshToken = _tokenService.CreateRefreshToken(user);
+        var newRefreshToken = _tokenService.CreateRefreshToken(user.Id);
         _authService.AddRefreshToken(Response.Cookies, newRefreshToken);
         
-        //var newAccessToken = _tokenService.CreateAccessToken(user);
+        var newAccessToken = _tokenService.CreateAccessToken(user.Id);
         
         return Ok(new AccessTokenDto
         {
-            AccessToken = "newAccessToken"
+            AccessToken = newAccessToken
         });
     }
         
