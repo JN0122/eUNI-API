@@ -12,6 +12,7 @@ public class AppDbContext: DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<PasswordResetLog> PasswordResetLogs { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Lecturer> Lecturers { get; set; }
     public DbSet<EmploymentUnit> EmploymentUnits { get; set; }
     public DbSet<AcademicDepartment> AcademicDepartments { get; set; }
