@@ -58,6 +58,30 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         _authService.RemoveRefreshToken(Response.Cookies);
         return Ok();
     }
+
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken()
+    {
+        var token = _authService.GetRefreshToken(Request.Cookies);
+
+        if(token == null || !_tokenService.IsRefreshTokenValid(token))
+            return Unauthorized();
+
+        var user = _tokenService.GetUserByRefreshToken(token);
+        if (user == null)
+            return Unauthorized(new { message = "User not found." });
+        
+        _tokenService.DeleteRefreshToken(token);
+        var newRefreshToken = _tokenService.CreateRefreshToken(user);
+        _authService.AddRefreshToken(Response.Cookies, newRefreshToken);
+        
+        //var newAccessToken = _tokenService.CreateAccessToken(user);
+        
+        return Ok(new AccessTokenDto
+        {
+            AccessToken = "newAccessToken"
+        });
+    }
         
     [HttpGet("validate-session")]
     [Authorize]
