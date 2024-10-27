@@ -58,7 +58,7 @@ public class AuthService(IUserService userService, AppDbContext context, IOption
             HttpOnly = true,
             //Secure = true, //https
             SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes)
+            Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays)
         });
     }
 
