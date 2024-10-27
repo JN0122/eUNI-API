@@ -66,4 +66,10 @@ public class AuthService(IUserService userService, AppDbContext context, IOption
     {
         cookies.Delete("refresh-token");
     }
+
+    public string? GetRefreshToken(IRequestCookieCollection cookies)
+    {
+        cookies.TryGetValue("refresh-token", out string? refreshToken);
+        return refreshToken;
+    }
 }
