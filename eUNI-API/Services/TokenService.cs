@@ -59,12 +59,14 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         return token;
     }
 
-    public void RevokeUserToken(Guid userId)
+    public void RevokeUserTokens(Guid userId)
     {
-        var token = _context.RefreshTokens.FirstOrDefault(r => r.UserId == userId);
-        if (token == null)
+        var tokens = _context.RefreshTokens.Where(r => r.UserId == userId).ToList();
+        
+        if (tokens.Count == 0)
             return;
-        _context.RefreshTokens.Remove(token);
+        
+        _context.RefreshTokens.RemoveRange(tokens);
         _context.SaveChanges();
     }
 
@@ -80,13 +82,16 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         return refreshTokenEntity.User;
     }
 
-    public void DeleteRefreshToken(string refreshToken)
+    public void RevokeRefreshToken(string? refreshToken)
     {
+        if (refreshToken == null)
+            return;
+        
         RefreshToken? refreshTokenEntity = _context.RefreshTokens
             .FirstOrDefault(r => r.Token == refreshToken);
-        
-        if(refreshTokenEntity == null)
-            throw new Exception("Refresh token doesn't exist");
+
+        if (refreshTokenEntity == null)
+            return;
         
         _context.RefreshTokens.Remove(refreshTokenEntity);
         _context.SaveChanges();

@@ -14,6 +14,6 @@ public class User
     public Role Role { get; set; }
     public Lecturer? Lecturer { get; set; }
     public Student? Student { get; set; }
-    public ICollection<PasswordResetLog> PasswordResetLog { get; set; }
-    public RefreshToken RefreshToken { get; set; }
+    public ICollection<PasswordResetLog> PasswordResetLogs { get; set; }
+    public ICollection<RefreshToken> RefreshTokens { get; set; }
 }

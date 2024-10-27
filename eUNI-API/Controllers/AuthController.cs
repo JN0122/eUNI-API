@@ -40,7 +40,8 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         {
             var user = await _authService.Login(loginDto);
             
-            _tokenService.RevokeUserToken(user.Id);
+            var oldRefreshToken = _authService.GetRefreshToken(Request.Cookies);
+            _tokenService.RevokeRefreshToken(oldRefreshToken);
             
             var accessToken = _tokenService.CreateAccessToken(user.Id);
             var refreshToken = _tokenService.CreateRefreshToken(user.Id);
@@ -58,7 +59,9 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
+        var refreshToken = _authService.GetRefreshToken(Request.Cookies);
         _authService.RemoveRefreshToken(Response.Cookies);
+        _tokenService.RevokeRefreshToken(refreshToken);
         return Ok();
     }
 
@@ -72,7 +75,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
 
         var user = _tokenService.GetUserByRefreshToken(token);
         
-        _tokenService.DeleteRefreshToken(token);
+        _tokenService.RevokeRefreshToken(token);
         var newRefreshToken = _tokenService.CreateRefreshToken(user.Id);
         _authService.AddRefreshToken(Response.Cookies, newRefreshToken);
         
