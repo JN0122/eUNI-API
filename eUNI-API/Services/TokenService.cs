@@ -59,6 +59,21 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         return token;
     }
 
+    public string RegenerateRefreshToken(string refreshToken)
+    {
+        var refreshTokenEntity = _context.RefreshTokens
+            .First(r => r.Token == refreshToken);
+        
+        var newToken = GenerateUniqueRefreshToken();
+        refreshTokenEntity.Token = newToken;
+        refreshTokenEntity.Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays);
+        
+        _context.RefreshTokens.Update(refreshTokenEntity);
+        _context.SaveChanges();
+        
+        return newToken;
+    }
+
     public void RevokeUserTokens(Guid userId)
     {
         var tokens = _context.RefreshTokens.Where(r => r.UserId == userId).ToList();

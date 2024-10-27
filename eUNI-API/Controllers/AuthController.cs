@@ -75,8 +75,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
 
         var userId = _tokenService.GetUserIdFromRefreshToken(token);
         
-        _tokenService.RevokeRefreshToken(token);
-        var newRefreshToken = _tokenService.CreateRefreshToken(userId);
+        var newRefreshToken = _tokenService.RegenerateRefreshToken(token);
         _authService.AddRefreshToken(Response.Cookies, newRefreshToken);
         
         var newAccessToken = _tokenService.CreateAccessToken(userId);
