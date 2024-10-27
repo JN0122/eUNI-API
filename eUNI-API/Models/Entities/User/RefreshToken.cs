@@ -11,12 +11,10 @@ public class RefreshToken
     
     public Guid UserId { get; set; }
     
-    [Base64String]
+    [Base64String, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string Token { get; set; }
     
     public DateTime Expires { get; set; }
-    
-    public bool IsRevoked { get; set; }
 
     [ForeignKey("UserId")]
     public User User { get; set; }

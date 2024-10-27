@@ -47,8 +47,7 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         {
             Token = token,
             User = user,
-            Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays),
-            IsRevoked = false,
+            Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays)
         });
         _context.SaveChanges();
         
