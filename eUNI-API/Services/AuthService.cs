@@ -53,7 +53,7 @@ public class AuthService(IUserService userService, AppDbContext context, IOption
 
     public void AddRefreshToken(IResponseCookies cookies, string refreshToken)
     {
-        cookies.Append("auth-token", refreshToken, new CookieOptions
+        cookies.Append("refresh-token", refreshToken, new CookieOptions
         {
             HttpOnly = true,
             //Secure = true, //https
@@ -64,6 +64,6 @@ public class AuthService(IUserService userService, AppDbContext context, IOption
 
     public void RemoveRefreshToken(IResponseCookies cookies)
     {
-        cookies.Delete("auth-token");
+        cookies.Delete("refresh-token");
     }
 }
