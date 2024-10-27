@@ -73,13 +73,13 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         if(token == null || !_tokenService.IsRefreshTokenValid(token))
             return Unauthorized();
 
-        var user = _tokenService.GetUserByRefreshToken(token);
+        var userId = _tokenService.GetUserIdFromRefreshToken(token);
         
         _tokenService.RevokeRefreshToken(token);
-        var newRefreshToken = _tokenService.CreateRefreshToken(user.Id);
+        var newRefreshToken = _tokenService.CreateRefreshToken(userId);
         _authService.AddRefreshToken(Response.Cookies, newRefreshToken);
         
-        var newAccessToken = _tokenService.CreateAccessToken(user.Id);
+        var newAccessToken = _tokenService.CreateAccessToken(userId);
         
         return Ok(new AccessTokenDto
         {

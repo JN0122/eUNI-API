@@ -70,16 +70,15 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         _context.SaveChanges();
     }
 
-    public User GetUserByRefreshToken(string refreshToken)
+    public Guid GetUserIdFromRefreshToken(string refreshToken)
     {
         RefreshToken? refreshTokenEntity = _context.RefreshTokens
-            .Include(r => r.User)
             .FirstOrDefault(r => r.Token == refreshToken);
         
         if(refreshTokenEntity == null)
             throw new Exception("Refresh token doesn't exist");
         
-        return refreshTokenEntity.User;
+        return refreshTokenEntity.UserId;
     }
 
     public void RevokeRefreshToken(string? refreshToken)
