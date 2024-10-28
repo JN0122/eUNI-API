@@ -48,14 +48,7 @@ public class UserController(AppDbContext context, IUserService userService): Con
         if(userIdClaim == null)
             return Unauthorized("No user ID claim present in token.");
         
-        try
-        {
-            var user = await _userService.FindUserByClaimId(userIdClaim);
-            return Ok(user);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        var user = await _userService.FindUserByClaimId(userIdClaim);
+        return Ok(user);
     }
 }

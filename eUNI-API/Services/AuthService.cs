@@ -19,7 +19,7 @@ public class AuthService(IUserService userService, AppDbContext context, IOption
     public async Task<User> Register(RegistrationDto registrationDto)
     {
         if(!registrationDto.Password.Equals(registrationDto.ConfirmPassword))
-            throw new Exception("Passwords do not match!");
+            throw new ArgumentException("Passwords do not match!");
 
         var salt = PasswordHasher.GenerateSalt();
         var userCreate = new CreateUserDto
@@ -36,18 +36,17 @@ public class AuthService(IUserService userService, AppDbContext context, IOption
 
     public async Task<User> Login(LoginDto loginDto)
     {
-        var errorMessage = "Username or password is incorrect.";
         User? user = await _context.Users
             .Include(u => u.Role)
             .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
         if (user == null)
-            throw new Exception(errorMessage);
+            throw new UnauthorizedAccessException();
     
         var isValidPassword = PasswordHasher.VerifyHashedPassword(loginDto.Password, user.Salt, user.PasswordHash);
 
         if (!isValidPassword)
-            throw new Exception(errorMessage);
+            throw new UnauthorizedAccessException();
         return user;
     }
 

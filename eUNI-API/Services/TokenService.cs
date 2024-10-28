@@ -22,7 +22,7 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         var user = _context.Users.AsNoTracking().Include(u => u.Role).FirstOrDefault(u => u.Id == userId); 
         
         if (user == null)
-            throw new Exception("User not found");
+            throw new ArgumentException("User not found");
         
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
@@ -91,7 +91,7 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
             .FirstOrDefault(r => r.Token == refreshToken);
         
         if(refreshTokenEntity == null)
-            throw new Exception("Refresh token doesn't exist");
+            throw new ArgumentException("Refresh token doesn't exist");
         
         return refreshTokenEntity.UserId;
     }

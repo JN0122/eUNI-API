@@ -16,7 +16,7 @@ public class UserService(AppDbContext context): IUserService
         var studentRole = _context.Roles.FirstOrDefault(role => role.Id == (int)UserRole.Student);
 
         if (studentRole == null)
-            throw new Exception("Student role doesn't exist");
+            throw new ArgumentException("Student role doesn't exist");
 
         var newUser = new User
         {
