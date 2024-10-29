@@ -24,7 +24,10 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         var user = await _authService.Register(registrationDto);
         var token = _tokenService.CreateAccessToken(user.Id);
             
-        return Ok(ConvertDtos.ToBasicUserDto(user, token));
+        return Ok(new AccessTokenDto
+        {
+            AccessToken = token
+        });
     }
     
     [HttpPost("login")]
@@ -40,7 +43,10 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         
         _authService.AddRefreshToken(Response.Cookies, refreshToken);
 
-        return Ok(ConvertDtos.ToBasicUserDto(user, accessToken));
+        return Ok(new AccessTokenDto
+        {
+            AccessToken = accessToken
+        });
     }
 
     [HttpPost("logout")]

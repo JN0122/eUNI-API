@@ -5,14 +5,13 @@ namespace eUNI_API.Helpers;
 
 public static class ConvertDtos
 {
-    public static BasicUserDto ToBasicUserDto(User user, string authToken)
+    public static BasicUserDto ToBasicUserDto(User user)
     {
         return new BasicUserDto
         {
             Firstname = user.Firstname,
             Lastname = user.Lastname,
-            Email = user.Email,
-            AuthToken = authToken
+            Email = user.Email
         };
     }
 }
