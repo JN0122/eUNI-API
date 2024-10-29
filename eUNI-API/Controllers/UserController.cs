@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using eUNI_API.Data;
+using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ public class UserController(AppDbContext context, IUserService userService): Con
     private readonly AppDbContext _context = context;
     private readonly IUserService _userService = userService;
     
+    [Authorize]
     [HttpGet]
     [Route("Lecturers")]
     public async Task<ActionResult<IEnumerable<LecturerDto>>> GetLecturers()
@@ -38,9 +40,9 @@ public class UserController(AppDbContext context, IUserService userService): Con
             }).ToListAsync();
         return lecturers;
     }
-
-    [HttpGet("getuser")]
-    [Authorize(Roles = "SuperAdmin")]
+    
+    [Authorize]
+    [HttpGet("user-info")]
     public async Task<ActionResult<User>> GetUser()
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -49,6 +51,11 @@ public class UserController(AppDbContext context, IUserService userService): Con
             return Unauthorized("No user ID claim present in token.");
         
         var user = await _userService.FindUserByClaimId(userIdClaim);
-        return Ok(user);
+
+        if (user == null) {
+            return Unauthorized("Invalid user ID");
+        }
+        
+        return Ok(ConvertDtos.ToBasicUserDto(user));
     }
 }
