@@ -78,11 +78,4 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
             AccessToken = newAccessToken
         });
     }
-        
-    [HttpGet("validate-session")]
-    [Authorize]
-    public IActionResult ValidateSession()
-    {
-        return Ok(new { isAuthenticated = true });
-    }
 }

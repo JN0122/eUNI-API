@@ -19,29 +19,6 @@ public class UserController(AppDbContext context, IUserService userService): Con
     private readonly IUserService _userService = userService;
     
     [Authorize]
-    [HttpGet]
-    [Route("Lecturers")]
-    public async Task<ActionResult<IEnumerable<LecturerDto>>> GetLecturers()
-    {
-        var lecturers = await _context.Users
-            .Include(u=>u.Lecturer)
-            .ThenInclude(l=>l.EmploymentUnit)
-            .ThenInclude(e => e.AcademicDepartment)
-            .Where(u=>u.Lecturer != null)
-            .Select(u => new LecturerDto
-            {
-                Id = u.Id,
-                Firstname = u.Firstname,
-                Lastname = u.Lastname,
-                Email = u.Email,
-                RoleName = u.Role.Name,
-                EmploymentUnit = u.Lecturer.EmploymentUnit.Abbr,
-                AcademicDepartment = u.Lecturer.EmploymentUnit.AcademicDepartment.Abbr
-            }).ToListAsync();
-        return lecturers;
-    }
-    
-    [Authorize]
     [HttpGet("user-info")]
     public async Task<ActionResult<User>> GetUser()
     {
