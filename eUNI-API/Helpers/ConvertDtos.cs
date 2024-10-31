@@ -13,7 +13,7 @@ public static class ConvertDtos
             Firstname = user.Firstname,
             Lastname = user.Lastname,
             Email = user.Email,
-            Role = user.Role.Name
+            Role = user.RoleId
         };
     }
 }
