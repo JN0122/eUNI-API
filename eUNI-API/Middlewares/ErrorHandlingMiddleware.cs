@@ -37,6 +37,10 @@ public class ErrorHandlingMiddleware
             statusCode = HttpStatusCode.BadRequest;
             message = exception.Message;
         }
+        else
+        {
+            Console.WriteLine(exception);
+        }
         
         var result = JsonSerializer.Serialize(new { message });
         context.Response.ContentType = "application/json";
