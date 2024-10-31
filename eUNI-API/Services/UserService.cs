@@ -40,6 +40,7 @@ public class UserService(AppDbContext context): IUserService
         }
 
         var user = await _context.Users
+            .Include(user => user.Role)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
         return user;

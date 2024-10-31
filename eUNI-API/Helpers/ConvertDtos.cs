@@ -1,3 +1,4 @@
+using eUNI_API.Enums;
 using eUNI_API.Models.Dto;
 using eUNI_API.Models.Entities.User;
 
@@ -11,7 +12,8 @@ public static class ConvertDtos
         {
             Firstname = user.Firstname,
             Lastname = user.Lastname,
-            Email = user.Email
+            Email = user.Email,
+            Role = user.Role.Name
         };
     }
 }
