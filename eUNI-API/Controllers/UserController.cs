@@ -26,4 +26,26 @@ public class UserController(AppDbContext context, IUserService userService): Con
         
         return Ok(ConvertDtos.ToBasicUserDto(user));
     }
+
+    [Authorize]
+    [HttpPatch("change-password")]
+    public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
+    {
+        var user = await _userService.FindUserByClaim(User.Claims);
+        if(!PasswordHasher.VerifyHashedPassword(changePasswordDto.oldPassword, user.Salt, user.PasswordHash))
+            return BadRequest("Invalid old password");
+        
+        _userService.ChangePassword(user, changePasswordDto.newPassword);
+        return Ok();
+    }
+    
+    [Authorize]
+    [HttpPatch("change-email")]
+    public async Task<ActionResult> ChangeEmail([FromBody] ChangeEmailDto changeEmailDto)
+    {
+        var user = await _userService.FindUserByClaim(User.Claims);
+        
+        _userService.ChangeEmail(user, changeEmailDto.email);
+        return Ok();
+    }
 }

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using eUNI_API.Data;
 using eUNI_API.Enums;
+using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
 using eUNI_API.Models.Entities.User;
 using eUNI_API.Services.Interfaces;
@@ -48,5 +49,24 @@ public class UserService(AppDbContext context): IUserService
             throw new ArgumentException("Invalid user ID");
 
         return user;
+    }
+
+    public void ChangePassword(User user, string newPassword)
+    {
+        var newSalt = PasswordHasher.GenerateSalt();
+        
+        user.Salt = newSalt;
+        user.PasswordHash = PasswordHasher.HashPassword(newPassword, newSalt);
+        
+        _context.Users.Update(user);
+        _context.SaveChanges();
+    }
+
+    public void ChangeEmail(User user, string newEmail)
+    {
+        user.Email = newEmail;
+        
+        _context.Users.Update(user);
+        _context.SaveChanges();
     }
 }
