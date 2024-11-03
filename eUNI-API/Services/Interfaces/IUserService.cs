@@ -7,5 +7,5 @@ namespace eUNI_API.Services.Interfaces;
 public interface IUserService
 {
     Task<User> CreateUser(CreateUserDto createUserDto);
-    Task<User?> FindUserByClaimId(string claimId);
+    Task<User> FindUserByClaim(IEnumerable<Claim> claims);
 }

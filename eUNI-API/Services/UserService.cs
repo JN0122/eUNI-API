@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using eUNI_API.Data;
 using eUNI_API.Enums;
 using eUNI_API.Models.Dto;
@@ -33,15 +34,18 @@ public class UserService(AppDbContext context): IUserService
         return newUser;
     }
 
-    public async Task<User?> FindUserByClaimId(string claimId)
+    public async Task<User> FindUserByClaim(IEnumerable<Claim> claims)
     {
-        if (!Guid.TryParse(claimId, out var userId)){
-            return null;
-        }
+        var userIdClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        
+        if(userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+            throw new ArgumentException("Invalid user ID claim present in token.");
 
         var user = await _context.Users
-            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+            throw new ArgumentException("Invalid user ID");
 
         return user;
     }

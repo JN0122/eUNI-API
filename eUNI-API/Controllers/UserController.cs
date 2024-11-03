@@ -22,16 +22,7 @@ public class UserController(AppDbContext context, IUserService userService): Con
     [HttpGet("user-info")]
     public async Task<ActionResult<User>> GetUser()
     {
-        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-        
-        if(userIdClaim == null)
-            return Unauthorized("No user ID claim present in token.");
-        
-        var user = await _userService.FindUserByClaimId(userIdClaim);
-
-        if (user == null) {
-            return Unauthorized("Invalid user ID");
-        }
+        var user = await _userService.FindUserByClaim(User.Claims);
         
         return Ok(ConvertDtos.ToBasicUserDto(user));
     }
