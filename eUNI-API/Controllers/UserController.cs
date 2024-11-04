@@ -32,10 +32,10 @@ public class UserController(AppDbContext context, IUserService userService): Con
     public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
     {
         var user = await _userService.FindUserByClaim(User.Claims);
-        if(!PasswordHasher.VerifyHashedPassword(changePasswordDto.oldPassword, user.Salt, user.PasswordHash))
+        if(!PasswordHasher.VerifyHashedPassword(changePasswordDto.OldPassword, user.Salt, user.PasswordHash))
             return BadRequest("Invalid old password");
         
-        _userService.ChangePassword(user, changePasswordDto.newPassword);
+        _userService.ChangePassword(user, changePasswordDto.NewPassword);
         return Ok();
     }
     
@@ -45,7 +45,7 @@ public class UserController(AppDbContext context, IUserService userService): Con
     {
         var user = await _userService.FindUserByClaim(User.Claims);
         
-        _userService.ChangeEmail(user, changeEmailDto.email);
+        _userService.ChangeEmail(user, changeEmailDto.Email);
         return Ok();
     }
 }
