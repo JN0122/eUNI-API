@@ -16,4 +16,25 @@ public static class ConvertDtos
             Role = user.RoleId
         };
     }
+
+    public static UserInfoDto ToUserInfoDto(User user)
+    {
+        return new UserInfoDto
+        {
+            Id = user.Id,
+            FirstName = user.Firstname,
+            LastName = user.Lastname,
+            Email = user.Email
+        };
+    }
+    
+    public static IEnumerable<UserInfoDto> ToUserInfoDto(IEnumerable<User> users)
+    {
+        List<UserInfoDto> usersInfo = [];
+        foreach (var user in users)
+        {
+            usersInfo.Add(ToUserInfoDto(user));
+        }
+        return usersInfo;
+    }
 }

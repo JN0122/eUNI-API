@@ -21,6 +21,7 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"))
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUsersService, UsersService>();
 
 builder.Services.AddEndpointsApiExplorer();
 
