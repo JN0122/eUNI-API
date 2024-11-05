@@ -40,7 +40,7 @@ public class AuthService(IUserService userService, AppDbContext context, IOption
             .Include(u => u.Role)
             .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
-        if (user == null)
+        if (user == null || user.IsDeleted)
             throw new UnauthorizedAccessException();
     
         var isValidPassword = PasswordHasher.VerifyHashedPassword(loginDto.Password, user.Salt, user.PasswordHash);

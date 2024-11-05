@@ -10,6 +10,7 @@ public class User
     public string Email { get; set; }
     public string PasswordHash { get; set; }
     public string Salt { get; set; }
+    public bool IsDeleted { get; set; } = false;
     public int RoleId { get; set; }
     public Role Role { get; set; }
     public Lecturer? Lecturer { get; set; }
