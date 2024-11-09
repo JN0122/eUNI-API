@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace eUNI_API.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UserController(AppDbContext context, IUserService userService): ControllerBase
@@ -15,7 +16,6 @@ public class UserController(AppDbContext context, IUserService userService): Con
     private readonly AppDbContext _context = context;
     private readonly IUserService _userService = userService;
     
-    [Authorize]
     [HttpGet("user-info")]
     public async Task<ActionResult<User>> GetUser()
     {
@@ -24,7 +24,6 @@ public class UserController(AppDbContext context, IUserService userService): Con
         return Ok(ConvertDtos.ToBasicUserDto(user));
     }
 
-    [Authorize]
     [HttpPatch("change-password")]
     public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
     {
@@ -36,7 +35,6 @@ public class UserController(AppDbContext context, IUserService userService): Con
         return Ok();
     }
     
-    [Authorize]
     [HttpPatch("change-email")]
     public async Task<ActionResult> ChangeEmail([FromBody] ChangeEmailDto changeEmailDto)
     {

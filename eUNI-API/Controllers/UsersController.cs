@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace eUNI_API.Controllers;
 
-[Authorize(Roles = "SuperAdmin")]
+[Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController(IUsersService usersService, IUserService userService): ControllerBase
