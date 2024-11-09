@@ -23,8 +23,8 @@ public class UserService(AppDbContext context): IUserService
         var newUser = new User
         {
             Email = createUserDto.Email,
-            Firstname = createUserDto.Firstname,
-            Lastname = createUserDto.Lastname,
+            FirstName = createUserDto.Firstname,
+            LastName = createUserDto.Lastname,
             PasswordHash = createUserDto.PasswordHash,
             Salt = createUserDto.Salt,
             Role = studentRole,

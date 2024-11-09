@@ -10,8 +10,8 @@ public static class ConvertDtos
     {
         return new BasicUserDto
         {
-            Firstname = user.Firstname,
-            Lastname = user.Lastname,
+            Firstname = user.FirstName,
+            Lastname = user.LastName,
             Email = user.Email,
             Role = user.RoleId
         };
@@ -22,8 +22,8 @@ public static class ConvertDtos
         return new UserInfoDto
         {
             Id = user.Id,
-            FirstName = user.Firstname,
-            LastName = user.Lastname,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
             Email = user.Email
         };
     }

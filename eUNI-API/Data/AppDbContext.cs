@@ -30,8 +30,8 @@ public class AppDbContext: DbContext
             new User
             {
                 Id = new Guid("c49c2319-2e87-45fe-be3b-1d9e724df781"), 
-                Firstname = "Jan", 
-                Lastname = "Kowalski", 
+                FirstName = "Jan", 
+                LastName = "Kowalski", 
                 Email = "root@euni.com", 
                 RoleId = (int)UserRole.SuperAdmin,
                 PasswordHash =  "NTWxiNrLLLT2HkXuG9JiPYN0z5UN2eHW5gMsxbP4ATY=", 
@@ -40,8 +40,8 @@ public class AppDbContext: DbContext
             new User
             {
                 Id = new Guid("dd205297-4d6d-4ef3-a139-350c55518085"),
-                Firstname = "Adam", 
-                Lastname = "Nowak", 
+                FirstName = "Adam", 
+                LastName = "Nowak", 
                 Email = "adam.nowak@pk.edu.pl", 
                 RoleId = (int)UserRole.Lecturer,
                 PasswordHash = "4QQOqhGWUw4eHTZQdzStsPlGCtmiJ6Tz6bF9mwYXiVg=", 
