@@ -13,7 +13,6 @@ public class User
     public bool IsDeleted { get; set; } = false;
     public int RoleId { get; set; }
     public Role Role { get; set; }
-    public Lecturer? Lecturer { get; set; }
     public Student? Student { get; set; }
     public ICollection<PasswordResetLog> PasswordResetLogs { get; set; }
     public ICollection<RefreshToken> RefreshTokens { get; set; }

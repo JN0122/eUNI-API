@@ -78,4 +78,11 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
             AccessToken = newAccessToken
         });
     }
+
+    [Authorize]
+    [HttpPost("is-authenticated")]
+    public IActionResult IsAuthenticated()
+    {
+        return Ok();
+    }
 }
