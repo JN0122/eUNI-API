@@ -6,9 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class UsersService(AppDbContext context): IUsersService
+public class UsersService(AppDbContext context, IUserService userService): IUsersService
 {
     private readonly AppDbContext _context = context;
+    private readonly IUserService _userService = userService;
     
     public async Task<List<User>> GetUsers()
     {
@@ -38,13 +39,17 @@ public class UsersService(AppDbContext context): IUsersService
 
     public async Task UpdateUser(User user, UpdateUserDto updateUserDto)
     {
-        foreach (var propertyInfo in updateUserDto.GetType().GetProperties())
-        {
-            var value = propertyInfo.GetValue(updateUserDto);
-            if (value is not string stringValue || string.IsNullOrEmpty(stringValue)) continue;
-            
-            user.GetType().GetProperty(propertyInfo.Name)?.SetValue(user, value);
-        }
+        if (updateUserDto.FirstName != null)
+            user.LastName = updateUserDto.FirstName;
+        
+        if (updateUserDto.LastName != null)
+            user.LastName = updateUserDto.LastName;
+        
+        if (updateUserDto.Email != null)
+            user.Email = updateUserDto.Email;
+
+        if (updateUserDto.NewPassword != null)
+            _userService.ChangePassword(user, updateUserDto.NewPassword);
         
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
