@@ -22,7 +22,7 @@ public class UsersController(IUsersService usersService, IUserService userServic
         return Ok(ConvertDtos.ToUserInfoDto(users));
     }
 
-    [HttpDelete("delete/{id:guid}")]
+    [HttpDelete("{id:guid}")]
     public async Task<ActionResult> DeleteUser([FromRoute] Guid id)
     {
         var user = await _userService.FindUserByClaim(User.Claims);
