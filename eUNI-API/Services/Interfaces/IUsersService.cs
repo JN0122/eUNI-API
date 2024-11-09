@@ -5,4 +5,5 @@ namespace eUNI_API.Services.Interfaces;
 public interface IUsersService
 {
     public Task<List<User>> GetUsers();
+    public Task RemoveUser(Guid id);
 }

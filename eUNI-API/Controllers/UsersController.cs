@@ -9,9 +9,10 @@ namespace eUNI_API.Controllers;
 [Authorize(Roles = "SuperAdmin")]
 [Route("api/[controller]")]
 [ApiController]
-public class UsersController(IUsersService usersService): ControllerBase
+public class UsersController(IUsersService usersService, IUserService userService): ControllerBase
 {
     private readonly IUsersService _usersService = usersService;
+    private readonly IUserService _userService = userService;
     
     [HttpGet("all-users")]
     public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetUsers()
@@ -19,5 +20,20 @@ public class UsersController(IUsersService usersService): ControllerBase
         var users = await _usersService.GetUsers();
         
         return Ok(ConvertDtos.ToUserInfoDto(users));
+    }
+
+    [HttpDelete("delete/{id:guid}")]
+    public async Task<ActionResult> DeleteUser([FromRoute] Guid id)
+    {
+        var user = await _userService.FindUserByClaim(User.Claims);
+        
+        if (user == null)
+            throw new UnauthorizedAccessException();
+
+        if (user.Id.Equals(id))
+            throw new ArgumentException("Cannot delete this user!");
+        
+        await _usersService.RemoveUser(id);
+        return Ok();
     }
 }

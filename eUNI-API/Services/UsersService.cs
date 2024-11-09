@@ -13,4 +13,15 @@ public class UsersService(AppDbContext context): IUsersService
     {
         return await _context.Users.Where(u => !u.IsDeleted).ToListAsync();
     }
+
+    public Task RemoveUser(Guid id)
+    {
+        var user = _context.Users.Find(id);
+        if (user == null)
+            throw new BadHttpRequestException("Could not find user");
+        
+        user.IsDeleted = true;
+        context.Users.Update(user);
+        return context.SaveChangesAsync();
+    }
 }
