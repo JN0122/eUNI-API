@@ -40,7 +40,7 @@ public class UsersService(AppDbContext context, IUserService userService): IUser
     public async Task UpdateUser(User user, UpdateUserDto updateUserDto)
     {
         if (updateUserDto.FirstName != null)
-            user.LastName = updateUserDto.FirstName;
+            user.FirstName = updateUserDto.FirstName;
         
         if (updateUserDto.LastName != null)
             user.LastName = updateUserDto.LastName;
