@@ -1,6 +1,5 @@
-using eUNI_API.Enums;
 using eUNI_API.Models.Dto;
-using eUNI_API.Models.Entities.User;
+using eUNI_API.Models.Entities.Auth;
 
 namespace eUNI_API.Helpers;
 

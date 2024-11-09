@@ -3,7 +3,7 @@ using eUNI_API.Configuration;
 using eUNI_API.Data;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
-using eUNI_API.Models.Entities.User;
+using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -36,7 +36,7 @@ public class AuthService(IUserService userService, AppDbContext context, IOption
 
     public async Task<User> Login(LoginDto loginDto)
     {
-        User? user = await _context.Users
+        var user = await _context.Users
             .Include(u => u.Role)
             .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 

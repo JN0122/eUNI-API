@@ -1,4 +1,4 @@
-namespace eUNI_API.Models.Entities.User;
+namespace eUNI_API.Models.Entities.Auth;
 
 public class Role
 {

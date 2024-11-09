@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace eUNI_API.Models.Entities.User;
+namespace eUNI_API.Models.Entities.Auth;
 
 public class RefreshToken
 {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using eUNI_API.Models.Entities.UserInfo;
 
-namespace eUNI_API.Models.Entities.User;
+namespace eUNI_API.Models.Entities.Auth;
 public class User
 {
     public Guid Id { get; set; }

@@ -1,5 +1,5 @@
 using eUNI_API.Enums;
-using eUNI_API.Models.Entities.User;
+using eUNI_API.Models.Entities.Auth;
 using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Data;

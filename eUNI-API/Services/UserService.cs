@@ -3,7 +3,7 @@ using eUNI_API.Data;
 using eUNI_API.Enums;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
-using eUNI_API.Models.Entities.User;
+using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
