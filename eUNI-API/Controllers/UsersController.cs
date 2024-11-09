@@ -36,4 +36,13 @@ public class UsersController(IUsersService usersService, IUserService userServic
         await _usersService.RemoveUser(id);
         return Ok();
     }
+
+    [HttpPatch("{id:guid}")]
+    public async Task<ActionResult> GetUserById([FromRoute] Guid id, [FromBody] UpdateUserDto updateUserDto)
+    {
+        var user = await _usersService.GetUserById(id);
+        await _usersService.UpdateUser(user, updateUserDto);
+        
+        return Ok();
+    }
 }
