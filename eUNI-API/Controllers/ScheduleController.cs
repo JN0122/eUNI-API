@@ -1,3 +1,4 @@
+using eUNI_API.Models.Dto;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,9 @@ public class ScheduleController(IScheduleService scheduleService): ControllerBas
     private readonly IScheduleService _scheduleService = scheduleService;
     
     [HttpPost("calculate-classes-dates")]
-    public async Task<IActionResult> CalculateClassesDates(int classId)
+    public async Task<IActionResult> CalculateClassesDates([FromBody] ClassesToCalculateDto classesToCalculateDto)
     {
-        await _scheduleService.CalculateClassesDates(classId);
+        await _scheduleService.CalculateClassesDates(classesToCalculateDto);
         return Ok();
     }
 }
