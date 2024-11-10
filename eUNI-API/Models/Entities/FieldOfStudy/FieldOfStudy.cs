@@ -13,7 +13,7 @@ public class FieldOfStudy
     [MaxLength(20)]
     public string Abbr { get; set; }
     
-    public int StudiesCycle { get; set; }
+    public byte StudiesCycle { get; set; }
     
     public IEnumerable<FieldOfStudyLog> FieldOfStudyLogs { get; set; }
 }

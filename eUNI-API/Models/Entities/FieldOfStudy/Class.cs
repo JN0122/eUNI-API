@@ -21,6 +21,8 @@ public class Class
     
     public int StartHourId { get; set; }
     
+    public byte WeekDay { get; set; }
+    
     public int EndHourId { get; set; }
     
     [ForeignKey("StartHourId")]
@@ -30,5 +32,5 @@ public class Class
     public Hour EndHour { get; set; }
     
     [ForeignKey("FieldOfStudyLogId")]
-    public FieldOfStudy FieldOfStudyLog { get; set; }
+    public FieldOfStudyLog FieldOfStudyLog { get; set; }
 }

@@ -14,7 +14,7 @@ public class FieldOfStudyLog
 
     public int OrganizationsOfTheYearId { get; set; }
 
-    public int Semester { get; set; }
+    public byte Semester { get; set; }
     
     [ForeignKey("FieldOfStudyId")]
     public FieldOfStudy FieldOfStudy { get; set; }
