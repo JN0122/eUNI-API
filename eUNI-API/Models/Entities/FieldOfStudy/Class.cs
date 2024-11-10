@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using eUNI_API.Models.Entities.Cache;
 using eUNI_API.Models.Entities.OrganizationInfo;
 
 namespace eUNI_API.Models.Entities.FieldOfStudy;
@@ -17,11 +18,11 @@ public class Class
     [MaxLength(15)]
     public string Room { get; set; }
     
-    public bool IsOddWeek { get; set; }
+    public bool? IsOddWeek { get; set; }
+    
+    public byte? WeekDay { get; set; }
     
     public int StartHourId { get; set; }
-    
-    public byte WeekDay { get; set; }
     
     public int EndHourId { get; set; }
     
@@ -33,4 +34,7 @@ public class Class
     
     [ForeignKey("FieldOfStudyLogId")]
     public FieldOfStudyLog FieldOfStudyLog { get; set; }
+    
+    public IEnumerable<Assignment>? Assignments { get; set; }
+    public IEnumerable<CalculatedClassesDate> CalculatedClassesDates { get; set; }
 }

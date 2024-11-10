@@ -1,5 +1,6 @@
 using eUNI_API.Enums;
 using eUNI_API.Models.Entities.Auth;
+using eUNI_API.Models.Entities.Cache;
 using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Models.Entities.OrganizationInfo;
 using eUNI_API.Models.Entities.Student;
@@ -33,6 +34,10 @@ public class AppDbContext: DbContext
     public DbSet<Class> Classes { get; set; }
     public DbSet<FieldOfStudy> FieldOfStudies { get; set; }
     public DbSet<FieldOfStudyLog> FieldOfStudyLogs { get; set; }
+    public DbSet<Assignment> Assignments { get; set; }
+    
+    //Cache
+    public DbSet<CalculatedClassesDate> CalculatedClassesDates { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -188,6 +193,16 @@ public class AppDbContext: DbContext
                 IsRepresentative = false,
                 StudentsFieldsOfStudyLogId = 1,
             }
+        );
+        
+        modelBuilder.Entity<Assignment>().HasData(
+           new Assignment
+           {
+               Id = 1,
+               ClassId = 1,
+               Name = "Sprawozdanie 1",
+               DeadlineDate = new DateOnly(2024, 11, 15)
+           }
         );
     }
 }
