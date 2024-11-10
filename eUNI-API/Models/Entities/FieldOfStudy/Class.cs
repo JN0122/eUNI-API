@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using eUNI_API.Enums;
 using eUNI_API.Models.Entities.Cache;
 using eUNI_API.Models.Entities.OrganizationInfo;
 
@@ -20,7 +21,7 @@ public class Class
     
     public bool? IsOddWeek { get; set; }
     
-    public byte? WeekDay { get; set; }
+    public WeekDay? WeekDay { get; set; }
     
     public int StartHourId { get; set; }
     

@@ -163,7 +163,7 @@ public class AppDbContext: DbContext
                 Name = "Wytrzymałość materiałów",
                 Room="A103",
                 IsOddWeek = true,
-                WeekDay = 0,
+                WeekDay = WeekDay.Monday,
                 StartHourId = 1,
                 EndHourId = 3,
             }    
