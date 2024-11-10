@@ -7,7 +7,5 @@ public interface ITokenService
     public string RegenerateRefreshToken(string refreshToken);
     public Guid GetUserIdFromRefreshToken(string refreshToken);
     public void RevokeRefreshToken(string? oldRefreshToken);
-    public void RevokeUserTokens(Guid userId);
     public bool IsRefreshTokenValid(string refreshToken);
-    public string GenerateUniqueRefreshToken();
 }

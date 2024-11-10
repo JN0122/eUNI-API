@@ -29,11 +29,8 @@ public static class ConvertDtos
     
     public static IEnumerable<UserInfoDto> ToUserInfoDto(IEnumerable<User> users)
     {
-        List<UserInfoDto> usersInfo = [];
-        foreach (var user in users)
-        {
-            usersInfo.Add(ToUserInfoDto(user));
-        }
+        var usersInfo = new List<UserInfoDto>();
+        usersInfo.AddRange(users.Select(ToUserInfoDto));
         return usersInfo;
     }
 }
