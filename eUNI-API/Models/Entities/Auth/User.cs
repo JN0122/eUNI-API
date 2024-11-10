@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using eUNI_API.Models.Entities.UserInfo;
 
 namespace eUNI_API.Models.Entities.Auth;
 public class User
@@ -32,7 +31,7 @@ public class User
     [ForeignKey("RoleId")]
     public Role Role { get; set; }
     
-    public Student? Student { get; set; }
+    public Student.Student? Student { get; set; }
     public ICollection<PasswordResetLog>? PasswordResetLogs { get; set; }
     public ICollection<RefreshToken>? RefreshTokens { get; set; }
 }

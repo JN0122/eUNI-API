@@ -1,6 +1,6 @@
 using eUNI_API.Enums;
 using eUNI_API.Models.Entities.Auth;
-using eUNI_API.Models.Entities.UserInfo;
+using eUNI_API.Models.Entities.Student;
 using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Data;

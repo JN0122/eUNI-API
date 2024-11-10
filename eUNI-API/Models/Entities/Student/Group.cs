@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace eUNI_API.Models.Entities.UserInfo;
+namespace eUNI_API.Models.Entities.Student;
 
 public class Group
 {

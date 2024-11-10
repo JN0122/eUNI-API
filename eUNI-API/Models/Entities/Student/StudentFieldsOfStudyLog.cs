@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using eUNI_API.Models.Entities.FieldOfStudy;
 
-namespace eUNI_API.Models.Entities.UserInfo;
+namespace eUNI_API.Models.Entities.Student;
 
 public class StudentFieldsOfStudyLog
 {

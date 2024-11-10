@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using eUNI_API.Models.Entities.Auth;
 using Microsoft.EntityFrameworkCore;
 
-namespace eUNI_API.Models.Entities.UserInfo;
+namespace eUNI_API.Models.Entities.Student;
 
 [Index(nameof(AlbumNumber), IsUnique = true)]
 public class Student
