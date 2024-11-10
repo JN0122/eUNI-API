@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Models.Entities.Auth;
 
+[Index(nameof(Token), IsUnique = true)]
 public class RefreshToken
 {
     [Key]
@@ -11,7 +12,6 @@ public class RefreshToken
     
     public Guid UserId { get; set; }
     
-    [Base64String, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string Token { get; set; }
     
     public DateTime Expires { get; set; }
