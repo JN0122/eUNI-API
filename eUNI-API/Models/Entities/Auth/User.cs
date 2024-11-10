@@ -24,13 +24,15 @@ public class User
     public string Salt { get; set; }
     
     public bool IsDeleted { get; set; } = false;
+    
     public int RoleId { get; set; }
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
     [ForeignKey("RoleId")]
     public Role Role { get; set; }
+    
     public Student? Student { get; set; }
-    public ICollection<PasswordResetLog> PasswordResetLogs { get; set; }
-    public ICollection<RefreshToken> RefreshTokens { get; set; }
+    public ICollection<PasswordResetLog>? PasswordResetLogs { get; set; }
+    public ICollection<RefreshToken>? RefreshTokens { get; set; }
 }

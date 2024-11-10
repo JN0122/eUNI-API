@@ -1,5 +1,6 @@
 using eUNI_API.Enums;
 using eUNI_API.Models.Entities.Auth;
+using eUNI_API.Models.Entities.UserInfo;
 using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Data;
@@ -11,6 +12,7 @@ public class AppDbContext: DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<PasswordResetLog> PasswordResetLogs { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<Student> Students { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

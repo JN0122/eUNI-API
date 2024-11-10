@@ -18,4 +18,6 @@ public class Student
 
     [ForeignKey("UserId")]
     public User User { get; set; }
+    
+    public IEnumerable<StudentFieldsOfStudyLog> StudentFieldsOfStudyLogs { get; set; }
 }
