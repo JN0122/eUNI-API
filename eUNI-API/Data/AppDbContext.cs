@@ -129,6 +129,7 @@ public class AppDbContext: DbContext
                 Id = 1,
                 YearId = 1,
                 FirstHalfOfYear = true,
+                FirstWeekOdd = true,
                 StartDay = new DateOnly(2024, 10, 1),
                 EndDay = new DateOnly(2025, 1, 26),
             }    

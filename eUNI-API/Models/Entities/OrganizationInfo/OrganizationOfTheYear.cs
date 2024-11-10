@@ -17,6 +17,8 @@ public class OrganizationOfTheYear
     
     public DateOnly EndDay { get; set; }
     
+    public bool FirstWeekOdd { get; set; }
+    
     [ForeignKey("YearId")]
     public Year Year { get; set; }
     
