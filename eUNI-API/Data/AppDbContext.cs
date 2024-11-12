@@ -1,6 +1,5 @@
 using eUNI_API.Enums;
 using eUNI_API.Models.Entities.Auth;
-using eUNI_API.Models.Entities.Cache;
 using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Models.Entities.OrganizationInfo;
 using eUNI_API.Models.Entities.Student;
@@ -35,9 +34,6 @@ public class AppDbContext: DbContext
     public DbSet<FieldOfStudy> FieldOfStudies { get; set; }
     public DbSet<FieldOfStudyLog> FieldOfStudyLogs { get; set; }
     public DbSet<Assignment> Assignments { get; set; }
-    
-    //Cache
-    public DbSet<CalculatedClassesDate> CalculatedClassesDates { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

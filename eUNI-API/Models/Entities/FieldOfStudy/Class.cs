@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using eUNI_API.Enums;
-using eUNI_API.Models.Entities.Cache;
 using eUNI_API.Models.Entities.OrganizationInfo;
 
 namespace eUNI_API.Models.Entities.FieldOfStudy;
@@ -37,5 +36,4 @@ public class Class
     public FieldOfStudyLog FieldOfStudyLog { get; set; }
     
     public IEnumerable<Assignment>? Assignments { get; set; }
-    public IEnumerable<CalculatedClassesDate> CalculatedClassesDates { get; set; }
 }

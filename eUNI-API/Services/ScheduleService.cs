@@ -2,7 +2,6 @@ using eUNI_API.Data;
 using eUNI_API.Enums;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
-using eUNI_API.Models.Entities.Cache;
 using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Models.Entities.OrganizationInfo;
 using eUNI_API.Services.Interfaces;
@@ -35,16 +34,6 @@ public class ScheduleService(AppDbContext context): IScheduleService
         
         return classEntity;
     }
-
-    public async Task ClearClassesDates(int classId)
-    {
-        var calculatedEntities = await _context.CalculatedClassesDates
-            .Where(c => c.ClassId == classId)
-            .ToListAsync();
-
-        _context.CalculatedClassesDates.RemoveRange(calculatedEntities);
-        await _context.SaveChangesAsync();
-    }
     
     public List<DateOnly> CalculateDates(DateOnly yearStart, DateOnly yearEnd, WeekDay classWeekDay, 
         int repeatClassInDays, bool startFirstWeek)
@@ -76,14 +65,12 @@ public class ScheduleService(AppDbContext context): IScheduleService
         return daysOff;
     }
     
-    public async Task CalculateClassesDates(ClassesToCalculateDto classesToCalculateDto)
+    public async Task<List<DateOnly>> CalculateClassesDates(ClassesToCalculateDto classesToCalculateDto)
     {
         var organizationInfo = await GetOrganizationsInfo(classesToCalculateDto.OrganizationsOfTheYearId);
         var classEntity = await GetClass(classesToCalculateDto.ClassId);
         
         if (classEntity.WeekDay == null) throw new ArgumentException("Cannot calculate classes when week day is null");
-
-        await ClearClassesDates(classesToCalculateDto.ClassId);
         
         var repeatClassInDays = classEntity.IsOddWeek == null ? 7 : 14;
         var startFirstWeek = classEntity.IsOddWeek ?? true;
@@ -102,13 +89,6 @@ public class ScheduleService(AppDbContext context): IScheduleService
             dates.Remove(dayOff);
         }
 
-        var calculatedDates = new List<CalculatedClassesDate>();
-        calculatedDates.AddRange(dates.Select(date => new CalculatedClassesDate
-        {
-            Date = date, ClassId = classesToCalculateDto.ClassId 
-        }));
-
-        _context.CalculatedClassesDates.AddRange(calculatedDates);
-        await _context.SaveChangesAsync();
+        return dates;
     }
 }

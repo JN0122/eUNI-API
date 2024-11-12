@@ -4,5 +4,5 @@ namespace eUNI_API.Services.Interfaces;
 
 public interface IScheduleService
 {
-    public Task CalculateClassesDates(ClassesToCalculateDto classesToCalculateDto);
+    public Task<List<DateOnly>> CalculateClassesDates(ClassesToCalculateDto classesToCalculateDto);
 }
