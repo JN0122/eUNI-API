@@ -12,7 +12,7 @@ public class ScheduleController(IScheduleService scheduleService): ControllerBas
 {
     private readonly IScheduleService _scheduleService = scheduleService;
 
-    [HttpGet("get-schedule")]
+    [HttpPost("get-schedule")]
     public async Task<IActionResult> GetSchedule([FromBody] ScheduleInfoDto scheduleInfo)
     {
         var schedule = await _scheduleService.GetSchedule(scheduleInfo);
