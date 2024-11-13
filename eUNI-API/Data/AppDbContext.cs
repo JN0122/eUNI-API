@@ -69,22 +69,32 @@ public class AppDbContext: DbContext
             new Group
             {
                 Id = 1,
-                Abbr = "P01"
+                Abbr = "P01",
+                Type = (int)GroupType.Project
             },
             new Group
             {
                 Id = 2,
-                Abbr = "W"
+                Abbr = "W",
+                Type = (int)GroupType.Lecture
             },
             new Group
             {
                 Id = 3,
-                Abbr = "K2"
+                Abbr = "K02",
+                Type = (int)GroupType.Computer
             },
             new Group
             {
                 Id = 4,
-                Abbr = "K1"
+                Abbr = "K01",
+                Type = (int)GroupType.Computer
+            },
+            new Group
+            {
+                Id = 5,
+                Abbr = "L01",
+                Type = (int)GroupType.Laboratory
             }
         );
 
@@ -159,6 +169,7 @@ public class AppDbContext: DbContext
                 Room="A103",
                 IsOddWeek = true,
                 WeekDay = WeekDay.Monday,
+                GroupId = 2,
                 StartHourId = 1,
                 EndHourId = 3,
             }    
