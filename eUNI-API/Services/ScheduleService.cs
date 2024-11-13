@@ -2,6 +2,7 @@ using eUNI_API.Data;
 using eUNI_API.Enums;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
+using eUNI_API.Models.Dto.Schedule;
 using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Models.Entities.OrganizationInfo;
 using eUNI_API.Services.Interfaces;
@@ -13,30 +14,26 @@ public class ScheduleService(AppDbContext context): IScheduleService
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<OrganizationOfTheYear> GetOrganizationsInfo(int organizationId)
+    private class ThisWeekClass
     {
-        var organizationOfTheYear = await _context.OrganizationsOfTheYear
-            .AsNoTracking()
-            .FirstOrDefaultAsync(o => o.Id == organizationId);
-        
-        if(organizationOfTheYear == null) throw new ArgumentException("Organization not found");
-        
-        return organizationOfTheYear;
-    }
-
-    public async Task<Class> GetClass(int classId)
-    {
-        var classEntity = await _context.Classes
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == classId);
-        
-        if (classEntity == null) throw new ArgumentException("Class not found");
-        
-        return classEntity;
+        public Class classEntity { get; set; }
+        public DateOnly date { get; set; }
     }
     
-    public List<DateOnly> CalculateDates(DateOnly yearStart, DateOnly yearEnd, WeekDay classWeekDay, 
-        int repeatClassInDays, bool startFirstWeek)
+    private async Task<OrganizationOfTheYear> GetOrganizationsInfo(int fieldOfStudyLogsId)
+    {
+        var fieldOfStudyLog = await _context.FieldOfStudyLogs
+            .AsNoTracking()
+            .Include(f => f.OrganizationsOfTheYear)
+            .FirstOrDefaultAsync(f => f.Id == fieldOfStudyLogsId);
+        
+        if(fieldOfStudyLog == null) throw new ArgumentException("Organization not found");
+        
+        return fieldOfStudyLog.OrganizationsOfTheYear;
+    }
+    
+    private static DateOnly? CalculateDate(DateOnly yearStart, DateOnly yearEnd, WeekDay classWeekDay, 
+        DateOnly startDay, DateOnly endDay, int repeatClassInDays, bool startFirstWeek)
     {
         var date = yearStart.AddDays((int)classWeekDay - (int)ConvertDay.ToWeekDay(yearStart.DayOfWeek));
         
@@ -47,13 +44,13 @@ public class ScheduleService(AppDbContext context): IScheduleService
             date = date.AddDays(repeatClassInDays);
         
         var dates = new List<DateOnly> { date };
-        for (; date < yearEnd; date = date.AddDays(repeatClassInDays))
+        for (; date <= yearEnd && date <= endDay; date = date.AddDays(repeatClassInDays))
             dates.Add(date);
-
-        return dates;
+        
+        return dates.Last() < startDay? null : dates.Last();
     }
 
-    public async Task<IEnumerable<DateOnly>> GetDaysOff(int organizationId)
+    private async Task<IEnumerable<DateOnly>> GetDaysOff(int organizationId)
     {
         var organizationOfTheYear = await GetOrganizationsInfo(organizationId);
 
@@ -65,30 +62,129 @@ public class ScheduleService(AppDbContext context): IScheduleService
         return daysOff;
     }
     
-    public async Task<List<DateOnly>> CalculateClassesDates(ClassesToCalculateDto classesToCalculateDto)
+    private async Task<DateOnly?> CalculateClassDate(
+        Class classEntity, 
+        OrganizationOfTheYear organizationInfo, 
+        DateOnly startDay, 
+        DateOnly endDay)
     {
-        var organizationInfo = await GetOrganizationsInfo(classesToCalculateDto.OrganizationsOfTheYearId);
-        var classEntity = await GetClass(classesToCalculateDto.ClassId);
-        
         if (classEntity.WeekDay == null) throw new ArgumentException("Cannot calculate classes when week day is null");
         
         var repeatClassInDays = classEntity.IsOddWeek == null ? 7 : 14;
         var startFirstWeek = classEntity.IsOddWeek ?? true;
 
-        var dates = CalculateDates
+        var date = CalculateDate
         (
             organizationInfo.StartDay, 
-            organizationInfo.EndDay, 
+            organizationInfo.EndDay,
             classEntity.WeekDay.Value, 
+            startDay,
+            endDay,
             repeatClassInDays, 
             startFirstWeek
         );
+        if(date == null) return null;
         
-        foreach (var dayOff in await GetDaysOff(classesToCalculateDto.OrganizationsOfTheYearId))
+        var daysOff = await GetDaysOff(organizationInfo.Id);
+
+        return daysOff.Any(dayOff => dayOff == date) ? null : date;
+    }
+
+    private static (DateOnly StartOfWeek, DateOnly EndOfWeek) GetWeekStartAndEndDates(int year, int weekNumber)
+    {
+        var firstDayOfYear = new DateOnly(year, 1, 1);
+        var firstWeekStart = firstDayOfYear.AddDays(DayOfWeek.Monday - firstDayOfYear.DayOfWeek);
+        var startOfWeek = firstWeekStart.AddDays((weekNumber - 1) * 7);
+        
+        return (StartOfWeek: startOfWeek, EndOfWeek: startOfWeek.AddDays(6));
+    }
+
+    private async Task<List<Class>> GetClasses(int fieldOfStudyLogId)
+    {
+        var classes = await _context.Classes
+            .Where(c=>c.FieldOfStudyLogId == fieldOfStudyLogId)
+            .ToListAsync();
+        
+        return classes;
+    }
+
+    private List<Hour> GetHours()
+    {
+        return _context.Hours.ToList();
+    }
+
+    private ClassAssignment? GetClassAssigment(int classId, DateOnly date)
+    {
+        var assignment = _context.Assignments.FirstOrDefault(a => a.Id == classId && a.DeadlineDate == date);
+        
+        return assignment == null ? null : new ClassAssignment
         {
-            dates.Remove(dayOff);
+            Name = assignment.Name
+        };
+    }
+
+    private static string GetWeekDay(DateOnly date)
+    {
+        return ConvertDay.ToWeekDay(date.DayOfWeek).ToString();
+    }
+
+    private int GetGroupType(int groupId)
+    {
+        var group = _context.Groups.First(g => g.Id == groupId);
+        return group.Type;
+    }
+
+    public async Task<ScheduleDto> GetSchedule(ScheduleInfoDto scheduleInfo)
+    {
+        var classes = await GetClasses(scheduleInfo.FieldOfStudyLogsId);
+        var allUserClasses = classes.Where(c => scheduleInfo.GroupIds.Any(groupId => groupId == c.GroupId));
+        var organizationInfo = await GetOrganizationsInfo(scheduleInfo.FieldOfStudyLogsId);
+        var (startOfWeek, endOfWeek) = GetWeekStartAndEndDates(scheduleInfo.Year, scheduleInfo.WeekNumber);
+        
+        var thisWeekClasses = new List<ThisWeekClass>();
+        
+        foreach (var userClass in allUserClasses)
+        {
+            var date = await CalculateClassDate(userClass, organizationInfo, startOfWeek, endOfWeek);
+            if(date == null) continue;
+            thisWeekClasses.Add(new ThisWeekClass
+            {
+                classEntity = userClass,
+                date = date.Value
+            });
         }
 
-        return dates;
+        var schedule = new ScheduleDto
+        {
+            Date = $"{startOfWeek} - {endOfWeek}"
+        };
+        foreach(var hour in GetHours())
+        {
+            var weekDays = new ScheduleWeekDays
+            {
+                Id = hour.Id,
+                Hour = hour.HourInterval
+            };
+            foreach (var thisWeekClass in thisWeekClasses)
+            {
+                if(thisWeekClass.classEntity.StartHour != hour) continue;
+                var assignment = GetClassAssigment(thisWeekClass.classEntity.Id, thisWeekClass.date);
+                var weekDay = GetWeekDay(thisWeekClass.date);
+                var prop = weekDays.GetType().GetProperty(weekDay);
+                
+                if(prop == null) throw new Exception($"Property '{weekDay}' not found in ScheduleWeekDays");
+                prop.SetValue(weekDays, new ScheduleClass
+                {
+                    Hours = thisWeekClass.classEntity.EndHourId - thisWeekClass.classEntity.StartHourId + 1,
+                    Name = thisWeekClass.classEntity.Name,
+                    Room = thisWeekClass.classEntity.Room,
+                    Type = GetGroupType(thisWeekClass.classEntity.GroupId),
+                    Assignment = assignment
+                });
+            }
+            schedule.Schedule.Add(weekDays);
+        }
+
+        return schedule;
     }
 }

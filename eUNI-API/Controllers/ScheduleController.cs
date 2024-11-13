@@ -11,11 +11,11 @@ namespace eUNI_API.Controllers;
 public class ScheduleController(IScheduleService scheduleService): ControllerBase
 {
     private readonly IScheduleService _scheduleService = scheduleService;
-    
-    [HttpPost("calculate-classes-dates")]
-    public async Task<IActionResult> CalculateClassesDates([FromBody] ClassesToCalculateDto classesToCalculateDto)
+
+    [HttpGet("get-schedule")]
+    public async Task<IActionResult> GetSchedule([FromBody] ScheduleInfoDto scheduleInfo)
     {
-        await _scheduleService.CalculateClassesDates(classesToCalculateDto);
-        return Ok();
+        var schedule = await _scheduleService.GetSchedule(scheduleInfo);
+        return Ok(schedule);
     }
 }
