@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using eUNI_API.Configuration;
 using eUNI_API.Data;
@@ -7,6 +8,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+
+var cultureInfo = new CultureInfo("pl-PL");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 var builder = WebApplication.CreateBuilder(args);
 
