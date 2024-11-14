@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,14 +10,14 @@ public class StudentController(IStudentService studentService): ControllerBase
     private readonly IStudentService _studentService = studentService;
     
     [HttpGet("student-groups/")]
-    public async Task<IActionResult> StudentGroups([FromQuery] Guid userId, int fieldOfStudyId)
+    public async Task<IActionResult> StudentGroups([FromQuery] [Required] Guid userId, [Required] int fieldOfStudyId)
     {
         var ids = await _studentService.GetStudentGroupIds(fieldOfStudyId, userId);
         return Ok(ids);
     }
 
     [HttpGet("student-field-of-study")]
-    public async Task<IActionResult> StudentFieldOfStudies([FromQuery] Guid userId)
+    public async Task<IActionResult> StudentFieldOfStudies([FromQuery] [Required] Guid userId)
     {
         var fieldsOfStudy = await _studentService.GetStudentFieldsOfStudy(userId);
         return Ok(fieldsOfStudy);
