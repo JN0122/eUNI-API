@@ -53,9 +53,8 @@ public class StudentService(AppDbContext context): IStudentService
             if(fieldOfStudyInfo == null) throw new KeyNotFoundException("Field of study info not found!");
             return new FieldOfStudyInfoDto
             {
-                Id = sfl.Id,
+                FieldOfStudyLogId = sfl.Id,
                 Semester = sfl.Semester,
-                FieldOfStudyId = fieldOfStudyInfo.Id,
                 Name = fieldOfStudyInfo.Name,
                 StudiesCycle = fieldOfStudyInfo.StudiesCycle
             };

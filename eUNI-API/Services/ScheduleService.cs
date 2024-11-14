@@ -136,9 +136,9 @@ public class ScheduleService(AppDbContext context): IScheduleService
 
     public async Task<ScheduleDto> GetSchedule(ScheduleInfoDto scheduleInfo)
     {
-        var classes = await GetClasses(scheduleInfo.FieldOfStudyLogsId);
+        var classes = await GetClasses(scheduleInfo.fieldOfStudyLogId);
         var allUserClasses = classes.Where(c => scheduleInfo.GroupIds.Any(groupId => groupId == c.GroupId));
-        var organizationInfo = await GetOrganizationsInfo(scheduleInfo.FieldOfStudyLogsId);
+        var organizationInfo = await GetOrganizationsInfo(scheduleInfo.fieldOfStudyLogId);
         var (startOfWeek, endOfWeek) = GetWeekStartAndEndDates(scheduleInfo.Year, scheduleInfo.WeekNumber);
         
         var thisWeekClasses = new List<ThisWeekClass>();

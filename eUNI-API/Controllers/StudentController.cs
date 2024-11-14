@@ -10,9 +10,9 @@ public class StudentController(IStudentService studentService): ControllerBase
     private readonly IStudentService _studentService = studentService;
     
     [HttpGet("student-groups/")]
-    public async Task<IActionResult> StudentGroups([FromQuery] [Required] Guid userId, [Required] int fieldOfStudyId)
+    public async Task<IActionResult> StudentGroups([FromQuery] [Required] Guid userId, [Required] int fieldOfStudyLogId)
     {
-        var ids = await _studentService.GetStudentGroupIds(fieldOfStudyId, userId);
+        var ids = await _studentService.GetStudentGroupIds(fieldOfStudyLogId, userId);
         return Ok(ids);
     }
 
