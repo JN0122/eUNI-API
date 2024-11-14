@@ -9,6 +9,7 @@ public static class ConvertDtos
     {
         return new BasicUserDto
         {
+            Id = user.Id,
             Firstname = user.FirstName,
             Lastname = user.LastName,
             Email = user.Email,
