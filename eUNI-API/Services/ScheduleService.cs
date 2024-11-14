@@ -69,6 +69,7 @@ public class ScheduleService(AppDbContext context): IScheduleService
         DateOnly endDay)
     {
         if (classEntity.WeekDay == null) throw new ArgumentException("Cannot calculate classes when week day is null");
+        if (organizationInfo.StartDay > startDay) return null;
         
         var repeatClassInDays = classEntity.IsOddWeek == null ? 7 : 14;
         var startFirstWeek = classEntity.IsOddWeek ?? true;
