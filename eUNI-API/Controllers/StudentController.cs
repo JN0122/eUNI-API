@@ -16,8 +16,8 @@ public class StudentController(IStudentService studentService): ControllerBase
         return Ok(ids);
     }
 
-    [HttpGet("student-field-of-study")]
-    public async Task<IActionResult> StudentFieldOfStudies([FromQuery] [Required] Guid userId)
+    [HttpGet("student-fields-of-study")]
+    public async Task<IActionResult> StudentFieldsOfStudies([FromQuery] [Required] Guid userId)
     {
         var fieldsOfStudy = await _studentService.GetStudentFieldsOfStudy(userId);
         return Ok(fieldsOfStudy);
