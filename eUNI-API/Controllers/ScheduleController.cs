@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace eUNI_API.Controllers;
 
-//[Authorize]
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ScheduleController(IScheduleService scheduleService): ControllerBase

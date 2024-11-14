@@ -1,9 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using eUNI_API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eUNI_API.Controllers;
 
+[Authorize]
+[ApiController]
 [Route("api/[controller]")]
 public class StudentController(IStudentService studentService): ControllerBase
 {
