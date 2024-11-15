@@ -189,7 +189,8 @@ public class AppDbContext: DbContext
             {
                 Id = 1,
                 FieldsOfStudyLogId = 1,
-                StudentId = 1
+                StudentId = 1,
+                IsRepresentative  = true
             }    
         );
         
@@ -197,7 +198,6 @@ public class AppDbContext: DbContext
             new StudentGroup{
                 Id = 1,
                 GroupId = 1,
-                IsRepresentative = false,
                 StudentsFieldsOfStudyLogId = 1,
             }
         );

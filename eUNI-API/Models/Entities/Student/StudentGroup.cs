@@ -12,8 +12,6 @@ public class StudentGroup
 
     public int GroupId { get; set; }
     
-    public bool IsRepresentative { get; set; }
-    
     [ForeignKey("StudentsFieldsOfStudyLogId")]
     public StudentFieldsOfStudyLog StudentsFieldsOfStudyLog { get; set; }
     
