@@ -4,6 +4,6 @@ namespace eUNI_API.Models.Dto;
 
 public class ChangeEmailDto
 {
-    [EmailAddress]
+    [Required, EmailAddress]
     public string Email { get; set; }
 }
