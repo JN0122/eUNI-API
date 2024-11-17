@@ -1,4 +1,4 @@
-using eUNI_API.Models.Dto;
+using eUNI_API.Models.Dto.Auth;
 using Microsoft.AspNetCore.Mvc;
 using eUNI_API.Data;
 using eUNI_API.Services.Interfaces;
@@ -26,8 +26,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         
         _authService.AddRefreshToken(Response.Cookies, refreshToken);
 
-        return Ok(new AccessTokenDto
-        {
+        return Ok(new {
             AccessToken = accessToken
         });
     }
@@ -56,8 +55,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         
         var newAccessToken = _tokenService.CreateAccessToken(userId);
         
-        return Ok(new AccessTokenDto
-        {
+        return Ok(new {
             AccessToken = newAccessToken
         });
     }

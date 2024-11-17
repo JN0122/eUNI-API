@@ -5,18 +5,6 @@ namespace eUNI_API.Helpers;
 
 public static class ConvertDtos
 {
-    public static BasicUserDto ToBasicUserDto(User user)
-    {
-        return new BasicUserDto
-        {
-            Id = user.Id,
-            Firstname = user.FirstName,
-            Lastname = user.LastName,
-            Email = user.Email,
-            Role = user.RoleId
-        };
-    }
-
     public static UserInfoDto ToUserInfoDto(User user)
     {
         return new UserInfoDto
@@ -24,7 +12,8 @@ public static class ConvertDtos
             Id = user.Id,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Email = user.Email
+            Email = user.Email,
+            RoleId = user.RoleId,
         };
     }
     

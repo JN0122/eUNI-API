@@ -1,4 +1,4 @@
-using eUNI_API.Models.Dto;
+using eUNI_API.Models.Dto.Schedule;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

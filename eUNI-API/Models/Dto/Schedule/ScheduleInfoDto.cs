@@ -1,4 +1,4 @@
-namespace eUNI_API.Models.Dto;
+namespace eUNI_API.Models.Dto.Schedule;
 
 public class ScheduleInfoDto
 {

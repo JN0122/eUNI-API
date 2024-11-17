@@ -21,7 +21,7 @@ public class UserController(AppDbContext context, IUserService userService): Con
     {
         var user = await _userService.FindUserByClaim(User.Claims);
         
-        return Ok(ConvertDtos.ToBasicUserDto(user));
+        return Ok(ConvertDtos.ToUserInfoDto(user));
     }
 
     [HttpPatch("change-password")]

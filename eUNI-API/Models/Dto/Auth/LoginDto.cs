@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace eUNI_API.Models.Dto;
+namespace eUNI_API.Models.Dto.Auth;
 
 public class LoginDto
 {
