@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace eUNI_API.Models.Dto;
 
-public class CreateUserDto
+public class CreateUserRequestDto
 {
     [Required]
     public string Firstname { get; set; }

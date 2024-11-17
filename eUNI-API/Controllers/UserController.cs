@@ -25,22 +25,22 @@ public class UserController(AppDbContext context, IUserService userService): Con
     }
 
     [HttpPatch("change-password")]
-    public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
+    public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequestDto changePasswordRequestDto)
     {
         var user = await _userService.FindUserByClaim(User.Claims);
-        if(!PasswordHasher.VerifyHashedPassword(changePasswordDto.OldPassword, user.Salt, user.PasswordHash))
+        if(!PasswordHasher.VerifyHashedPassword(changePasswordRequestDto.OldPassword, user.Salt, user.PasswordHash))
             return BadRequest("Invalid old password");
         
-        _userService.ChangePassword(user, changePasswordDto.NewPassword);
+        _userService.ChangePassword(user, changePasswordRequestDto.NewPassword);
         return Ok();
     }
     
     [HttpPatch("change-email")]
-    public async Task<ActionResult> ChangeEmail([FromBody] ChangeEmailDto changeEmailDto)
+    public async Task<ActionResult> ChangeEmail([FromBody] ChangeEmailRequestDto changeEmailRequestDto)
     {
         var user = await _userService.FindUserByClaim(User.Claims);
         
-        _userService.ChangeEmail(user, changeEmailDto.Email);
+        _userService.ChangeEmail(user, changeEmailRequestDto.Email);
         return Ok();
     }
 }

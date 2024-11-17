@@ -135,12 +135,12 @@ public class ScheduleService(AppDbContext context): IScheduleService
         return group.Type;
     }
 
-    public async Task<ScheduleDto> GetSchedule(ScheduleInfoDto scheduleInfo)
+    public async Task<ScheduleDto> GetSchedule(ScheduleInfoRequestDto scheduleInfoRequest)
     {
-        var classes = await GetClasses(scheduleInfo.fieldOfStudyLogId);
-        var allUserClasses = classes.Where(c => scheduleInfo.GroupIds.Any(groupId => groupId == c.GroupId));
-        var organizationInfo = await GetOrganizationsInfo(scheduleInfo.fieldOfStudyLogId);
-        var (startOfWeek, endOfWeek) = GetWeekStartAndEndDates(scheduleInfo.Year, scheduleInfo.WeekNumber);
+        var classes = await GetClasses(scheduleInfoRequest.fieldOfStudyLogId);
+        var allUserClasses = classes.Where(c => scheduleInfoRequest.GroupIds.Any(groupId => groupId == c.GroupId));
+        var organizationInfo = await GetOrganizationsInfo(scheduleInfoRequest.fieldOfStudyLogId);
+        var (startOfWeek, endOfWeek) = GetWeekStartAndEndDates(scheduleInfoRequest.Year, scheduleInfoRequest.WeekNumber);
         
         var thisWeekClasses = new List<ThisWeekClass>();
         

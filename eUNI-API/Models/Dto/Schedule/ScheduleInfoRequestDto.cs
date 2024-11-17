@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace eUNI_API.Models.Dto.Schedule;
 
-public class ScheduleInfoDto
+public class ScheduleInfoRequestDto
 {
     [Required]
     public int WeekNumber { get; set; }

@@ -28,17 +28,17 @@ public class UsersService(AppDbContext context, IUserService userService): IUser
         return context.SaveChangesAsync();
     }
     
-    public async Task CreateUser(CreateUserDto createUserDto)
+    public async Task CreateUser(CreateUserRequestDto createUserRequestDto)
     {
         var salt = PasswordHasher.GenerateSalt();
         
         var newUser = new User
         {
-            Email = createUserDto.Email,
-            FirstName = createUserDto.Firstname,
-            LastName = createUserDto.Lastname,
-            PasswordHash = PasswordHasher.HashPassword(createUserDto.Password, salt),
-            RoleId = createUserDto.RoleId,
+            Email = createUserRequestDto.Email,
+            FirstName = createUserRequestDto.Firstname,
+            LastName = createUserRequestDto.Lastname,
+            PasswordHash = PasswordHasher.HashPassword(createUserRequestDto.Password, salt),
+            RoleId = createUserRequestDto.RoleId,
             Salt = salt,
         };
         
@@ -56,19 +56,19 @@ public class UsersService(AppDbContext context, IUserService userService): IUser
         return user;
     }
 
-    public async Task UpdateUser(User user, UpdateUserDto updateUserDto)
+    public async Task UpdateUser(User user, UpdateUserRequestDto updateUserRequestDto)
     {
-        if (updateUserDto.FirstName != null)
-            user.FirstName = updateUserDto.FirstName;
+        if (updateUserRequestDto.FirstName != null)
+            user.FirstName = updateUserRequestDto.FirstName;
         
-        if (updateUserDto.LastName != null)
-            user.LastName = updateUserDto.LastName;
+        if (updateUserRequestDto.LastName != null)
+            user.LastName = updateUserRequestDto.LastName;
         
-        if (updateUserDto.Email != null)
-            user.Email = updateUserDto.Email;
+        if (updateUserRequestDto.Email != null)
+            user.Email = updateUserRequestDto.Email;
 
-        if (updateUserDto.NewPassword != null)
-            _userService.ChangePassword(user, updateUserDto.NewPassword);
+        if (updateUserRequestDto.NewPassword != null)
+            _userService.ChangePassword(user, updateUserRequestDto.NewPassword);
         
         _context.Users.Update(user);
         await _context.SaveChangesAsync();

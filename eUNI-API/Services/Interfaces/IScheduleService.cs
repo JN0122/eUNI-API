@@ -4,5 +4,5 @@ namespace eUNI_API.Services.Interfaces;
 
 public interface IScheduleService
 {
-    public Task<ScheduleDto> GetSchedule(ScheduleInfoDto scheduleInfo);
+    public Task<ScheduleDto> GetSchedule(ScheduleInfoRequestDto scheduleInfoRequest);
 }

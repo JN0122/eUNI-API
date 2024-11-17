@@ -38,17 +38,17 @@ public class UsersController(IUsersService usersService, IUserService userServic
     }
     
     [HttpPost("create-user")]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestDto createUserRequestDto)
     {
-        await _usersService.CreateUser(createUserDto);
+        await _usersService.CreateUser(createUserRequestDto);
         return Ok();
     }
 
     [HttpPatch("{id:guid}")]
-    public async Task<ActionResult> GetUserById([FromRoute] Guid id, [FromBody] UpdateUserDto updateUserDto)
+    public async Task<ActionResult> GetUserById([FromRoute] Guid id, [FromBody] UpdateUserRequestDto updateUserRequestDto)
     {
         var user = await _usersService.GetUserById(id);
-        await _usersService.UpdateUser(user, updateUserDto);
+        await _usersService.UpdateUser(user, updateUserRequestDto);
         
         return Ok();
     }

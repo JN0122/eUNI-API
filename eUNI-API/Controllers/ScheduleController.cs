@@ -13,9 +13,9 @@ public class ScheduleController(IScheduleService scheduleService): ControllerBas
     private readonly IScheduleService _scheduleService = scheduleService;
 
     [HttpPost("get-schedule")]
-    public async Task<IActionResult> GetSchedule([FromBody] ScheduleInfoDto scheduleInfo)
+    public async Task<IActionResult> GetSchedule([FromBody] ScheduleInfoRequestDto scheduleInfoRequest)
     {
-        var schedule = await _scheduleService.GetSchedule(scheduleInfo);
+        var schedule = await _scheduleService.GetSchedule(scheduleInfoRequest);
         return Ok(schedule);
     }
 }
