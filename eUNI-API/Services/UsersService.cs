@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
 using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Services.Interfaces;
@@ -25,6 +26,24 @@ public class UsersService(AppDbContext context, IUserService userService): IUser
         user.IsDeleted = true;
         context.Users.Update(user);
         return context.SaveChangesAsync();
+    }
+    
+    public async Task CreateUser(CreateUserDto createUserDto)
+    {
+        var salt = PasswordHasher.GenerateSalt();
+        
+        var newUser = new User
+        {
+            Email = createUserDto.Email,
+            FirstName = createUserDto.Firstname,
+            LastName = createUserDto.Lastname,
+            PasswordHash = PasswordHasher.HashPassword(createUserDto.Password, salt),
+            RoleId = createUserDto.RoleId,
+            Salt = salt,
+        };
+        
+        await _context.Users.AddAsync(newUser);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<User> GetUserById(Guid id)

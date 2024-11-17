@@ -1,7 +1,6 @@
 using eUNI_API.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using eUNI_API.Data;
-using eUNI_API.Helpers;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
@@ -11,24 +10,8 @@ namespace eUNI_API.Controllers;
 [ApiController]
 public class AuthController(AppDbContext context, IUserService userService, ITokenService tokenService, IAuthService authService) : ControllerBase
 {
-    private readonly AppDbContext _context = context;
-    private readonly IUserService _userService = userService;
     private readonly ITokenService _tokenService = tokenService;
     private readonly IAuthService _authService = authService;
-    
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegistrationDto registrationDto)
-    {
-        // TODO check if the user has proper permissions
-
-        var user = await _authService.Register(registrationDto);
-        var token = _tokenService.CreateAccessToken(user.Id);
-            
-        return Ok(new AccessTokenDto
-        {
-            AccessToken = token
-        });
-    }
     
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)

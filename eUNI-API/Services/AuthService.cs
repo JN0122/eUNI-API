@@ -13,26 +13,7 @@ namespace eUNI_API.Services;
 public class AuthService(IUserService userService, AppDbContext context, IOptions<JwtSettings> jwtSettings): IAuthService
 {
     private readonly AppDbContext _context = context;
-    private readonly IUserService _userService = userService;
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
-    
-    public async Task<User> Register(RegistrationDto registrationDto)
-    {
-        if(!registrationDto.Password.Equals(registrationDto.ConfirmPassword))
-            throw new ArgumentException("Passwords do not match!");
-
-        var salt = PasswordHasher.GenerateSalt();
-        var userCreate = new CreateUserDto
-        {
-            Firstname = registrationDto.Firstname,
-            Lastname = registrationDto.Lastname,
-            Email = registrationDto.Email,
-            PasswordHash = PasswordHasher.HashPassword(registrationDto.Password, salt),
-            Salt = salt
-        };
-
-        return await _userService.CreateUser(userCreate);
-    }
 
     public async Task<User> Login(LoginDto loginDto)
     {

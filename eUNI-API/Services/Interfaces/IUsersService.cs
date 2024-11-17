@@ -7,6 +7,7 @@ public interface IUsersService
 {
     public Task<List<User>> GetUsers();
     public Task RemoveUser(Guid id);
+    public Task CreateUser(CreateUserDto createUserDto);
     public Task<User> GetUserById(Guid id);
     public Task UpdateUser(User user, UpdateUserDto updateUserDto);
 }

@@ -36,6 +36,13 @@ public class UsersController(IUsersService usersService, IUserService userServic
         await _usersService.RemoveUser(id);
         return Ok();
     }
+    
+    [HttpPost("create-user")]
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
+    {
+        await _usersService.CreateUser(createUserDto);
+        return Ok();
+    }
 
     [HttpPatch("{id:guid}")]
     public async Task<ActionResult> GetUserById([FromRoute] Guid id, [FromBody] UpdateUserDto updateUserDto)
