@@ -75,6 +75,9 @@ public class UsersService(AppDbContext context, IUserService userService): IUser
         
         if (updateUserRequestDto.Email != null)
             user.Email = updateUserRequestDto.Email;
+        
+        if (updateUserRequestDto.RoleId != null)
+            user.RoleId = updateUserRequestDto.RoleId.Value;
 
         if (updateUserRequestDto.NewPassword != null)
             _userService.ChangePassword(user, updateUserRequestDto.NewPassword);

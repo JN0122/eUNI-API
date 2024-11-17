@@ -11,5 +11,7 @@ public class UpdateUserRequestDto
     [EmailAddress]
     public string? Email { get; set; }
     
+    public int? RoleId { get; set; }
+    
     public string? NewPassword { get; set; }
 }
