@@ -12,11 +12,17 @@ public class UsersService(AppDbContext context, IUserService userService): IUser
     private readonly AppDbContext _context = context;
     private readonly IUserService _userService = userService;
     
+    private async Task<bool> IsValidRole(int roleId)
+    {
+        var role = await _context.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
+        return role != null;
+    }
+    
     public async Task<List<User>> GetUsers()
     {
         return await _context.Users.Where(u => !u.IsDeleted).ToListAsync();
     }
-
+    
     public Task RemoveUser(Guid id)
     {
         var user = _context.Users.Find(id);
@@ -30,6 +36,9 @@ public class UsersService(AppDbContext context, IUserService userService): IUser
     
     public async Task CreateUser(CreateUserRequestDto createUserRequestDto)
     {
+        if(!await IsValidRole(createUserRequestDto.RoleId))
+            throw new ArgumentException("Invalid role");
+        
         var salt = PasswordHasher.GenerateSalt();
         
         var newUser = new User
