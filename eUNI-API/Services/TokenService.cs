@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using eUNI_API.Configuration;
 using eUNI_API.Data;
 using eUNI_API.Helpers;
@@ -12,9 +13,10 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace eUNI_API.Services;
 
-public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSettings): ITokenService
+public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSettings, IStudentService studentService): ITokenService
 {
     private readonly AppDbContext _context = context;
+    private readonly IStudentService _studentService = studentService;
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
     public string CreateAccessToken(Guid userId)
@@ -26,13 +28,15 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
+        var isRepresentative = _studentService.IsRepresentative(user.Id);
         
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.Name)
+                new Claim(ClaimTypes.Role, user.Role.Name),
+                new Claim("IsRepresentative", isRepresentative.ToString())
             }),
             Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),

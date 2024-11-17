@@ -9,4 +9,8 @@ public interface IStudentService
     public Task<List<int>?> GetStudentGroupIds(int fieldOfStudyId, Guid userId);
     
     public Task<List<FieldOfStudyInfoDto>?> GetStudentFieldsOfStudy(Guid userId);
+
+    public List<int>? GetRepresentativeFieldOfStudyLogId(Guid userId);
+
+    public bool IsRepresentative(Guid userId);
 }
