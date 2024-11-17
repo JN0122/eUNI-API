@@ -61,32 +61,4 @@ public class StudentService(AppDbContext context): IStudentService
             };
         }).ToList();
     }
-
-    public List<int>? GetRepresentativeFieldOfStudyLogId(Guid userId)
-    {
-        var yearMaxId = _context.Years.Max(year => year.Id);
-        var newestAcademicOrganizationId = _context.OrganizationsOfTheYear.FirstOrDefault(y => y.Id == yearMaxId)?.Id;
-        if (newestAcademicOrganizationId == null) return null;
-        
-        var fieldOfStudyLogs = _context.FieldOfStudyLogs
-            .AsNoTracking()
-            .Where(f => f.OrganizationsOfTheYearId == newestAcademicOrganizationId)
-            .Select(f => f.Id)
-            .ToList();
-        
-        var studentId = _context.Students
-            .FirstOrDefault(s => s.UserId == userId)?.Id;
-        var studentFieldsOfStudy = _context.StudentFieldsOfStudyLogs
-            .AsNoTracking()
-            .Where(sf => sf.StudentId == studentId && fieldOfStudyLogs.Contains(sf.FieldsOfStudyLogId))
-            .ToList();
-        
-        return studentFieldsOfStudy.Select(sf => sf.Id).ToList();
-    }
-    
-    public bool IsRepresentative(Guid userId)
-    {
-        var fieldOfStudyLogIds = GetRepresentativeFieldOfStudyLogId(userId);
-        return fieldOfStudyLogIds != null && fieldOfStudyLogIds.Count != 0;
-    }
 }

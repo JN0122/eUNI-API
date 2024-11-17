@@ -13,10 +13,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace eUNI_API.Services;
 
-public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSettings, IStudentService studentService): ITokenService
+public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSettings, IStudentService studentService, IRepresentativeService representativeService): ITokenService
 {
     private readonly AppDbContext _context = context;
     private readonly IStudentService _studentService = studentService;
+    private readonly IRepresentativeService _representativeService = representativeService;
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
     public string CreateAccessToken(Guid userId)
@@ -28,7 +29,7 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
-        var isRepresentative = _studentService.IsRepresentative(user.Id);
+        var isRepresentative = _representativeService.IsRepresentative(user.Id);
         
         var tokenDescriptor = new SecurityTokenDescriptor
         {

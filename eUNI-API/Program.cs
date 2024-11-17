@@ -29,6 +29,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IRepresentativeService, RepresentativeService>();
 
 builder.Services.AddEndpointsApiExplorer();
 
