@@ -1,7 +1,5 @@
 using eUNI_API.Data;
 using eUNI_API.Models.Dto.FieldOfStudy;
-using eUNI_API.Models.Entities.Auth;
-using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Models.Entities.Student;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +10,7 @@ public class StudentService(AppDbContext context): IStudentService
 {
     private readonly AppDbContext _context = context;
 
-    private async Task<int> GetStudentId(Guid userId)
+    public async Task<int> GetStudentId(Guid userId)
     {
         var student = await _context.Students.AsNoTracking().FirstOrDefaultAsync(s => s.UserId == userId);
         if (student == null) throw new UnauthorizedAccessException("User is not a student!");
