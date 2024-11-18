@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using eUNI_API.Configuration;
 using eUNI_API.Data;
 using eUNI_API.Enums;
@@ -11,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace eUNI_API.Services;
 
-public class AuthService(IUserService userService, AppDbContext context, IOptions<JwtSettings> jwtSettings): IAuthService
+public class AuthService(AppDbContext context, IOptions<JwtSettings> jwtSettings): IAuthService
 {
     private readonly AppDbContext _context = context;
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
@@ -52,12 +51,6 @@ public class AuthService(IUserService userService, AppDbContext context, IOption
     {
         cookies.TryGetValue("refresh-token", out string? refreshToken);
         return refreshToken;
-    }
-
-    public bool IsRepresentative(ClaimsPrincipal User)
-    {
-        var isRepresentative = User.FindFirst("IsRepresentative")?.Value;
-        return (isRepresentative != null && bool.Parse(isRepresentative));
     }
 
     public bool IsAdmin(Guid userId)

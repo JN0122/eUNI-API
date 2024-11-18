@@ -1,5 +1,4 @@
 using eUNI_API.Data;
-using eUNI_API.Enums;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,14 +31,5 @@ public class RepresentativeService(AppDbContext context, IAuthService authServic
             .ToList();
         
         return studentFieldsOfStudy.Select(sf => sf.Id).ToList();
-    }
-    
-    public bool IsRepresentative(Guid userId)
-    {
-        var isAdmin = IsAdmin(userId);
-        if (isAdmin) return true;
-
-        var fieldOfStudyLogIds = GetFieldOfStudyLogIdsToEdit(userId).Result;
-        return fieldOfStudyLogIds != null && fieldOfStudyLogIds.Count != 0;
     }
 }
