@@ -6,4 +6,5 @@ public interface IOrganizationService
 {
     public Task<OrganizationOfTheYear> GetOrganizationsInfo(int fieldOfStudyLogsId);
     public Task<IEnumerable<DateOnly>> GetDaysOff(int organizationId);
+    public int GetNewestOrganizationId();
 }

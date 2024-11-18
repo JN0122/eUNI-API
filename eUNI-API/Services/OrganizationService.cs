@@ -31,4 +31,12 @@ public class OrganizationService(AppDbContext appDbContext): IOrganizationServic
         
         return daysOff;
     }
+
+    public int GetNewestOrganizationId()
+    {
+        var yearMaxId = _context.Years.Max(year => year.Id);
+        var newestAcademicOrganizationId = _context.OrganizationsOfTheYear.FirstOrDefault(y => y.Id == yearMaxId)?.Id;
+        if(newestAcademicOrganizationId == null) throw new ArgumentException("Organization not found");
+        return newestAcademicOrganizationId.Value;
+    }
 }
