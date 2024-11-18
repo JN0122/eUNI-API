@@ -1,35 +1,30 @@
 using eUNI_API.Data;
+using eUNI_API.Helpers;
+using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class RepresentativeService(AppDbContext context, IAuthService authService): IRepresentativeService
+public class RepresentativeService(AppDbContext context, IAuthService authService, IOrganizationService organizationService, IStudentService studentService): IRepresentativeService
 {
     private readonly AppDbContext _context = context;
     private readonly IAuthService _authService = authService;
+    private readonly IOrganizationService _organizationService = organizationService;
+    private readonly IStudentService _studentService = studentService;
 
-    public async Task<List<int>?> GetFieldOfStudyLogIdsToEdit(Guid userId)
+    public async Task<List<FieldOfStudyInfoDto>?> GetFieldOfStudyLogToEdit(Guid userId)
     {
-        var yearMaxId = _context.Years.Max(year => year.Id);
-        var newestAcademicOrganizationId = _context.OrganizationsOfTheYear.FirstOrDefault(y => y.Id == yearMaxId)?.Id;
-        if (newestAcademicOrganizationId == null) return null;
-
+        var newestAcademicOrganizationId = _organizationService.GetNewestOrganizationId();
+       
         var fieldOfStudyLogs = await _context.FieldOfStudyLogs
             .AsNoTracking()
             .Where(f => f.OrganizationsOfTheYearId == newestAcademicOrganizationId)
-            .Select(f => f.Id)
+            .Include(f => f.FieldOfStudy)
+            .Select(f => ConvertDtos.ToFieldOfStudyInfoDto(f))
             .ToListAsync();
-        
-        if (_authService.IsAdmin(userId)) return fieldOfStudyLogs.ToList();
-        
-        var studentId = _context.Students
-            .FirstOrDefault(s => s.UserId == userId)?.Id;
-        var studentFieldsOfStudy = _context.StudentFieldsOfStudyLogs
-            .AsNoTracking()
-            .Where(sf => sf.StudentId == studentId && fieldOfStudyLogs.Contains(sf.FieldsOfStudyLogId))
-            .ToList();
-        
-        return studentFieldsOfStudy.Select(sf => sf.Id).ToList();
+
+        if (_authService.IsAdmin(userId)) return fieldOfStudyLogs;
+        return await _studentService.GetStudentFieldsOfStudy(userId);
     }
 }

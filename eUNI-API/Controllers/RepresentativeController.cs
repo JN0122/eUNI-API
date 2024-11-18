@@ -11,15 +11,11 @@ public class RepresentativeController(IRepresentativeService representativeServi
 {
     private readonly IRepresentativeService _representativeService = representativeService;
     private readonly IUserService _userService = userService;
-    private readonly IAuthService _authService = authService;
     
-    [HttpPost("get-fields-of-study-ids-to-edit")]
-    public async Task<IActionResult> GetFieldsOfStudyIdsToEdit()
+    [HttpGet("get-fields-of-study-to-edit")]
+    public async Task<IActionResult> GetFieldsOfStudyToEdit()
     {
-        if(!_authService.IsRepresentative(User) || !User.IsInRole("Admin"))
-            return Unauthorized();
-        
-        var user = await _userService.FindUserByClaim(User.Claims);
-        return Ok(await _representativeService.GetFieldOfStudyLogIdsToEdit(user.Id));
+        var user = await _userService.FindUserByClaim(User.Claims); 
+        return Ok(await _representativeService.GetFieldOfStudyLogToEdit(user.Id));
     }
 }

@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Entities.Student;
 using eUNI_API.Services.Interfaces;
@@ -32,8 +33,6 @@ public class StudentService(AppDbContext context): IStudentService
         var studentGroups = await GetStudentGroups(fieldOfStudyId, userId);
         return studentGroups?.Select(g => g.Id).ToList();
     }
-    
-    
 
     public async Task<List<FieldOfStudyInfoDto>?> GetStudentFieldsOfStudy(Guid userId)
     {
@@ -41,22 +40,10 @@ public class StudentService(AppDbContext context): IStudentService
         var studentFieldsOfStudyLogs = await _context.StudentFieldsOfStudyLogs
             .Where(f => f.StudentId == studentId)
             .Include(f=>f.FieldsOfStudyLog)
-            .Select(f=>f.FieldsOfStudyLog)
+            .ThenInclude(f=>f.FieldOfStudy)
+            .Select(f=>ConvertDtos.ToFieldOfStudyInfoDto(f.FieldsOfStudyLog))
             .ToListAsync();
 
-        var fieldsOfStudy = _context.FieldOfStudies.ToList();
-        
-        return studentFieldsOfStudyLogs.Select(sfl =>
-        {
-            var fieldOfStudyInfo = fieldsOfStudy.Find(f => sfl.Id == f.Id);
-            if(fieldOfStudyInfo == null) throw new KeyNotFoundException("Field of study info not found!");
-            return new FieldOfStudyInfoDto
-            {
-                FieldOfStudyLogId = sfl.Id,
-                Semester = sfl.Semester,
-                Name = fieldOfStudyInfo.Name,
-                StudiesCycle = fieldOfStudyInfo.StudiesCycle
-            };
-        }).ToList();
+        return studentFieldsOfStudyLogs;
     }
 }
