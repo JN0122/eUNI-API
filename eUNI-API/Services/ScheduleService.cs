@@ -10,56 +10,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class ScheduleService(AppDbContext context): IScheduleService
+public class ScheduleService(AppDbContext context, IOrganizationService organizationService): IScheduleService
 {
     private readonly AppDbContext _context = context;
+    private readonly IOrganizationService _organizationService = organizationService;
 
     private class ThisWeekClass
     {
         public Class classEntity { get; set; }
         public DateOnly date { get; set; }
-    }
-    
-    private async Task<OrganizationOfTheYear> GetOrganizationsInfo(int fieldOfStudyLogsId)
-    {
-        var fieldOfStudyLog = await _context.FieldOfStudyLogs
-            .AsNoTracking()
-            .Include(f => f.OrganizationsOfTheYear)
-            .FirstOrDefaultAsync(f => f.Id == fieldOfStudyLogsId);
-        
-        if(fieldOfStudyLog == null) throw new ArgumentException("Organization not found");
-        
-        return fieldOfStudyLog.OrganizationsOfTheYear;
-    }
-    
-    private static DateOnly? CalculateDate(DateOnly yearStart, DateOnly yearEnd, WeekDay classWeekDay, 
-        DateOnly startDay, DateOnly endDay, int repeatClassInDays, bool startFirstWeek)
-    {
-        var date = yearStart.AddDays((int)classWeekDay - (int)ConvertDay.ToWeekDay(yearStart.DayOfWeek));
-        
-        if(!startFirstWeek)
-            date = date.AddDays(7);
-        
-        if (date < yearStart)
-            date = date.AddDays(repeatClassInDays);
-        
-        var dates = new List<DateOnly> { date };
-        for (; date <= yearEnd && date <= endDay; date = date.AddDays(repeatClassInDays))
-            dates.Add(date);
-        
-        return dates.Last() < startDay? null : dates.Last();
-    }
-
-    private async Task<IEnumerable<DateOnly>> GetDaysOff(int organizationId)
-    {
-        var organizationOfTheYear = await GetOrganizationsInfo(organizationId);
-
-        var daysOff = _context.DaysOff
-            .Where(d=>d.OrganizationsOfTheYearId == organizationOfTheYear.Id)
-            .Select(d=>d.Day)
-            .ToList();
-        
-        return daysOff;
     }
     
     private async Task<DateOnly?> CalculateClassDate(
@@ -74,7 +33,7 @@ public class ScheduleService(AppDbContext context): IScheduleService
         var repeatClassInDays = classEntity.IsOddWeek == null ? 7 : 14;
         var startFirstWeek = classEntity.IsOddWeek ?? true;
 
-        var date = CalculateDate
+        var date = DateHelper.CalculateDate
         (
             organizationInfo.StartDay, 
             organizationInfo.EndDay,
@@ -86,18 +45,9 @@ public class ScheduleService(AppDbContext context): IScheduleService
         );
         if(date == null) return null;
         
-        var daysOff = await GetDaysOff(organizationInfo.Id);
+        var daysOff = await _organizationService.GetDaysOff(organizationInfo.Id);
 
         return daysOff.Any(dayOff => dayOff == date) ? null : date;
-    }
-
-    private static (DateOnly StartOfWeek, DateOnly EndOfWeek) GetWeekStartAndEndDates(int year, int weekNumber)
-    {
-        var firstDayOfYear = new DateOnly(year, 1, 1);
-        var firstWeekStart = firstDayOfYear.AddDays(DayOfWeek.Monday - firstDayOfYear.DayOfWeek);
-        var startOfWeek = firstWeekStart.AddDays((weekNumber - 1) * 7);
-        
-        return (StartOfWeek: startOfWeek, EndOfWeek: startOfWeek.AddDays(6));
     }
 
     private async Task<List<Class>> GetClasses(int fieldOfStudyLogId)
@@ -109,12 +59,12 @@ public class ScheduleService(AppDbContext context): IScheduleService
         return classes;
     }
 
-    private List<Hour> GetHours()
+    public List<Hour> GetHours()
     {
         return _context.Hours.ToList();
     }
 
-    private ClassAssignment? GetClassAssigment(int classId, DateOnly date)
+    public ClassAssignment? GetClassAssigment(int classId, DateOnly date)
     {
         var assignment = _context.Assignments.FirstOrDefault(a => a.Id == classId && a.DeadlineDate == date);
         
@@ -124,12 +74,7 @@ public class ScheduleService(AppDbContext context): IScheduleService
         };
     }
 
-    private static string GetWeekDay(DateOnly date)
-    {
-        return ConvertDay.ToWeekDay(date.DayOfWeek).ToString();
-    }
-
-    private int GetGroupType(int groupId)
+    public int GetGroupType(int groupId)
     {
         var group = _context.Groups.First(g => g.Id == groupId);
         return group.Type;
@@ -139,8 +84,8 @@ public class ScheduleService(AppDbContext context): IScheduleService
     {
         var classes = await GetClasses(scheduleInfoRequest.fieldOfStudyLogId);
         var allUserClasses = classes.Where(c => scheduleInfoRequest.GroupIds.Any(groupId => groupId == c.GroupId));
-        var organizationInfo = await GetOrganizationsInfo(scheduleInfoRequest.fieldOfStudyLogId);
-        var (startOfWeek, endOfWeek) = GetWeekStartAndEndDates(scheduleInfoRequest.Year, scheduleInfoRequest.WeekNumber);
+        var organizationInfo = await _organizationService.GetOrganizationsInfo(scheduleInfoRequest.fieldOfStudyLogId);
+        var (startOfWeek, endOfWeek) = DateHelper.GetWeekStartAndEndDates(scheduleInfoRequest.Year, scheduleInfoRequest.WeekNumber);
         
         var thisWeekClasses = new List<ThisWeekClass>();
         
@@ -170,7 +115,7 @@ public class ScheduleService(AppDbContext context): IScheduleService
             {
                 if(thisWeekClass.classEntity.StartHour != hour) continue;
                 var assignment = GetClassAssigment(thisWeekClass.classEntity.Id, thisWeekClass.date);
-                var weekDay = GetWeekDay(thisWeekClass.date);
+                var weekDay = DateHelper.GetWeekDay(thisWeekClass.date);
                 var prop = weekDays.GetType().GetProperty(weekDay);
                 
                 if(prop == null) throw new Exception($"Property '{weekDay}' not found in ScheduleWeekDays");
