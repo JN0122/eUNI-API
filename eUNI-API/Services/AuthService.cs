@@ -1,6 +1,7 @@
-using System.Data;
+using System.Security.Claims;
 using eUNI_API.Configuration;
 using eUNI_API.Data;
+using eUNI_API.Enums;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Auth;
 using eUNI_API.Models.Entities.Auth;
@@ -51,5 +52,16 @@ public class AuthService(IUserService userService, AppDbContext context, IOption
     {
         cookies.TryGetValue("refresh-token", out string? refreshToken);
         return refreshToken;
+    }
+
+    public bool IsRepresentative(ClaimsPrincipal User)
+    {
+        var isRepresentative = User.FindFirst("IsRepresentative")?.Value;
+        return (isRepresentative != null && bool.Parse(isRepresentative));
+    }
+
+    public bool IsAdmin(Guid userId)
+    {
+        return _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == userId)?.RoleId == (int)UserRole.Admin;
     }
 }

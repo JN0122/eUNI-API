@@ -5,15 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class RepresentativeService(AppDbContext context): IRepresentativeService
+public class RepresentativeService(AppDbContext context, IAuthService authService): IRepresentativeService
 {
     private readonly AppDbContext _context = context;
+    private readonly IAuthService _authService = authService;
 
-    private bool IsAdmin(Guid userId)
-    {
-        return _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == userId)?.RoleId == (int)UserRole.Admin;
-    }
-    
     public async Task<List<int>?> GetFieldOfStudyLogIdsToEdit(Guid userId)
     {
         var yearMaxId = _context.Years.Max(year => year.Id);
@@ -26,7 +22,7 @@ public class RepresentativeService(AppDbContext context): IRepresentativeService
             .Select(f => f.Id)
             .ToListAsync();
         
-        if (IsAdmin(userId)) return fieldOfStudyLogs.ToList();
+        if (_authService.IsAdmin(userId)) return fieldOfStudyLogs.ToList();
         
         var studentId = _context.Students
             .FirstOrDefault(s => s.UserId == userId)?.Id;
