@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class UsersService(AppDbContext context, IUserService userService): IUsersService
+public class AdminService(AppDbContext context, IUserService userService): IAdminService
 {
     private readonly AppDbContext _context = context;
     private readonly IUserService _userService = userService;

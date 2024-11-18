@@ -9,4 +9,5 @@ public interface IStudentService
     public Task<List<int>?> GetStudentGroupIds(int fieldOfStudyId, Guid userId);
     
     public Task<List<FieldOfStudyInfoDto>?> GetStudentFieldsOfStudy(Guid userId);
+    // groups, student fields of study
 }

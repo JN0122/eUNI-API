@@ -26,7 +26,7 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"))
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IRepresentativeService, RepresentativeService>();
