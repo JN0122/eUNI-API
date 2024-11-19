@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Enums;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
 using eUNI_API.Models.Entities.Auth;
@@ -84,5 +85,10 @@ public class AdminService(AppDbContext context, IUserService userService): IAdmi
         
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
+    }
+    
+    public bool IsAdmin(Guid userId)
+    {
+        return _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == userId)?.RoleId == (int)UserRole.Admin;
     }
 }

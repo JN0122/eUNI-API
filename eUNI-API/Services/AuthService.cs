@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using eUNI_API.Configuration;
 using eUNI_API.Data;
 using eUNI_API.Enums;
@@ -53,8 +54,10 @@ public class AuthService(AppDbContext context, IOptions<JwtSettings> jwtSettings
         return refreshToken;
     }
 
-    public bool IsAdmin(Guid userId)
+    public bool IsRepresentative(IEnumerable<Claim> claims)
     {
-        return _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == userId)?.RoleId == (int)UserRole.Admin;
+        var isRepresentativeClaim = claims.FirstOrDefault(c => c.Type == "IsRepresentative")?.Value;
+        if (isRepresentativeClaim == null) return false;
+        return !bool.TryParse(isRepresentativeClaim, out var isRepresentative) || isRepresentative;
     }
 }

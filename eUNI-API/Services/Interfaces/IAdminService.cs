@@ -10,4 +10,5 @@ public interface IAdminService
     public Task CreateUser(CreateUserRequestDto createUserRequestDto);
     public Task<User> GetUserById(Guid id);
     public Task UpdateUser(User user, UpdateUserRequestDto updateUserRequestDto);
+    public bool IsAdmin(Guid userId);
 }

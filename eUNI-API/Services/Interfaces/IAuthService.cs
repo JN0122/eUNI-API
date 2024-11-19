@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using eUNI_API.Models.Dto.Auth;
 using eUNI_API.Models.Entities.Auth;
 
@@ -9,5 +10,5 @@ public interface IAuthService
     public void AddRefreshToken(IResponseCookies cookies, string refreshToken);
     public void RemoveRefreshToken(IResponseCookies cookies);
     public string? GetRefreshToken(IRequestCookieCollection cookies);
-    public bool IsAdmin(Guid userId);
+    public bool IsRepresentative(IEnumerable<Claim> claims);
 }
