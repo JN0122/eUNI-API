@@ -11,10 +11,13 @@ public class RepresentativeController(IRepresentativeService representativeServi
 {
     private readonly IRepresentativeService _representativeService = representativeService;
     private readonly IUserService _userService = userService;
+    private readonly IAuthService _authService = authService;
     
     [HttpGet("get-fields-of-study-to-edit")]
     public async Task<IActionResult> GetFieldsOfStudyToEdit()
     {
+        if(!_authService.IsRepresentative(User.Claims))
+            return Unauthorized();
         var user = await _userService.FindUserByClaim(User.Claims); 
         return Ok(await _representativeService.GetFieldOfStudyLogToEdit(user.Id));
     }

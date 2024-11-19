@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using eUNI_API.Data;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.FieldOfStudy;
@@ -6,10 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class RepresentativeService(AppDbContext context, IAuthService authService, IOrganizationService organizationService, IStudentService studentService): IRepresentativeService
+public class RepresentativeService(AppDbContext context, IAdminService adminService, IOrganizationService organizationService, IStudentService studentService): IRepresentativeService
 {
     private readonly AppDbContext _context = context;
-    private readonly IAuthService _authService = authService;
+    private readonly IAdminService _adminService = adminService;
     private readonly IOrganizationService _organizationService = organizationService;
     private readonly IStudentService _studentService = studentService;
 
@@ -24,7 +25,13 @@ public class RepresentativeService(AppDbContext context, IAuthService authServic
             .Select(f => ConvertDtos.ToFieldOfStudyInfoDto(f))
             .ToListAsync();
 
-        if (_authService.IsAdmin(userId)) return fieldOfStudyLogs;
+        if (_adminService.IsAdmin(userId)) return fieldOfStudyLogs;
         return await _studentService.GetStudentFieldsOfStudy(userId);
+    }
+
+    public async Task<bool> IsRepresentative(Guid userId)
+    {
+        var fieldsOfStudy = await GetFieldOfStudyLogToEdit(userId);
+        return fieldsOfStudy != null;
     }
 }

@@ -12,9 +12,10 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace eUNI_API.Services;
 
-public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSettings): ITokenService
+public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSettings, IRepresentativeService representativeService): ITokenService
 {
     private readonly AppDbContext _context = context;
+    private readonly IRepresentativeService _representativeService = representativeService;
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
     public string CreateAccessToken(Guid userId)
@@ -26,13 +27,15 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
+        var isRepresentative = _representativeService.IsRepresentative(userId).Result;
         
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.Name)
+                new Claim(ClaimTypes.Role, user.Role.Name),
+                new Claim("IsRepresentative", isRepresentative.ToString())
             }),
             Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
