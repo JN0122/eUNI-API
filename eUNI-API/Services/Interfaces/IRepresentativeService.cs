@@ -11,4 +11,8 @@ public interface IRepresentativeService
     public Task CreateClass(CreateClassRequestDto classRequestDto);
     public Task UpdateClass(int id, CreateClassRequestDto classRequestDto);
     public Task DeleteClass(int id);
+    public Task<List<AssignmentDto>> GetAssignments(int fieldOfStudyLogId);
+    public Task CreateAssignment(CreateAssignmentRequestDto assignmentRequestDto);
+    public Task UpdateAssignment(int id, CreateAssignmentRequestDto assignmentRequestDto);
+    public Task DeleteAssignment(int id);
 }

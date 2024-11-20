@@ -55,4 +55,24 @@ public class RepresentativeService(AppDbContext context, IAdminService adminServ
     {
         throw new NotImplementedException();
     }
+
+    public Task<List<AssignmentDto>> GetAssignments(int fieldOfStudyLogId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task CreateAssignment(CreateAssignmentRequestDto assignmentRequestDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateAssignment(int id, CreateAssignmentRequestDto assignmentRequestDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteAssignment(int id)
+    {
+        throw new NotImplementedException();
+    }
 }
