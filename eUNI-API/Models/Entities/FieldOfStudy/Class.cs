@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.RegularExpressions;
+
 using eUNI_API.Enums;
 using eUNI_API.Models.Entities.OrganizationInfo;
+using eUNI_API.Models.Entities.Student;
 
 namespace eUNI_API.Models.Entities.FieldOfStudy;
 
@@ -37,6 +38,9 @@ public class Class
     
     [ForeignKey("FieldOfStudyLogId")]
     public FieldOfStudyLog FieldOfStudyLog { get; set; }
+    
+    [ForeignKey("GroupId")]
+    public Group Group { get; set; }
     
     public IEnumerable<Assignment>? Assignments { get; set; }
 }
