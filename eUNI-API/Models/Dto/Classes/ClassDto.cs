@@ -14,10 +14,8 @@ public class ClassDto
     public string Room { get; set; }
     
     public bool? IsOddWeek { get; set; }
-    
-    public WeekDay? WeekDay { get; set; }
 
-    public string GroupName { get; set; }
+    public WeekDay? WeekDay { get; set; }
     
     public string StartHour { get; set; }
     

@@ -36,7 +36,7 @@ public class RepresentativeService(AppDbContext context, IAdminService adminServ
         var fieldsOfStudy = await GetFieldOfStudyLogToEdit(userId);
         return fieldsOfStudy != null;
     }
-
+    
     public async Task<List<ClassDto>> GetClasses(int fieldOfStudyId)
     {
         var classes = await _context.Classes
@@ -49,11 +49,10 @@ public class RepresentativeService(AppDbContext context, IAdminService adminServ
         var classesDto = classes.Select(classEntity => new ClassDto
             {
                 Id = classEntity.Id,
-                Name = classEntity.Name,
+                Name = ClassHelper.GetClassWithGroup(classEntity.Name, classEntity.Group.Abbr),
                 EndHour = classEntity.EndHour.HourInterval,
                 StartHour = classEntity.StartHour.HourInterval,
                 FieldOfStudyLogId = classEntity.FieldOfStudyLogId,
-                GroupName = classEntity.Group.Abbr,
                 IsOddWeek = classEntity.IsOddWeek,
                 Room = classEntity.Room,
                 WeekDay = classEntity.WeekDay
