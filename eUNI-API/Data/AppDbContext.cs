@@ -37,6 +37,9 @@ public class AppDbContext: DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Role>()
+            .Property(r => r.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<Role>().HasData(
             new Role { Id = (int)UserRole.Admin, Name = "Admin" },
             new Role { Id = (int)UserRole.Student, Name = "Student" }
@@ -65,6 +68,9 @@ public class AppDbContext: DbContext
             }
         );
 
+        modelBuilder.Entity<Group>()
+            .Property(g => g.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<Group>().HasData(
             new Group
             {
@@ -98,6 +104,9 @@ public class AppDbContext: DbContext
             }
         );
 
+        modelBuilder.Entity<Hour>()
+            .Property(h => h.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<Hour>().HasData(
             new Hour
             {
@@ -121,6 +130,9 @@ public class AppDbContext: DbContext
             }
         );
         
+        modelBuilder.Entity<Year>()
+            .Property(y => y.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<Year>().HasData(
             new Year
             {
@@ -128,7 +140,10 @@ public class AppDbContext: DbContext
                 Name="2024/2025"
             }
         );
-
+        
+        modelBuilder.Entity<OrganizationOfTheYear>()
+            .Property(o => o.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<OrganizationOfTheYear>().HasData(
             new OrganizationOfTheYear
             {
@@ -140,6 +155,9 @@ public class AppDbContext: DbContext
             }    
         );
 
+        modelBuilder.Entity<FieldOfStudy>()
+            .Property(f => f.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<FieldOfStudy>().HasData(
             new FieldOfStudy
             {
@@ -151,6 +169,9 @@ public class AppDbContext: DbContext
             }
         );
 
+        modelBuilder.Entity<FieldOfStudyLog>()
+            .Property(f => f.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<FieldOfStudyLog>().HasData(
             new FieldOfStudyLog
             {
@@ -160,7 +181,10 @@ public class AppDbContext: DbContext
                 Semester = 7
             }    
         );
-
+        
+        modelBuilder.Entity<Class>()
+            .Property(c => c.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<Class>().HasData(
             new Class
             {
@@ -176,6 +200,9 @@ public class AppDbContext: DbContext
             }    
         );
 
+        modelBuilder.Entity<Student>()
+            .Property(s => s.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<Student>().HasData(
             new Student
             {
@@ -185,6 +212,9 @@ public class AppDbContext: DbContext
             }
         );
         
+        modelBuilder.Entity<StudentFieldsOfStudyLog>()
+            .Property(s => s.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<StudentFieldsOfStudyLog>().HasData(
             new StudentFieldsOfStudyLog
             {
@@ -195,6 +225,9 @@ public class AppDbContext: DbContext
             }    
         );
         
+        modelBuilder.Entity<StudentGroup>()
+            .Property(s => s.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<StudentGroup>().HasData(
             new StudentGroup{
                 Id = 1,
@@ -203,6 +236,9 @@ public class AppDbContext: DbContext
             }
         );
         
+        modelBuilder.Entity<Assignment>()
+            .Property(a => a.Id)
+            .ValueGeneratedOnAdd();
         modelBuilder.Entity<Assignment>().HasData(
            new Assignment
            {
