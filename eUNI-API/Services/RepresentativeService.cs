@@ -121,23 +121,63 @@ public class RepresentativeService(AppDbContext context, IAdminService adminServ
         await _context.SaveChangesAsync();
     }
 
-    public Task<List<AssignmentDto>> GetAssignments(int fieldOfStudyLogId)
+    public async Task<List<AssignmentDto>> GetAssignments(int fieldOfStudyLogId)
     {
-        throw new NotImplementedException();
+        var assignments = await _context.Assignments
+            .AsNoTracking()
+            .Include(a => a.Class)
+            .ThenInclude(c => c.Group)
+            .Where(a => a.Class.FieldOfStudyLogId == fieldOfStudyLogId)
+            .ToListAsync();
+        var assignmentsDto = assignments.Select(assignment => new AssignmentDto
+            {
+                AssignmentName = assignment.Name,
+                DeadlineDate = assignment.DeadlineDate,
+                ClassId = assignment.Class.Id,
+                ClassName = ClassHelper.GetClassWithGroup(assignment.Class.Name, assignment.Class.Group.Abbr),
+            })
+            .ToList();
+        return assignmentsDto;
     }
 
-    public Task CreateAssignment(CreateAssignmentRequestDto assignmentRequestDto)
+    public async Task CreateAssignment(CreateAssignmentRequestDto assignmentRequestDto)
     {
-        throw new NotImplementedException();
+        var classEntity = await _context.Classes.FirstOrDefaultAsync(f => f.Id == assignmentRequestDto.ClassId);
+        
+        if(classEntity == null)
+            throw new ArgumentException("Cannot find class for assignment.");
+        
+        _context.Assignments.Add(new Assignment
+        {
+            Class = classEntity,
+            DeadlineDate = assignmentRequestDto.DeadlineDate,
+            Name = assignmentRequestDto.Name,
+        });
+        await _context.SaveChangesAsync();
     }
 
-    public Task UpdateAssignment(int id, CreateAssignmentRequestDto assignmentRequestDto)
+    public async Task UpdateAssignment(int id, CreateAssignmentRequestDto assignmentRequestDto)
     {
-        throw new NotImplementedException();
+        var assignmentEntity = _context.Assignments.FirstOrDefault(a => a.Id == id);
+        if (assignmentEntity == null) throw new ArgumentException("Assignment not found.");
+        
+        var classEntity = _context.Classes.FirstOrDefault(c => c.Id == assignmentRequestDto.ClassId);
+        if(classEntity == null) throw new ArgumentException("Class not found.");
+        
+        assignmentEntity.Name = assignmentRequestDto.Name;
+        assignmentEntity.DeadlineDate = assignmentRequestDto.DeadlineDate;
+        assignmentEntity.Class = classEntity;
+        
+        _context.Assignments.Update(assignmentEntity);
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeleteAssignment(int id)
+    public async Task DeleteAssignment(int id)
     {
-        throw new NotImplementedException();
+        var assignmentEntity = _context.Assignments.FirstOrDefault(a => a.Id == id);
+        if (assignmentEntity == null) throw new ArgumentException("Assignment not found.");
+        
+        _context.Assignments.Remove(assignmentEntity);
+        await _context.SaveChangesAsync();
     }
 }
