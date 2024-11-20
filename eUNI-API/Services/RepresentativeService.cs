@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using eUNI_API.Data;
 using eUNI_API.Helpers;
+using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -33,5 +34,25 @@ public class RepresentativeService(AppDbContext context, IAdminService adminServ
     {
         var fieldsOfStudy = await GetFieldOfStudyLogToEdit(userId);
         return fieldsOfStudy != null;
+    }
+
+    public Task<List<ClassDto>> GetClasses(int fieldOfStudyId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task CreateClass(CreateClassRequestDto classRequestDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateClass(int id, CreateClassRequestDto classRequestDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteClass(int id)
+    {
+        throw new NotImplementedException();
     }
 }
