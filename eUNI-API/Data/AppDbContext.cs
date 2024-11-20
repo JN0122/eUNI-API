@@ -147,6 +147,7 @@ public class AppDbContext: DbContext
                 Abbr="K",
                 Name="Informatyka Stosowana",
                 StudiesCycle = 1,
+                SemesterCount = 7
             }
         );
 

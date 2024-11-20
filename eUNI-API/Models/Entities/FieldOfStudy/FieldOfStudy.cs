@@ -15,5 +15,7 @@ public class FieldOfStudy
     
     public byte StudiesCycle { get; set; }
     
+    public byte SemesterCount { get; set; }
+    
     public IEnumerable<FieldOfStudyLog> FieldOfStudyLogs { get; set; }
 }
