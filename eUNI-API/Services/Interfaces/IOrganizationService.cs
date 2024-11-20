@@ -12,4 +12,8 @@ public interface IOrganizationService
     public Task CreateYearOrganization(YearOrganizationRequest yearOrganizationRequest);
     public Task UpdateYearOrganization(int id, YearOrganizationRequest yearOrganizationRequest);
     public Task DeleteYearOrganization(int id);
+    public Task<List<YearOrganization>> GetYears();
+    public Task CreateYear(YearRequest yearRequest);
+    public Task UpdateYear(int id, YearRequest yearRequest);
+    public Task DeleteYear(int id);
 }

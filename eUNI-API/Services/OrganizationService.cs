@@ -60,4 +60,24 @@ public class OrganizationService(AppDbContext appDbContext): IOrganizationServic
     {
         throw new NotImplementedException();
     }
+
+    public Task<List<YearOrganization>> GetYears()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task CreateYear(YearRequest yearRequest)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateYear(int id, YearRequest yearRequest)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteYear(int id)
+    {
+        throw new NotImplementedException();
+    }
 }
