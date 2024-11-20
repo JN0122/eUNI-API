@@ -53,11 +53,4 @@ public class AuthService(AppDbContext context, IOptions<JwtSettings> jwtSettings
         cookies.TryGetValue("refresh-token", out string? refreshToken);
         return refreshToken;
     }
-
-    public bool IsRepresentative(IEnumerable<Claim> claims)
-    {
-        var isRepresentativeClaim = claims.FirstOrDefault(c => c.Type == "IsRepresentative")?.Value;
-        if (isRepresentativeClaim == null) return false;
-        return !bool.TryParse(isRepresentativeClaim, out var isRepresentative) || isRepresentative;
-    }
 }
