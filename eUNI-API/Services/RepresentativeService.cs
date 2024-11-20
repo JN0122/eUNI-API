@@ -3,6 +3,7 @@ using eUNI_API.Data;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
+using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,24 +37,88 @@ public class RepresentativeService(AppDbContext context, IAdminService adminServ
         return fieldsOfStudy != null;
     }
 
-    public Task<List<ClassDto>> GetClasses(int fieldOfStudyId)
+    public async Task<List<ClassDto>> GetClasses(int fieldOfStudyId)
     {
-        throw new NotImplementedException();
+        var classes = await _context.Classes
+            .AsNoTracking()
+            .Where(c => c.FieldOfStudyLogId == fieldOfStudyId)
+            .Include(c => c.EndHour)
+            .Include(c => c.StartHour)
+            .Include(c=>c.Group)
+            .ToListAsync();
+        var classesDto = classes.Select(classEntity => new ClassDto
+            {
+                Id = classEntity.Id,
+                Name = classEntity.Name,
+                EndHour = classEntity.EndHour.HourInterval,
+                StartHour = classEntity.StartHour.HourInterval,
+                FieldOfStudyLogId = classEntity.FieldOfStudyLogId,
+                GroupName = classEntity.Group.Abbr,
+                IsOddWeek = classEntity.IsOddWeek,
+                Room = classEntity.Room,
+                WeekDay = classEntity.WeekDay
+            })
+            .ToList();
+        return classesDto;
     }
 
-    public Task CreateClass(CreateClassRequestDto classRequestDto)
+    public async Task CreateClass(CreateClassRequestDto classRequestDto)
     {
-        throw new NotImplementedException();
+        var fieldOfStudyLog = await _context.FieldOfStudyLogs.FirstOrDefaultAsync(f => f.Id == classRequestDto.FieldOfStudyLogId);
+        var group = await _context.Groups.FirstOrDefaultAsync(g => g.Id == classRequestDto.GroupId);
+        var startHour = await _context.Hours.FirstOrDefaultAsync(h => h.Id == classRequestDto.StartHourId);
+        var endHour = await _context.Hours.FirstOrDefaultAsync(h => h.Id == classRequestDto.EndHourId);
+        
+        if(fieldOfStudyLog == null || group == null || startHour == null || endHour == null)
+            throw new ArgumentException("Cannot find field of study, group or hours.");
+
+        _context.Classes.Add(new Class
+        {
+            Name = classRequestDto.Name,
+            Room = classRequestDto.Room,
+            IsOddWeek = classRequestDto.IsOddWeek,
+            WeekDay = classRequestDto.WeekDay,
+            Group = group,
+            FieldOfStudyLog = fieldOfStudyLog,
+            StartHour = startHour,
+            EndHour = endHour
+        });
+        
+        await _context.SaveChangesAsync();
     }
 
-    public Task UpdateClass(int id, CreateClassRequestDto classRequestDto)
+    public async Task UpdateClass(int id, CreateClassRequestDto classRequestDto)
     {
-        throw new NotImplementedException();
+        var fieldOfStudyLog = await _context.FieldOfStudyLogs.FirstOrDefaultAsync(f => f.Id == classRequestDto.FieldOfStudyLogId);
+        var group = await _context.Groups.FirstOrDefaultAsync(g => g.Id == classRequestDto.GroupId);
+        var startHour = await _context.Hours.FirstOrDefaultAsync(h => h.Id == classRequestDto.StartHourId);
+        var endHour = await _context.Hours.FirstOrDefaultAsync(h => h.Id == classRequestDto.EndHourId);
+        var classEntity = await _context.Classes.FirstOrDefaultAsync(c => c.Id == id);
+        
+        if(fieldOfStudyLog == null || group == null || startHour == null || endHour == null 
+           || classEntity == null)
+            throw new ArgumentException("Cannot find field of study, group, hours or class.");
+        
+        classEntity.Name = classRequestDto.Name;
+        classEntity.Room = classRequestDto.Room;
+        classEntity.IsOddWeek = classRequestDto.IsOddWeek;
+        classEntity.WeekDay = classRequestDto.WeekDay;
+        classEntity.Group = group;
+        classEntity.StartHour = startHour;
+        classEntity.EndHour = endHour;
+        classEntity.FieldOfStudyLog = fieldOfStudyLog;
+        
+        _context.Classes.Update(classEntity);
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeleteClass(int id)
+    public async Task DeleteClass(int id)
     {
-        throw new NotImplementedException();
+        var classEntity = _context.Classes.FirstOrDefault(c => c.Id == id);
+        if(classEntity == null)
+            throw new ArgumentException("Class not found.");
+        _context.Remove(classEntity);
+        await _context.SaveChangesAsync();
     }
 
     public Task<List<AssignmentDto>> GetAssignments(int fieldOfStudyLogId)

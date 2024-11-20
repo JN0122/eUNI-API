@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using eUNI_API.Enums;
 
 namespace eUNI_API.Models.Dto.Classes;
 
 public class CreateClassRequestDto
 {
     [Required]
-    public int FieldOfStudyId { get; set; }
+    public int FieldOfStudyLogId { get; set; }
     
     [Required]
     public string Name { get; set; }
@@ -17,7 +18,7 @@ public class CreateClassRequestDto
     public bool IsOddWeek { get; set; }
     
     [Required]
-    public byte WeekDay { get; set; }
+    public WeekDay WeekDay { get; set; }
     
     [Required]
     public int GroupId { get; set; }
