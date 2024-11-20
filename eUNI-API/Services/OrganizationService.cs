@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Models.Dto.Organization;
 using eUNI_API.Models.Entities.OrganizationInfo;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -38,5 +39,25 @@ public class OrganizationService(AppDbContext appDbContext): IOrganizationServic
         var newestAcademicOrganizationId = _context.OrganizationsOfTheYear.FirstOrDefault(y => y.Id == yearMaxId)?.Id;
         if(newestAcademicOrganizationId == null) throw new ArgumentException("Organization not found");
         return newestAcademicOrganizationId.Value;
+    }
+
+    public Task<List<YearOrganization>> GetYearOrganizations()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task CreateYearOrganization(YearOrganizationRequest yearOrganizationRequest)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateYearOrganization(int id, YearOrganizationRequest yearOrganizationRequest)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteYearOrganization(int id)
+    {
+        throw new NotImplementedException();
     }
 }

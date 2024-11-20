@@ -1,5 +1,6 @@
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
+using eUNI_API.Models.Dto.Organization;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +10,13 @@ namespace eUNI_API.Controllers;
 [Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 [ApiController]
-public class AdminController(IAdminService adminService, IUserService userService): ControllerBase
+public class AdminController(IAdminService adminService, IUserService userService, IOrganizationService organizationService): ControllerBase
 {
     private readonly IAdminService _adminService = adminService;
     private readonly IUserService _userService = userService;
+    private readonly IOrganizationService _organizationService = organizationService;
     
-    [HttpGet("all-users")]
+    [HttpGet("users")]
     public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetUsers()
     {
         var users = await _adminService.GetUsers();
@@ -22,7 +24,7 @@ public class AdminController(IAdminService adminService, IUserService userServic
         return Ok(ConvertDtos.ToUserInfoDto(users));
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("users/{id:guid}")]
     public async Task<ActionResult> DeleteUser([FromRoute] Guid id)
     {
         var user = await _userService.FindUserByClaim(User.Claims);
@@ -37,19 +39,50 @@ public class AdminController(IAdminService adminService, IUserService userServic
         return Ok();
     }
     
-    [HttpPost("create-user")]
+    [HttpPost("users")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestDto createUserRequestDto)
     {
         await _adminService.CreateUser(createUserRequestDto);
         return Ok();
     }
 
-    [HttpPatch("{id:guid}")]
+    [HttpPatch("users/{id:guid}")]
     public async Task<ActionResult> GetUserById([FromRoute] Guid id, [FromBody] UpdateUserRequestDto updateUserRequestDto)
     {
         var user = await _adminService.GetUserById(id);
         await _adminService.UpdateUser(user, updateUserRequestDto);
         
+        return Ok();
+    }
+    
+    [HttpGet("year-organizations")]
+    public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetYearOrganizations()
+    {
+        var organizations = await _organizationService.GetYearOrganizations();
+        return Ok(organizations);
+    }
+    
+    [HttpPost("year-organizations")]
+    public async Task<ActionResult> CreateYearOrganization(
+        [FromBody] YearOrganizationRequest yearOrganizationRequest)
+    {
+        await _organizationService.CreateYearOrganization(yearOrganizationRequest);
+        return Ok();
+    }
+    
+    [HttpPut("year-organizations/{id:int}")]
+    public async Task<ActionResult> UpdateYearOrganization(
+        [FromBody] YearOrganizationRequest yearOrganizationRequest,
+        [FromRoute] int id)
+    {
+        await _organizationService.UpdateYearOrganization(id, yearOrganizationRequest);
+        return Ok();
+    }
+
+    [HttpDelete("year-organizations/{id:int}")]
+    public async Task<ActionResult> DeleteYearOrganization([FromRoute] int id)
+    {
+        await _organizationService.DeleteYearOrganization(id);
         return Ok();
     }
 }
