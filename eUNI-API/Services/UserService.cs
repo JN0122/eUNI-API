@@ -3,15 +3,18 @@ using eUNI_API.Data;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
 using eUNI_API.Models.Entities.Auth;
+using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class UserService(AppDbContext context, IRepresentativeService representativeService): IUserService
+public class UserService(AppDbContext context, IStudentRepository studentRepository, IOrganizationRepository organizationRepository, IAuthRepository authRepository): IUserService
 {
     private readonly AppDbContext _context = context;
-    private readonly IRepresentativeService _representativeService = representativeService;
+    private readonly IStudentRepository _studentRepository = studentRepository;
+    private readonly IOrganizationRepository _organizationRepository = organizationRepository;
+    private readonly IAuthRepository _authRepository = authRepository;
 
     public async Task<User> FindUserByClaim(IEnumerable<Claim> claims)
     {
@@ -57,7 +60,7 @@ public class UserService(AppDbContext context, IRepresentativeService representa
             LastName = user.LastName,
             Email = user.Email,
             RoleId = user.RoleId,
-            IsRepresentative = _representativeService.IsRepresentative(user.Id).Result
+            IsRepresentative = _authRepository.IsAdmin(user.Id) || _studentRepository.IsRepresentative(user.Id, _organizationRepository.GetNewestOrganizationId())
         };
     }
 

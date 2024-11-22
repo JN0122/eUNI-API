@@ -5,6 +5,7 @@ using eUNI_API.Configuration;
 using eUNI_API.Data;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Entities.Auth;
+using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -12,10 +13,12 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace eUNI_API.Services;
 
-public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSettings, IRepresentativeService representativeService): ITokenService
+public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSettings, IStudentRepository studentRepository, IAuthRepository authRepository, IOrganizationRepository organizationRepository): ITokenService
 {
     private readonly AppDbContext _context = context;
-    private readonly IRepresentativeService _representativeService = representativeService;
+    private readonly IStudentRepository _studentRepository = studentRepository;
+    private readonly IAuthRepository _authRepository = authRepository;
+    private readonly IOrganizationRepository _organizationRepository = organizationRepository;
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
     public string CreateAccessToken(Guid userId)
@@ -27,7 +30,8 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
-        var isRepresentative = _representativeService.IsRepresentative(userId).Result;
+        var isRepresentative = _authRepository.IsAdmin(userId) 
+                               || _studentRepository.IsRepresentative(userId,_organizationRepository.GetNewestOrganizationId());
         
         var tokenDescriptor = new SecurityTokenDescriptor
         {

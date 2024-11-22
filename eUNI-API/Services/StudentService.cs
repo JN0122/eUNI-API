@@ -9,17 +9,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class StudentService(AppDbContext context, IStudentRepository studentRepository, IRepresentativeService representativeService): IStudentService
+public class StudentService(AppDbContext context, IStudentRepository studentRepository, IOrganizationRepository organizationRepository): IStudentService
 {
     private readonly AppDbContext _context = context;
     private readonly IStudentRepository _studentRepository = studentRepository;
-    private readonly IRepresentativeService _representativeService = representativeService;
+    private readonly IOrganizationRepository _organizationRepository = organizationRepository;
     
     public async Task<StudentInfoDto> GetStudentInfo(Guid userId)
     {
-        var isRepresentative = await _representativeService.IsRepresentative(userId);
+        var academicOrganizationId = _organizationRepository.GetNewestOrganizationId();
+        var isRepresentative = _studentRepository.IsRepresentative(userId, academicOrganizationId);
         var studentId = await _studentRepository.GetStudentId(userId);
-        var fieldsOfStudy = await _studentRepository.GetStudentFieldsOfStudy(studentId);
+        var fieldsOfStudy = await _studentRepository.GetStudentFieldsOfStudy(studentId, academicOrganizationId);
         var studentAlbumNumber = _studentRepository.GetAlbumNumber(studentId);
 
         return new StudentInfoDto

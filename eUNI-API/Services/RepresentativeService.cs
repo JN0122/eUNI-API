@@ -21,18 +21,20 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
     public async Task<IEnumerable<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId)
     {
         var newestAcademicOrganizationId = _organizationRepository.GetNewestOrganizationId();
-        var fieldOfStudyLogs = await _fieldOfStudyRepository.GetFieldOfStudyLogs(newestAcademicOrganizationId);
-
-        if (_authRepository.IsAdmin(userId)) return fieldOfStudyLogs;
+        if (_authRepository.IsAdmin(userId))
+        {
+            var fieldOfStudyLogs = await _fieldOfStudyRepository.GetFieldOfStudyLogs(newestAcademicOrganizationId);
+            return fieldOfStudyLogs;
+        }
+        
         var studentId = await _studentRepository.GetStudentId(userId);
-        return await _studentRepository.GetStudentFieldsOfStudy(studentId);
-    }
-
-    public async Task<bool> IsRepresentative(Guid userId)
-    {
-        if (_authRepository.IsAdmin(userId)) return true;
-        var fieldsOfStudy = await FieldOfStudyLogsToEdit(userId);
-        return fieldsOfStudy != null;
+        return _studentRepository.GetRepresentativeFieldsOfStudy(studentId, newestAcademicOrganizationId)!.Select(dto => new FieldOfStudyInfoDto
+        {
+            FieldOfStudyLogId = dto.FieldOfStudyLogId,
+            Name = dto.Name,
+            Semester = dto.Semester,
+            StudiesCycle = dto.StudiesCycle
+        });
     }
     
     public async Task<IEnumerable<ClassDto>> GetClasses(int fieldOfStudyId)
