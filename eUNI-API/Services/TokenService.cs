@@ -30,8 +30,7 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
-        var isRepresentative = _authRepository.IsAdmin(userId) 
-                               || _studentRepository.IsRepresentative(userId,_organizationRepository.GetNewestOrganizationId());
+        var isRepresentative = _studentRepository.IsRepresentative(userId,_organizationRepository.GetNewestOrganizationId());
         
         var tokenDescriptor = new SecurityTokenDescriptor
         {

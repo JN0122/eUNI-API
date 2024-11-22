@@ -10,11 +10,10 @@ public class StudentRepository(AppDbContext context): IStudentRepository
 {
     private readonly AppDbContext _context = context;
     
-    public async Task<int> GetStudentId(Guid userId)
+    public async Task<int?> GetStudentId(Guid userId)
     {
         var student = await _context.Students.AsNoTracking().FirstOrDefaultAsync(s => s.UserId == userId);
-        if (student == null) throw new ArgumentException("User is not a student!");
-        return student.Id;
+        return student?.Id;
     }
     public async Task<List<StudentGroup>?> GetStudentGroups(int fieldOfStudyLogId, int studentId)
     {
@@ -65,9 +64,10 @@ public class StudentRepository(AppDbContext context): IStudentRepository
     public bool IsRepresentative(Guid userId, int academicOrganizationId)
     {
         var studentId = GetStudentId(userId).Result;
-        var studentFieldsOfStudy = GetStudentFieldsOfStudy(studentId, academicOrganizationId).Result;
+        if (studentId == null) return false; 
+        var studentFieldsOfStudy = GetStudentFieldsOfStudy(studentId.Value, academicOrganizationId).Result;
         return studentFieldsOfStudy != null && studentFieldsOfStudy.Any(studentFieldOfStudyDto =>
-            IsRepresentativeForFieldOfStudy(studentFieldOfStudyDto.FieldOfStudyLogId, studentId));
+            IsRepresentativeForFieldOfStudy(studentFieldOfStudyDto.FieldOfStudyLogId, studentId.Value));
     }
 
     public IEnumerable<StudentFieldOfStudyDto>? GetRepresentativeFieldsOfStudy(int studentId, int academicOrganizationId)

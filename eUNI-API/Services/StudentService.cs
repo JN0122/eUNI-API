@@ -20,12 +20,13 @@ public class StudentService(AppDbContext context, IStudentRepository studentRepo
         var academicOrganizationId = _organizationRepository.GetNewestOrganizationId();
         var isRepresentative = _studentRepository.IsRepresentative(userId, academicOrganizationId);
         var studentId = await _studentRepository.GetStudentId(userId);
-        var fieldsOfStudy = await _studentRepository.GetStudentFieldsOfStudy(studentId, academicOrganizationId);
-        var studentAlbumNumber = _studentRepository.GetAlbumNumber(studentId);
+        if (studentId == null) throw new ArgumentException("Invalid user");
+        var fieldsOfStudy = await _studentRepository.GetStudentFieldsOfStudy(studentId.Value, academicOrganizationId);
+        var studentAlbumNumber = _studentRepository.GetAlbumNumber(studentId.Value);
 
         return new StudentInfoDto
         {
-            Id = studentId,
+            Id = studentId.Value,
             AlbumNumber = studentAlbumNumber,
             IsRepresentative = isRepresentative,
             FieldsOfStudyInfo = fieldsOfStudy
