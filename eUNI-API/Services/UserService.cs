@@ -1,15 +1,17 @@
 using System.Security.Claims;
 using eUNI_API.Data;
 using eUNI_API.Helpers;
+using eUNI_API.Models.Dto;
 using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class UserService(AppDbContext context): IUserService
+public class UserService(AppDbContext context, IRepresentativeService representativeService): IUserService
 {
     private readonly AppDbContext _context = context;
+    private readonly IRepresentativeService _representativeService = representativeService;
 
     public async Task<User> FindUserByClaim(IEnumerable<Claim> claims)
     {
@@ -44,5 +46,23 @@ public class UserService(AppDbContext context): IUserService
         
         _context.Users.Update(user);
         _context.SaveChanges();
+    }
+
+    public UserInfoDto GetUserInfo(User user)
+    {
+        return new UserInfoDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            RoleId = user.RoleId,
+            IsRepresentative = _representativeService.IsRepresentative(user.Id).Result
+        };
+    }
+
+    public IEnumerable<UserInfoDto> GetUsersInfo(IEnumerable<User> users)
+    {
+        return users.Select(GetUserInfo);
     }
 }

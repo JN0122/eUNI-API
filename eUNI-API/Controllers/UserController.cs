@@ -16,15 +16,14 @@ public class UserController(AppDbContext context, IUserService userService): Con
     private readonly AppDbContext _context = context;
     private readonly IUserService _userService = userService;
     
-    [HttpGet("user-info")]
+    [HttpGet("info")]
     public async Task<ActionResult<User>> GetUser()
     {
         var user = await _userService.FindUserByClaim(User.Claims);
-        
-        return Ok(ConvertDtos.ToUserInfoDto(user));
+        return Ok(_userService.GetUserInfo(user));
     }
 
-    [HttpPatch("change-password")]
+    [HttpPatch("password")]
     public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequestDto changePasswordRequestDto)
     {
         var user = await _userService.FindUserByClaim(User.Claims);
@@ -35,7 +34,7 @@ public class UserController(AppDbContext context, IUserService userService): Con
         return Ok();
     }
     
-    [HttpPatch("change-email")]
+    [HttpPatch("email")]
     public async Task<ActionResult> ChangeEmail([FromBody] ChangeEmailRequestDto changeEmailRequestDto)
     {
         var user = await _userService.FindUserByClaim(User.Claims);

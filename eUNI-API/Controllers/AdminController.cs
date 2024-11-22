@@ -20,8 +20,7 @@ public class AdminController(IAdminService adminService, IUserService userServic
     public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetUsers()
     {
         var users = await _adminService.GetUsers();
-        
-        return Ok(ConvertDtos.ToUserInfoDto(users));
+        return Ok(_userService.GetUsersInfo(users));
     }
 
     [HttpDelete("users/{id:guid}")]
