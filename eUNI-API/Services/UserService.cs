@@ -59,8 +59,7 @@ public class UserService(AppDbContext context, IStudentRepository studentReposit
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email,
-            RoleId = user.RoleId,
-            IsRepresentative = _authRepository.IsAdmin(user.Id) || _studentRepository.IsRepresentative(user.Id, _organizationRepository.GetNewestOrganizationId())
+            RoleId = user.RoleId
         };
     }
 

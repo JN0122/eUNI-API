@@ -7,5 +7,4 @@ public class UserInfoDto
     public string LastName { get; set; }
     public string Email { get; set; }
     public int RoleId { get; set; }
-    public bool IsRepresentative { get; set; }
 }
