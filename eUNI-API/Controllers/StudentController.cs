@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,21 +9,16 @@ namespace eUNI_API.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class StudentController(IStudentService studentService): ControllerBase
+public class StudentController(IStudentService studentService, IUserService userService): ControllerBase
 {
     private readonly IStudentService _studentService = studentService;
-    
-    [HttpGet("student-groups/")]
-    public async Task<IActionResult> StudentGroups([FromQuery] [Required] Guid userId, [Required] int fieldOfStudyLogId)
-    {
-        var ids = await _studentService.GetStudentGroupIds(fieldOfStudyLogId, userId);
-        return Ok(ids);
-    }
+    private readonly IUserService _userService = userService;
 
-    [HttpGet("student-fields-of-study")]
-    public async Task<IActionResult> StudentFieldsOfStudies([FromQuery] [Required] Guid userId)
+    [HttpGet("info")]
+    public async Task<IActionResult> StudentFieldsOfStudies()
     {
-        var fieldsOfStudy = await _studentService.GetStudentFieldsOfStudy(userId);
-        return Ok(fieldsOfStudy);
+        var user = await _userService.FindUserByClaim(User.Claims); 
+        var studentInfo = await _studentService.GetStudentInfo(user.Id);
+        return Ok(studentInfo);
     }
 }
