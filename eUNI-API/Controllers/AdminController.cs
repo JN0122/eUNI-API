@@ -49,14 +49,12 @@ public class AdminController(IAdminService adminService, IUserService userServic
     [HttpPatch("users/{id:guid}")]
     public async Task<ActionResult> GetUserById([FromRoute] Guid id, [FromBody] UpdateUserRequestDto updateUserRequestDto)
     {
-        var user = await _adminService.GetUserById(id);
-        await _adminService.UpdateUser(user, updateUserRequestDto);
-        
+        await _adminService.UpdateUser(id, updateUserRequestDto);
         return Ok();
     }
     
     [HttpGet("year-organizations")]
-    public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetYearOrganizations()
+    public async Task<ActionResult<IEnumerable<YearOrganization>>> GetYearOrganizations()
     {
         var organizations = await _organizationService.GetYearOrganizations();
         return Ok(organizations);

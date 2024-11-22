@@ -1,12 +1,10 @@
 using eUNI_API.Models.Dto.FieldOfStudy;
+using eUNI_API.Models.Dto.Student;
 
 namespace eUNI_API.Services.Interfaces;
 
 public interface IStudentService
 {
-    public Task<int> GetStudentId(Guid userId);
-    public Task<List<int>?> GetStudentGroupIds(int fieldOfStudyId, Guid userId);
-    
-    public Task<List<FieldOfStudyInfoDto>?> GetStudentFieldsOfStudy(Guid userId);
+    public Task<StudentInfoDto> GetStudentInfo(Guid userId);
     // groups, student fields of study
 }

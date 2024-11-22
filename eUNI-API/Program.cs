@@ -2,6 +2,8 @@ using System.Globalization;
 using System.Text;
 using eUNI_API.Configuration;
 using eUNI_API.Data;
+using eUNI_API.Repositories;
+using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,14 +25,28 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
+
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
 builder.Services.AddScoped<ITokenService, TokenService>();
+
 builder.Services.AddScoped<IAdminService, AdminService>();
+
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
+
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
+builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+
 builder.Services.AddScoped<IRepresentativeService, RepresentativeService>();
+
+builder.Services.AddScoped<IFieldOfStudyRepository, FieldOfStudyRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 

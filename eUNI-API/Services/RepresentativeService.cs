@@ -4,36 +4,33 @@ using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Entities.FieldOfStudy;
+using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class RepresentativeService(AppDbContext context, IAdminService adminService, IOrganizationService organizationService, IStudentService studentService): IRepresentativeService
+public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository fieldOfStudyRepository, IAuthRepository authRepository, IOrganizationRepository organizationRepository, IStudentRepository studentRepository): IRepresentativeService
 {
     private readonly AppDbContext _context = context;
-    private readonly IAdminService _adminService = adminService;
-    private readonly IOrganizationService _organizationService = organizationService;
-    private readonly IStudentService _studentService = studentService;
+    private readonly IFieldOfStudyRepository _fieldOfStudyRepository = fieldOfStudyRepository;
+    private readonly IAuthRepository _authRepository = authRepository;
+    private readonly IOrganizationRepository _organizationRepository = organizationRepository;
+    private readonly IStudentRepository _studentRepository = studentRepository;
 
-    public async Task<List<FieldOfStudyInfoDto>?> GetFieldOfStudyLogToEdit(Guid userId)
+    public async Task<List<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId)
     {
-        var newestAcademicOrganizationId = _organizationService.GetNewestOrganizationId();
-       
-        var fieldOfStudyLogs = await _context.FieldOfStudyLogs
-            .AsNoTracking()
-            .Where(f => f.OrganizationsOfTheYearId == newestAcademicOrganizationId)
-            .Include(f => f.FieldOfStudy)
-            .Select(f => ConvertDtos.ToFieldOfStudyInfoDto(f))
-            .ToListAsync();
+        var newestAcademicOrganizationId = _organizationRepository.GetNewestOrganizationId();
+        var fieldOfStudyLogs = await _fieldOfStudyRepository.GetFieldOfStudyLogs(newestAcademicOrganizationId);
 
-        if (_adminService.IsAdmin(userId)) return fieldOfStudyLogs;
-        return await _studentService.GetStudentFieldsOfStudy(userId);
+        if (_authRepository.IsAdmin(userId)) return fieldOfStudyLogs;
+        return await _studentRepository.GetStudentFieldsOfStudy(userId);
     }
 
     public async Task<bool> IsRepresentative(Guid userId)
     {
-        var fieldsOfStudy = await GetFieldOfStudyLogToEdit(userId);
+        if (_authRepository.IsAdmin(userId)) return true;
+        var fieldsOfStudy = await FieldOfStudyLogsToEdit(userId);
         return fieldsOfStudy != null;
     }
     

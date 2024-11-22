@@ -5,22 +5,21 @@ using eUNI_API.Enums;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Auth;
 using eUNI_API.Models.Entities.Auth;
+using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace eUNI_API.Services;
 
-public class AuthService(AppDbContext context, IOptions<JwtSettings> jwtSettings): IAuthService
+public class AuthService(AppDbContext context, IOptions<JwtSettings> jwtSettings, IAuthRepository authRepository): IAuthService
 {
-    private readonly AppDbContext _context = context;
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
+    private readonly IAuthRepository _authRepository = authRepository;
 
     public async Task<User> Login(LoginDto loginDto)
     {
-        var user = await _context.Users
-            .Include(u => u.Role)
-            .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+        var user = await _authRepository.GetUserWithRole(loginDto.Email);
 
         if (user == null || user.IsDeleted)
             throw new UnauthorizedAccessException();

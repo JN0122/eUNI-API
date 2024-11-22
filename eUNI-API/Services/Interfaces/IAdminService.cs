@@ -8,7 +8,5 @@ public interface IAdminService
     public Task<List<User>> GetUsers();
     public Task RemoveUser(Guid id);
     public Task CreateUser(CreateUserRequestDto createUserRequestDto);
-    public Task<User> GetUserById(Guid id);
-    public Task UpdateUser(User user, UpdateUserRequestDto updateUserRequestDto);
-    public bool IsAdmin(Guid userId);
+    public Task UpdateUser(Guid userId, UpdateUserRequestDto updateUserRequestDto);
 }

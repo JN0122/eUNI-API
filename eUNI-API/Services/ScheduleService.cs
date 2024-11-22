@@ -5,15 +5,16 @@ using eUNI_API.Models.Dto;
 using eUNI_API.Models.Dto.Schedule;
 using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Models.Entities.OrganizationInfo;
+using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class ScheduleService(AppDbContext context, IOrganizationService organizationService): IScheduleService
+public class ScheduleService(AppDbContext context, IOrganizationRepository organizationRepository): IScheduleService
 {
     private readonly AppDbContext _context = context;
-    private readonly IOrganizationService _organizationService = organizationService;
+    private readonly IOrganizationRepository _organizationRepository = organizationRepository;
 
     private class ThisWeekClass
     {
@@ -45,7 +46,7 @@ public class ScheduleService(AppDbContext context, IOrganizationService organiza
         );
         if(date == null) return null;
         
-        var daysOff = await _organizationService.GetDaysOff(organizationInfo.Id);
+        var daysOff = await _organizationRepository.GetDaysOff(organizationInfo.Id);
 
         return daysOff.Any(dayOff => dayOff == date) ? null : date;
     }
@@ -84,7 +85,7 @@ public class ScheduleService(AppDbContext context, IOrganizationService organiza
     {
         var classes = await GetClasses(scheduleInfoRequest.fieldOfStudyLogId);
         var allUserClasses = classes.Where(c => scheduleInfoRequest.GroupIds.Any(groupId => groupId == c.GroupId));
-        var organizationInfo = await _organizationService.GetOrganizationsInfo(scheduleInfoRequest.fieldOfStudyLogId);
+        var organizationInfo = await _organizationRepository.GetOrganizationsInfo(scheduleInfoRequest.fieldOfStudyLogId);
         var (startOfWeek, endOfWeek) = DateHelper.GetWeekStartAndEndDates(scheduleInfoRequest.Year, scheduleInfoRequest.WeekNumber);
         
         var thisWeekClasses = new List<ThisWeekClass>();

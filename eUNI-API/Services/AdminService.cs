@@ -3,15 +3,17 @@ using eUNI_API.Enums;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
 using eUNI_API.Models.Entities.Auth;
+using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class AdminService(AppDbContext context, IUserService userService): IAdminService
+public class AdminService(AppDbContext context, IUserService userService, IUserRepository userRepository): IAdminService
 {
     private readonly AppDbContext _context = context;
     private readonly IUserService _userService = userService;
+    private readonly IUserRepository _userRepository = userRepository;
     
     private async Task<bool> IsValidRole(int roleId)
     {
@@ -56,18 +58,10 @@ public class AdminService(AppDbContext context, IUserService userService): IAdmi
         await _context.SaveChangesAsync();
     }
 
-    public async Task<User> GetUserById(Guid id)
+    public async Task UpdateUser(Guid userId, UpdateUserRequestDto updateUserRequestDto)
     {
-        var user = await _context.Users.FindAsync(id);
-
-        if (user == null || user.IsDeleted)
-            throw new BadHttpRequestException("Could not find user");
+        var user = await _userRepository.GetUserById(userId);
         
-        return user;
-    }
-
-    public async Task UpdateUser(User user, UpdateUserRequestDto updateUserRequestDto)
-    {
         if (updateUserRequestDto.FirstName != null)
             user.FirstName = updateUserRequestDto.FirstName;
         
@@ -85,10 +79,5 @@ public class AdminService(AppDbContext context, IUserService userService): IAdmi
         
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-    }
-    
-    public bool IsAdmin(Guid userId)
-    {
-        return _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == userId)?.RoleId == (int)UserRole.Admin;
     }
 }

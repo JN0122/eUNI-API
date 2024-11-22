@@ -21,7 +21,7 @@ public class RepresentativeController(IRepresentativeService representativeServi
     public async Task<IActionResult> GetFieldsOfStudyToEdit()
     {
         var user = await _userService.FindUserByClaim(User.Claims); 
-        return Ok(await _representativeService.GetFieldOfStudyLogToEdit(user.Id));
+        return Ok(await _representativeService.FieldOfStudyLogsToEdit(user.Id));
     }
 
     [HttpGet("classes")]

@@ -5,7 +5,7 @@ namespace eUNI_API.Services.Interfaces;
 
 public interface IRepresentativeService
 {
-    public Task<List<FieldOfStudyInfoDto>?> GetFieldOfStudyLogToEdit(Guid userId);
+    public Task<List<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId);
     public Task<bool> IsRepresentative(Guid userId);
     public Task<List<ClassDto>> GetClasses(int fieldOfStudyId);
     public Task CreateClass(CreateClassRequestDto classRequestDto);

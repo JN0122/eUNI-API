@@ -8,39 +8,6 @@ namespace eUNI_API.Services;
 
 public class OrganizationService(AppDbContext appDbContext): IOrganizationService
 {
-    private readonly AppDbContext _context = appDbContext;
-    
-    public async Task<OrganizationOfTheYear> GetOrganizationsInfo(int fieldOfStudyLogsId)
-    {
-        var fieldOfStudyLog = await _context.FieldOfStudyLogs
-            .Include(f => f.OrganizationsOfTheYear)
-            .FirstOrDefaultAsync(f => f.Id == fieldOfStudyLogsId);
-        
-        if(fieldOfStudyLog == null) throw new ArgumentException("Organization not found");
-        
-        return fieldOfStudyLog.OrganizationsOfTheYear;
-    }
-    
-    public async Task<IEnumerable<DateOnly>> GetDaysOff(int organizationId)
-    {
-        var organizationOfTheYear = await GetOrganizationsInfo(organizationId);
-
-        var daysOff = _context.DaysOff
-            .Where(d=>d.OrganizationsOfTheYearId == organizationOfTheYear.Id)
-            .Select(d=>d.Day)
-            .ToList();
-        
-        return daysOff;
-    }
-
-    public int GetNewestOrganizationId()
-    {
-        var yearMaxId = _context.Years.Max(year => year.Id);
-        var newestAcademicOrganizationId = _context.OrganizationsOfTheYear.FirstOrDefault(y => y.Id == yearMaxId)?.Id;
-        if(newestAcademicOrganizationId == null) throw new ArgumentException("Organization not found");
-        return newestAcademicOrganizationId.Value;
-    }
-
     public Task<List<YearOrganization>> GetYearOrganizations()
     {
         throw new NotImplementedException();
