@@ -12,6 +12,7 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
 {
     private readonly ITokenService _tokenService = tokenService;
     private readonly IAuthService _authService = authService;
+    private readonly IUserService _userService = userService;
     
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
@@ -58,12 +59,5 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
         return Ok(new {
             AccessToken = newAccessToken
         });
-    }
-
-    [Authorize]
-    [HttpPost("is-authenticated")]
-    public IActionResult IsAuthenticated()
-    {
-        return Ok();
     }
 }
