@@ -17,31 +17,38 @@ public class StudentRepository(AppDbContext context): IStudentRepository
         if (student == null) throw new UnauthorizedAccessException("User is not a student!");
         return student.Id;
     }
-    private async Task<List<StudentGroup>?> GetStudentGroups(int fieldOfStudyId, Guid userId)
+    public async Task<List<StudentGroup>?> GetStudentGroups(int fieldOfStudyLogId, int studentId)
     {
-        var studentId = await GetStudentId(userId);
         var studentFieldOfStudy = await _context.StudentFieldsOfStudyLogs
-            .FirstOrDefaultAsync(f => f.FieldsOfStudyLogId == fieldOfStudyId && f.StudentId == studentId);
+            .FirstOrDefaultAsync(f => f.FieldsOfStudyLogId == fieldOfStudyLogId && f.StudentId == studentId);
         if (studentFieldOfStudy == null) return null;
         return _context.StudentGroups.Where(group => group.StudentsFieldsOfStudyLogId == studentFieldOfStudy.Id).ToList();
     }
     
-    public async Task<List<int>?> GetStudentGroupIds(int fieldOfStudyId, Guid userId)
+    public async Task<IEnumerable<int>?> GetStudentGroupIds(int fieldOfStudyId, int studentId)
     {
-        var studentGroups = await GetStudentGroups(fieldOfStudyId, userId);
+        var studentGroups = await GetStudentGroups(fieldOfStudyId, studentId);
         return studentGroups?.Select(g => g.Id).ToList();
     }
 
-    public async Task<List<FieldOfStudyInfoDto>?> GetStudentFieldsOfStudy(Guid userId)
+    public async Task<IEnumerable<FieldOfStudyInfoDto>?> GetStudentFieldsOfStudy(int studentId)
     {
-        var studentId = await GetStudentId(userId);
         var studentFieldsOfStudyLogs = await _context.StudentFieldsOfStudyLogs
             .Where(f => f.StudentId == studentId)
             .Include(f=>f.FieldsOfStudyLog)
             .ThenInclude(f=>f.FieldOfStudy)
-            .Select(f=>ConvertDtos.ToFieldOfStudyInfoDto(f.FieldsOfStudyLog))
             .ToListAsync();
-        return studentFieldsOfStudyLogs;
+        
+        var fieldOfStudyInfoDto = studentFieldsOfStudyLogs.Select(fieldOfStudy => new FieldOfStudyInfoDto
+        {
+            FieldOfStudyLogId = fieldOfStudy.FieldsOfStudyLogId,
+            Semester = fieldOfStudy.FieldsOfStudyLog.Semester,
+            Name = fieldOfStudy.FieldsOfStudyLog.FieldOfStudy.Name,
+            StudiesCycle = fieldOfStudy.FieldsOfStudyLog.FieldOfStudy.StudiesCycle,
+            GroupIds = GetStudentGroupIds(fieldOfStudy.FieldsOfStudyLogId, studentId).Result
+        });
+        
+        return fieldOfStudyInfoDto;
     }
 
     public string? GetAlbumNumber(int studentId)

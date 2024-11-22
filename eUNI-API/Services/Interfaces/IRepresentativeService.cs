@@ -5,13 +5,13 @@ namespace eUNI_API.Services.Interfaces;
 
 public interface IRepresentativeService
 {
-    public Task<List<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId);
+    public Task<IEnumerable<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId);
     public Task<bool> IsRepresentative(Guid userId);
-    public Task<List<ClassDto>> GetClasses(int fieldOfStudyId);
+    public Task<IEnumerable<ClassDto>> GetClasses(int fieldOfStudyId);
     public Task CreateClass(CreateClassRequestDto classRequestDto);
     public Task UpdateClass(int id, CreateClassRequestDto classRequestDto);
     public Task DeleteClass(int id);
-    public Task<List<AssignmentDto>> GetAssignments(int fieldOfStudyLogId);
+    public Task<IEnumerable<AssignmentDto>> GetAssignments(int fieldOfStudyLogId);
     public Task CreateAssignment(CreateAssignmentRequestDto assignmentRequestDto);
     public Task UpdateAssignment(int id, CreateAssignmentRequestDto assignmentRequestDto);
     public Task DeleteAssignment(int id);

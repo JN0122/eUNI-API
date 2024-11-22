@@ -5,7 +5,7 @@ namespace eUNI_API.Repositories.Interfaces;
 public interface IStudentRepository
 {
     public Task<int> GetStudentId(Guid userId);
-    public Task<List<int>?> GetStudentGroupIds(int fieldOfStudyId, Guid userId);
-    public Task<List<FieldOfStudyInfoDto>?> GetStudentFieldsOfStudy(Guid userId);
+    public Task<IEnumerable<int>?> GetStudentGroupIds(int fieldOfStudyLogId, int studentId);
+    public Task<IEnumerable<FieldOfStudyInfoDto>?> GetStudentFieldsOfStudy(int studentId);
     public string? GetAlbumNumber(int studentId);
 }

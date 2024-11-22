@@ -7,6 +7,5 @@ public class StudentInfoDto
     public int Id { get; set; }
     public string? AlbumNumber { get; set; }
     public bool IsRepresentative { get; set; }
-    public List<FieldOfStudyInfoDto>? FieldsOfStudyInfo { get; set; }
-    public List<FieldOfStudyGroupDto>? FieldsOfStudyGroups { get; set; }
+    public IEnumerable<FieldOfStudyInfoDto>? FieldsOfStudyInfo { get; set; }
 }

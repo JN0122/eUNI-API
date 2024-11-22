@@ -18,13 +18,14 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
     private readonly IOrganizationRepository _organizationRepository = organizationRepository;
     private readonly IStudentRepository _studentRepository = studentRepository;
 
-    public async Task<List<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId)
+    public async Task<IEnumerable<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId)
     {
         var newestAcademicOrganizationId = _organizationRepository.GetNewestOrganizationId();
         var fieldOfStudyLogs = await _fieldOfStudyRepository.GetFieldOfStudyLogs(newestAcademicOrganizationId);
 
         if (_authRepository.IsAdmin(userId)) return fieldOfStudyLogs;
-        return await _studentRepository.GetStudentFieldsOfStudy(userId);
+        var studentId = await _studentRepository.GetStudentId(userId);
+        return await _studentRepository.GetStudentFieldsOfStudy(studentId);
     }
 
     public async Task<bool> IsRepresentative(Guid userId)
@@ -34,7 +35,7 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
         return fieldsOfStudy != null;
     }
     
-    public async Task<List<ClassDto>> GetClasses(int fieldOfStudyId)
+    public async Task<IEnumerable<ClassDto>> GetClasses(int fieldOfStudyId)
     {
         var classes = await _context.Classes
             .AsNoTracking()
@@ -117,7 +118,7 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<AssignmentDto>> GetAssignments(int fieldOfStudyLogId)
+    public async Task<IEnumerable<AssignmentDto>> GetAssignments(int fieldOfStudyLogId)
     {
         var assignments = await _context.Assignments
             .AsNoTracking()
