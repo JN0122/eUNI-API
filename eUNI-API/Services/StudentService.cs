@@ -18,7 +18,6 @@ public class StudentService(AppDbContext context, IStudentRepository studentRepo
     public async Task<StudentInfoDto> GetStudentInfo(Guid userId)
     {
         var academicOrganizationId = _organizationRepository.GetNewestOrganizationId();
-        var isRepresentative = _studentRepository.IsRepresentative(userId, academicOrganizationId);
         var studentId = await _studentRepository.GetStudentId(userId);
         if (studentId == null) throw new ArgumentException("Invalid user");
         var fieldsOfStudy = await _studentRepository.GetStudentFieldsOfStudy(studentId.Value, academicOrganizationId);
@@ -28,7 +27,6 @@ public class StudentService(AppDbContext context, IStudentRepository studentRepo
         {
             Id = studentId.Value,
             AlbumNumber = studentAlbumNumber,
-            IsRepresentative = isRepresentative,
             FieldsOfStudyInfo = fieldsOfStudy
         };
     }

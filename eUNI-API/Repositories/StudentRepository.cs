@@ -42,6 +42,7 @@ public class StudentRepository(AppDbContext context): IStudentRepository
             Semester = fieldOfStudy.FieldsOfStudyLog.Semester,
             Name = fieldOfStudy.FieldsOfStudyLog.FieldOfStudy.Name,
             StudiesCycle = fieldOfStudy.FieldsOfStudyLog.FieldOfStudy.StudiesCycle,
+            IsRepresentative = IsRepresentativeForFieldOfStudy(fieldOfStudy.FieldsOfStudyLogId, studentId),
             GroupIds = GetStudentGroupIds(fieldOfStudy.FieldsOfStudyLogId, studentId).Result
         });
         
