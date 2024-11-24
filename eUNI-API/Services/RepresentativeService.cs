@@ -50,12 +50,16 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
         var classesDto = classes.Select(classEntity => new ClassDto
             {
                 Id = classEntity.Id,
-                Name = ClassHelper.GetClassWithGroup(classEntity.Name, classEntity.Group.Abbr),
+                ClassName = classEntity.Name,
+                GroupId = classEntity.GroupId,
+                GroupName = classEntity.Group.Abbr,
+                EndHourId = classEntity.EndHourId,
                 EndHour = classEntity.EndHour.HourInterval,
+                StartHourId = classEntity.StartHourId,
                 StartHour = classEntity.StartHour.HourInterval,
                 FieldOfStudyLogId = classEntity.FieldOfStudyLogId,
                 IsOddWeek = classEntity.IsOddWeek,
-                Room = classEntity.Room,
+                ClassRoom = classEntity.Room,
                 WeekDay = classEntity.WeekDay
             })
             .ToList();
