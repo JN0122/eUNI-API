@@ -6,7 +6,7 @@ namespace eUNI_API.Services.Interfaces;
 public interface IRepresentativeService
 {
     public Task<IEnumerable<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId);
-    public Task<IEnumerable<ClassDto>> GetClasses(int fieldOfStudyId);
+    public Task<IEnumerable<ClassDto>> GetClasses(int fieldOfStudyLogId);
     public Task CreateClass(CreateClassRequestDto classRequestDto);
     public Task UpdateClass(int id, CreateClassRequestDto classRequestDto);
     public Task DeleteClass(int id);

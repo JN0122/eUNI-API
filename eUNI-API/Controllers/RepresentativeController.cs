@@ -25,9 +25,9 @@ public class RepresentativeController(IRepresentativeService representativeServi
     }
 
     [HttpGet("classes")]
-    public async Task<IActionResult> GetClasses([FromQuery] [Required] int fieldOfStudyId)
+    public async Task<IActionResult> GetClasses([FromQuery] [Required] int fieldOfStudyLogId)
     {
-        var classes = await _representativeService.GetClasses(fieldOfStudyId);
+        var classes = await _representativeService.GetClasses(fieldOfStudyLogId);
         return Ok(classes);
     }
     

@@ -38,11 +38,11 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
         });
     }
     
-    public async Task<IEnumerable<ClassDto>> GetClasses(int fieldOfStudyId)
+    public async Task<IEnumerable<ClassDto>> GetClasses(int fieldOfStudyLogId)
     {
         var classes = await _context.Classes
             .AsNoTracking()
-            .Where(c => c.FieldOfStudyLogId == fieldOfStudyId)
+            .Where(c => c.FieldOfStudyLogId == fieldOfStudyLogId)
             .Include(c => c.EndHour)
             .Include(c => c.StartHour)
             .Include(c=>c.Group)
