@@ -8,7 +8,7 @@ public class CreateAssignmentRequestDto
     public int ClassId { get; set; }
     
     [Required]
-    public string Name { get; set; }
+    public string AssignmentName { get; set; }
     
     [Required]
     public DateOnly DeadlineDate { get; set; }

@@ -131,6 +131,7 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
             .ToListAsync();
         var assignmentsDto = assignments.Select(assignment => new AssignmentDto
             {
+                Id = assignment.Id,
                 AssignmentName = assignment.Name,
                 DeadlineDate = assignment.DeadlineDate,
                 ClassId = assignment.Class.Id,
@@ -151,7 +152,7 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
         {
             Class = classEntity,
             DeadlineDate = assignmentRequestDto.DeadlineDate,
-            Name = assignmentRequestDto.Name,
+            Name = assignmentRequestDto.AssignmentName,
         });
         await _context.SaveChangesAsync();
     }
@@ -164,7 +165,7 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
         var classEntity = _context.Classes.FirstOrDefault(c => c.Id == assignmentRequestDto.ClassId);
         if(classEntity == null) throw new ArgumentException("Class not found.");
         
-        assignmentEntity.Name = assignmentRequestDto.Name;
+        assignmentEntity.Name = assignmentRequestDto.AssignmentName;
         assignmentEntity.DeadlineDate = assignmentRequestDto.DeadlineDate;
         assignmentEntity.Class = classEntity;
         
