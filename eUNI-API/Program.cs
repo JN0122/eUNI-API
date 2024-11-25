@@ -41,6 +41,8 @@ builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 

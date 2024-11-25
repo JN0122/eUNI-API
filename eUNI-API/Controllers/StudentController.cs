@@ -21,4 +21,11 @@ public class StudentController(IStudentService studentService, IUserService user
         var studentInfo = await _studentService.GetStudentInfo(user.Id);
         return Ok(studentInfo);
     }
+    
+    [HttpGet("groups")]
+    public async Task<IActionResult> StudentFieldsOfStudies([FromQuery] [Required] int fieldOfStudyId)
+    {
+        var groups = await _studentService.GetGroups(fieldOfStudyId);
+        return Ok(groups);
+    }
 }
