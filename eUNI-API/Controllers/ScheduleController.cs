@@ -18,4 +18,10 @@ public class ScheduleController(IScheduleService scheduleService): ControllerBas
         var schedule = await _scheduleService.GetSchedule(scheduleInfoRequest);
         return Ok(schedule);
     }
+    
+    [HttpGet("hours")]
+    public async Task<IActionResult> GetHours()
+    {
+        return Ok(_scheduleService.GetHours());
+    }
 }

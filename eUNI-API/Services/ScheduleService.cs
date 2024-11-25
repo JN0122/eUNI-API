@@ -1,7 +1,6 @@
 using eUNI_API.Data;
-using eUNI_API.Enums;
 using eUNI_API.Helpers;
-using eUNI_API.Models.Dto;
+using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.Schedule;
 using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Models.Entities.OrganizationInfo;
@@ -11,10 +10,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class ScheduleService(AppDbContext context, IOrganizationRepository organizationRepository): IScheduleService
+public class ScheduleService(AppDbContext context, IOrganizationRepository organizationRepository, IClassesRepository classesRepository): IScheduleService
 {
     private readonly AppDbContext _context = context;
     private readonly IOrganizationRepository _organizationRepository = organizationRepository;
+    private readonly IClassesRepository _classesRepository = classesRepository;
 
     private class ThisWeekClass
     {
@@ -60,9 +60,9 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
         return classes;
     }
 
-    public List<Hour> GetHours()
+    public IEnumerable<HourDto> GetHours()
     {
-        return _context.Hours.ToList();
+        return _classesRepository.GetHour();
     }
 
     public ClassAssignment? GetClassAssigment(int classId, DateOnly date)
@@ -109,12 +109,12 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
         {
             var weekDays = new ScheduleWeekDays
             {
-                Id = hour.Id,
-                Hour = hour.HourInterval
+                Id = hour.HourId,
+                Hour = hour.HourName
             };
             foreach (var thisWeekClass in thisWeekClasses)
             {
-                if(thisWeekClass.classEntity.StartHour != hour) continue;
+                if(thisWeekClass.classEntity.StartHourId != hour.HourId) continue;
                 var assignment = GetClassAssigment(thisWeekClass.classEntity.Id, thisWeekClass.date);
                 var weekDay = DateHelper.GetWeekDay(thisWeekClass.date);
                 var prop = weekDays.GetType().GetProperty(weekDay);
