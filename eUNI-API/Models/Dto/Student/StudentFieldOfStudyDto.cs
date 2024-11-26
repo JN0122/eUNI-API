@@ -1,3 +1,5 @@
+using eUNI_API.Models.Dto.Group;
+
 namespace eUNI_API.Models.Dto.Student;
 
 public class StudentFieldOfStudyDto
@@ -7,5 +9,5 @@ public class StudentFieldOfStudyDto
     public string Name { get; set; }
     public int StudiesCycle { get; set; }
     public bool IsRepresentative { get; set; }
-    public IEnumerable<int>? GroupIds { get; set; }
+    public IEnumerable<GroupDto>? Groups { get; set; }
 }

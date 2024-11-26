@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Models.Dto.Group;
 using eUNI_API.Models.Dto.Student;
 using eUNI_API.Models.Entities.Student;
 using eUNI_API.Repositories.Interfaces;
@@ -15,17 +16,21 @@ public class StudentRepository(AppDbContext context): IStudentRepository
         var student = await _context.Students.AsNoTracking().FirstOrDefaultAsync(s => s.UserId == userId);
         return student?.Id;
     }
-    public async Task<List<StudentGroup>?> GetStudentGroups(int fieldOfStudyLogId, int studentId)
+    public async Task<List<GroupDto>?> GetStudentGroups(int fieldOfStudyLogId, int studentId)
     {
         var studentFieldOfStudy = await _context.StudentFieldsOfStudyLogs
             .FirstOrDefaultAsync(f => f.FieldsOfStudyLogId == fieldOfStudyLogId && f.StudentId == studentId);
-        return studentFieldOfStudy == null ? null : _context.StudentGroups.Where(group => group.StudentsFieldsOfStudyLogId == studentFieldOfStudy.Id).ToList();
-    }
-    
-    public async Task<IEnumerable<int>?> GetStudentGroupIds(int fieldOfStudyId, int studentId)
-    {
-        var studentGroups = await GetStudentGroups(fieldOfStudyId, studentId);
-        return studentGroups?.Select(g => g.Id).ToList();
+        if (studentFieldOfStudy == null) return null;
+        
+        return _context.StudentGroups
+            .Where(group => group.StudentsFieldsOfStudyLogId == studentFieldOfStudy.Id)
+            .Include(sg => sg.Group)
+            .Select(g=> new GroupDto
+            {
+                GroupId = g.GroupId,
+                GroupName = g.Group.Abbr,
+                Type = g.Group.Type,
+            }).ToList();
     }
 
     public async Task<IEnumerable<StudentFieldOfStudyDto>?> GetStudentFieldsOfStudy(int studentId, int academicOrganizationId)
@@ -43,7 +48,7 @@ public class StudentRepository(AppDbContext context): IStudentRepository
             Name = fieldOfStudy.FieldsOfStudyLog.FieldOfStudy.Name,
             StudiesCycle = fieldOfStudy.FieldsOfStudyLog.FieldOfStudy.StudiesCycle,
             IsRepresentative = IsRepresentativeForFieldOfStudy(fieldOfStudy.FieldsOfStudyLogId, studentId),
-            GroupIds = GetStudentGroupIds(fieldOfStudy.FieldsOfStudyLogId, studentId).Result
+            Groups = GetStudentGroups(fieldOfStudy.FieldsOfStudyLogId, studentId).Result
         });
         
         return fieldOfStudyInfoDto;

@@ -30,9 +30,4 @@ public class StudentService(IStudentRepository studentRepository, IOrganizationR
             FieldsOfStudyInfo = fieldsOfStudy
         };
     }
-    
-    public async Task<IEnumerable<GroupDto>> GetGroups(int fieldOfStudyLogId)
-    {
-        throw new NotImplementedException();
-    }
 }
