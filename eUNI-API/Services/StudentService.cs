@@ -39,6 +39,7 @@ public class StudentService(AppDbContext context, IStudentRepository studentRepo
             .AsNoTracking()
             .Where(c => c.FieldOfStudyLogId == fieldOfStudyLogId)
             .ToListAsync();
-        return classes.Select(c => _groupRepository.GetGroup(c.Id));
+        var groups = classes.Select(c => _groupRepository.GetGroup(c.Id)).DistinctBy(g => g.GroupId);
+        return groups;
     }
 }
