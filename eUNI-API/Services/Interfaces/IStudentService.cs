@@ -7,5 +7,6 @@ namespace eUNI_API.Services.Interfaces;
 public interface IStudentService
 {
     public Task<StudentInfoDto> GetStudentInfo(Guid userId);
+    public Task ChangeStudentGroup(Guid userId, StudentChangeGroupRequestDto studentChangeGroupRequestDto);
     // groups, student fields of study
 }

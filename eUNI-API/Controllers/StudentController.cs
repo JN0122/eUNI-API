@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using eUNI_API.Models.Dto.FieldOfStudy;
+using eUNI_API.Models.Dto.Student;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,5 +21,13 @@ public class StudentController(IStudentService studentService, IUserService user
         var user = await _userService.FindUserByClaim(User.Claims); 
         var studentInfo = await _studentService.GetStudentInfo(user.Id);
         return Ok(studentInfo);
+    }
+    
+    [HttpPost("group")]
+    public async Task<IActionResult> ChangeStudentGroup([FromBody] StudentChangeGroupRequestDto studentChangeGroupRequestDto)
+    {
+        var user = await _userService.FindUserByClaim(User.Claims); 
+        await _studentService.ChangeStudentGroup(user.Id, studentChangeGroupRequestDto);
+        return Ok();
     }
 }

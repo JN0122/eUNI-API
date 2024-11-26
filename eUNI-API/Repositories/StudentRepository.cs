@@ -10,13 +10,34 @@ namespace eUNI_API.Repositories;
 public class StudentRepository(AppDbContext context): IStudentRepository
 {
     private readonly AppDbContext _context = context;
+
+    private Group GetGroup(int groupId)
+    {
+        var group = _context.Groups.FirstOrDefault(g => g.Id == groupId);
+        if(group == null) throw new ArgumentException("Group not found");
+        return group;
+    }
+    
+    private StudentFieldsOfStudyLog GetStudentFieldOfStudyLog(int studentFieldOfStudyLogId)
+    {
+        var studentFieldOfStudyLog = _context.StudentFieldsOfStudyLogs.FirstOrDefault(sf => sf.FieldsOfStudyLogId == studentFieldOfStudyLogId);
+        if(studentFieldOfStudyLog == null) throw new ArgumentException("StudentFieldOfStudyLog not found");
+        return studentFieldOfStudyLog;
+    }
+
+    private StudentGroup GetStudentGroup(int studentGroupId)
+    {
+        var studentGroup = _context.StudentGroups.FirstOrDefault(sg => sg.Id == studentGroupId);
+        if(studentGroup == null) throw new ArgumentException($"Student group not found");
+        return studentGroup;
+    }
     
     public async Task<int?> GetStudentId(Guid userId)
     {
         var student = await _context.Students.AsNoTracking().FirstOrDefaultAsync(s => s.UserId == userId);
         return student?.Id;
     }
-    public async Task<List<GroupDto>?> GetStudentGroups(int fieldOfStudyLogId, int studentId)
+    public async Task<List<GroupDto>?> GetGroups(int fieldOfStudyLogId, int studentId)
     {
         var studentFieldOfStudy = await _context.StudentFieldsOfStudyLogs
             .FirstOrDefaultAsync(f => f.FieldsOfStudyLogId == fieldOfStudyLogId && f.StudentId == studentId);
@@ -48,7 +69,7 @@ public class StudentRepository(AppDbContext context): IStudentRepository
             Name = fieldOfStudy.FieldsOfStudyLog.FieldOfStudy.Name,
             StudiesCycle = fieldOfStudy.FieldsOfStudyLog.FieldOfStudy.StudiesCycle,
             IsRepresentative = IsRepresentativeForFieldOfStudy(fieldOfStudy.FieldsOfStudyLogId, studentId),
-            Groups = GetStudentGroups(fieldOfStudy.FieldsOfStudyLogId, studentId).Result
+            Groups = GetGroups(fieldOfStudy.FieldsOfStudyLogId, studentId).Result
         });
         
         return fieldOfStudyInfoDto;
@@ -81,5 +102,38 @@ public class StudentRepository(AppDbContext context): IStudentRepository
         var studentFieldsOfStudy = GetStudentFieldsOfStudy(studentId, academicOrganizationId).Result;
         return studentFieldsOfStudy?.Where(fieldOfStudyDto =>
             IsRepresentativeForFieldOfStudy(fieldOfStudyDto.FieldOfStudyLogId, studentId));
+    }
+
+    public StudentFieldsOfStudyLog GetStudentFieldOfStudyLog(int fieldOfStudyLogId, int studentId)
+    {
+        var studentFieldOfStudyLog = _context.StudentFieldsOfStudyLogs.FirstOrDefault(sf =>
+            sf.FieldsOfStudyLogId == fieldOfStudyLogId && sf.StudentId == studentId);
+        if(studentFieldOfStudyLog == null) throw new ArgumentException("Student field of study log not found");
+        return studentFieldOfStudyLog;
+    }
+
+    public StudentGroup? GetStudentGroup(int studentFieldOfStudyLogId, int groupType)
+    {
+        return _context.StudentGroups
+            .Include(sg => sg.Group)
+            .FirstOrDefault(sg => sg.StudentsFieldsOfStudyLogId == studentFieldOfStudyLogId && sg.Group.Type == groupType);
+    }
+
+    public void JoinGroup(int studentFieldOfStudyLogId, int groupId)
+    {
+        _context.StudentGroups.Add(new StudentGroup
+        {
+            Group = GetGroup(groupId),
+            StudentsFieldsOfStudyLog = GetStudentFieldOfStudyLog(studentFieldOfStudyLogId)
+        });
+        _context.SaveChanges();
+    }
+
+    public void ChangeGroup(int studentGroupId, int groupId)
+    {
+        var studentGroup = GetStudentGroup(studentGroupId);
+        studentGroup.Group = GetGroup(groupId);
+        _context.Update(studentGroup);
+        _context.SaveChanges();
     }
 }

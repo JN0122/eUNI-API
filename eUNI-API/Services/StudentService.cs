@@ -30,4 +30,18 @@ public class StudentService(IStudentRepository studentRepository, IOrganizationR
             FieldsOfStudyInfo = fieldsOfStudy
         };
     }
+
+    public async Task ChangeStudentGroup(Guid userId, StudentChangeGroupRequestDto studentChangeGroupRequestDto)
+    {
+        var studentId = await _studentRepository.GetStudentId(userId);
+        if(studentId == null) throw new ArgumentException("Invalid user");
+        var studentFieldOfStudyLog = _studentRepository.GetStudentFieldOfStudyLog(studentChangeGroupRequestDto.FieldOfStudyLogId, studentId.Value);
+        var studentGroup =
+            _studentRepository.GetStudentGroup(studentFieldOfStudyLog.Id, studentChangeGroupRequestDto.GroupType);
+
+        if (studentGroup == null)
+            _studentRepository.JoinGroup(studentFieldOfStudyLog.Id, studentChangeGroupRequestDto.GroupId); 
+        else
+            _studentRepository.ChangeGroup(studentGroup.Id, studentChangeGroupRequestDto.GroupId);
+    }
 }
