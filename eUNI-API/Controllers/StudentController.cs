@@ -23,9 +23,9 @@ public class StudentController(IStudentService studentService, IUserService user
     }
     
     [HttpGet("groups")]
-    public async Task<IActionResult> StudentFieldsOfStudies([FromQuery] [Required] int fieldOfStudyId)
+    public async Task<IActionResult> StudentFieldsOfStudies([FromQuery] [Required] int fieldOfStudyLogId)
     {
-        var groups = await _studentService.GetGroups(fieldOfStudyId);
+        var groups = await _studentService.GetGroups(fieldOfStudyLogId);
         return Ok(groups);
     }
 }
