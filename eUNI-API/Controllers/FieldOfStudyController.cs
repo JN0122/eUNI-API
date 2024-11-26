@@ -8,14 +8,14 @@ namespace eUNI_API.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class FieldOfStudyController(IStudentService studentService): ControllerBase
+public class FieldOfStudyController(IFieldOfStudyServices fieldOfStudyServices): ControllerBase
 {
-    private readonly IStudentService _studentService = studentService;
+    private readonly IFieldOfStudyServices _fieldOfStudyServices = fieldOfStudyServices;
     
     [HttpGet("groups")]
-    public async Task<IActionResult> StudentFieldsOfStudies([FromQuery] [Required] int fieldOfStudyLogId)
+    public async Task<IActionResult> FieldsOfStudiesGroups([FromQuery] [Required] int fieldOfStudyLogId)
     {
-        var groups = await _studentService.GetGroups(fieldOfStudyLogId);
+        var groups = await _fieldOfStudyServices.GetGroups(fieldOfStudyLogId);
         return Ok(groups);
     }
 }
