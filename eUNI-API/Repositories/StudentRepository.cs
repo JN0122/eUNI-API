@@ -100,7 +100,8 @@ public class StudentRepository(AppDbContext context): IStudentRepository
             Name = fieldOfStudy.FieldsOfStudyLog.FieldOfStudy.Name,
             StudiesCycle = fieldOfStudy.FieldsOfStudyLog.FieldOfStudy.StudiesCycle,
             IsRepresentative = IsRepresentativeForFieldOfStudy(fieldOfStudy.FieldsOfStudyLogId, studentId),
-            Groups = GetGroups(fieldOfStudy.FieldsOfStudyLogId, studentId).Result
+            Groups = GetGroups(fieldOfStudy.FieldsOfStudyLogId, studentId).Result,
+            IsFullTime = fieldOfStudy.FieldsOfStudyLog.FieldOfStudy.IsFullTime
         });
         
         return fieldOfStudyInfoDto;

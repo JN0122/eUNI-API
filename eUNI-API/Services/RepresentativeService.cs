@@ -36,7 +36,8 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
             FieldOfStudyLogId = dto.FieldOfStudyLogId,
             Name = dto.Name,
             Semester = dto.Semester,
-            StudiesCycle = dto.StudiesCycle
+            StudiesCycle = dto.StudiesCycle,
+            IsFullTime = dto.IsFullTime
         });
     }
     

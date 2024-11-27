@@ -120,7 +120,8 @@ public static class DbSeed
                 Abbr="K",
                 Name="Informatyka Stosowana",
                 StudiesCycle = 1,
-                SemesterCount = 7
+                SemesterCount = 7,
+                IsFullTime = true
             }
         );
 

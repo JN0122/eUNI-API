@@ -17,5 +17,7 @@ public class FieldOfStudy
     
     public byte SemesterCount { get; set; }
     
+    public bool IsFullTime { get; set; }
+    
     public IEnumerable<FieldOfStudyLog> FieldOfStudyLogs { get; set; }
 }
