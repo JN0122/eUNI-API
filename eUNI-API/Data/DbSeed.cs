@@ -76,16 +76,17 @@ public static class DbSeed
             new Hour { Id = 2, HourInterval = "8:15 - 9:00" },
             new Hour { Id = 3, HourInterval = "9:15 - 10:00" },
             new Hour { Id = 4, HourInterval = "10:00 - 10:45" },
-            new Hour { Id = 5, HourInterval = "11:45 - 12:30" },
-            new Hour { Id = 6, HourInterval = "12:45 - 13:30" },
-            new Hour { Id = 7, HourInterval = "13:30 - 14:15" },
-            new Hour { Id = 8, HourInterval = "14:30 - 15:15" },
-            new Hour { Id = 9, HourInterval = "15:15 - 16:00" },
-            new Hour { Id = 10, HourInterval = "16:15 - 17:00" },
-            new Hour { Id = 11, HourInterval = "17:00 - 17:45" },
-            new Hour { Id = 12, HourInterval = "18:00 - 18:45" },
-            new Hour { Id = 13, HourInterval = "18:45 - 19:30" },
-            new Hour { Id = 14, HourInterval = "19:45 - 20:30" }
+            new Hour { Id = 5, HourInterval = "11:00 - 11:45" },
+            new Hour { Id = 6, HourInterval = "11:45 - 12:30" },
+            new Hour { Id = 7, HourInterval = "12:45 - 13:30" },
+            new Hour { Id = 8, HourInterval = "13:30 - 14:15" },
+            new Hour { Id = 9, HourInterval = "14:30 - 15:15" },
+            new Hour { Id = 10, HourInterval = "15:15 - 16:00" },
+            new Hour { Id = 11, HourInterval = "16:15 - 17:00" },
+            new Hour { Id = 12, HourInterval = "17:00 - 17:45" },
+            new Hour { Id = 13, HourInterval = "18:00 - 18:45" },
+            new Hour { Id = 14, HourInterval = "18:45 - 19:30" },
+            new Hour { Id = 15, HourInterval = "19:45 - 20:30" }
         );
         
         modelBuilder.Entity<Year>()
