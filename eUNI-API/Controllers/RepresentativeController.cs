@@ -79,4 +79,11 @@ public class RepresentativeController(IRepresentativeService representativeServi
         await _representativeService.DeleteAssignment(id);
         return Ok();
     }
+    
+    [HttpGet("all-groups")]
+    public async Task<IActionResult> GetAllGroups()
+    {
+        var groups = _representativeService.GetAllGroups();
+        return Ok(groups);
+    }
 }

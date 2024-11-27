@@ -37,7 +37,7 @@ public class StudentRepository(AppDbContext context): IStudentRepository
         var student = await _context.Students.AsNoTracking().FirstOrDefaultAsync(s => s.UserId == userId);
         return student?.Id;
     }
-    public async Task<List<GroupDto>?> GetGroups(int fieldOfStudyLogId, int studentId)
+    public async Task<IEnumerable<GroupDto>?> GetGroups(int fieldOfStudyLogId, int studentId)
     {
         var studentFieldOfStudy = await _context.StudentFieldsOfStudyLogs
             .FirstOrDefaultAsync(f => f.FieldsOfStudyLogId == fieldOfStudyLogId && f.StudentId == studentId);
@@ -52,6 +52,16 @@ public class StudentRepository(AppDbContext context): IStudentRepository
                 GroupName = g.Group.Abbr,
                 Type = g.Group.Type,
             }).ToList();
+    }
+
+    public IEnumerable<GroupDto> GetAllGroups()
+    {
+        return _context.Groups.ToList().Select(g => new GroupDto
+        {
+            GroupId = g.Id,
+            GroupName = g.Abbr,
+            Type = g.Type,
+        });
     }
 
     public async Task<IEnumerable<StudentFieldOfStudyDto>?> GetStudentFieldsOfStudy(int studentId, int academicOrganizationId)

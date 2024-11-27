@@ -3,6 +3,7 @@ using eUNI_API.Data;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
+using eUNI_API.Models.Dto.Group;
 using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services.Interfaces;
@@ -184,5 +185,10 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
         
         _context.Assignments.Remove(assignmentEntity);
         await _context.SaveChangesAsync();
+    }
+
+    public IEnumerable<GroupDto> GetAllGroups()
+    {
+        return _studentRepository.GetAllGroups();
     }
 }

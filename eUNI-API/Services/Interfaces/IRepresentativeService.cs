@@ -1,5 +1,6 @@
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
+using eUNI_API.Models.Dto.Group;
 
 namespace eUNI_API.Services.Interfaces;
 
@@ -14,4 +15,5 @@ public interface IRepresentativeService
     public Task CreateAssignment(CreateAssignmentRequestDto assignmentRequestDto);
     public Task UpdateAssignment(int id, CreateAssignmentRequestDto assignmentRequestDto);
     public Task DeleteAssignment(int id);
+    public IEnumerable<GroupDto> GetAllGroups();
 }
