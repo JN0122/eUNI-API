@@ -67,7 +67,7 @@ public class RepresentativeController(IRepresentativeService representativeServi
     }
     
     [HttpPut("assignments/{id:int}")]
-    public async Task<IActionResult> CreateAssigment([FromRoute] [Required] int id, [FromBody] [Required] CreateAssignmentRequestDto assignmentRequestDto)
+    public async Task<IActionResult> UpdateAssigment([FromRoute] [Required] int id, [FromBody] [Required] CreateAssignmentRequestDto assignmentRequestDto)
     {
         await _representativeService.UpdateAssignment(id, assignmentRequestDto);
         return Ok();
