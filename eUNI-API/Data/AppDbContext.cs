@@ -71,74 +71,54 @@ public class AppDbContext: DbContext
         modelBuilder.Entity<Group>()
             .Property(g => g.Id)
             .ValueGeneratedOnAdd();
+        modelBuilder.Entity<Group>().HasKey(g => g.Id);
         modelBuilder.Entity<Group>().HasData(
-            new Group
-            {
-                Id = 1,
-                Abbr = "P01",
-                Type = (int)GroupType.Project
-            },
-            new Group
-            {
-                Id = 2,
-                Abbr = "W",
-                Type = (int)GroupType.Lecture
-            },
-            new Group
-            {
-                Id = 3,
-                Abbr = "K02",
-                Type = (int)GroupType.Computer
-            },
-            new Group
-            {
-                Id = 4,
-                Abbr = "K01",
-                Type = (int)GroupType.Computer
-            },
-            new Group
-            {
-                Id = 5,
-                Abbr = "L01",
-                Type = (int)GroupType.Laboratory
-            }
+            new Group { Id = 1, Abbr = "P01", Type = (int)GroupType.Project },
+            new Group { Id = 2, Abbr = "P02", Type = (int)GroupType.Project },
+            new Group { Id = 3, Abbr = "P03", Type = (int)GroupType.Project },
+            new Group { Id = 4, Abbr = "P04", Type = (int)GroupType.Project },
+            new Group { Id = 5, Abbr = "P05", Type = (int)GroupType.Project },
+            new Group { Id = 6, Abbr = "W", Type = (int)GroupType.Lecture },
+            new Group { Id = 7, Abbr = "K01", Type = (int)GroupType.Computer },
+            new Group { Id = 8, Abbr = "K02", Type = (int)GroupType.Computer },
+            new Group { Id = 9, Abbr = "K03", Type = (int)GroupType.Computer },
+            new Group { Id = 10, Abbr = "K04", Type = (int)GroupType.Computer },
+            new Group { Id = 11, Abbr = "K05", Type = (int)GroupType.Computer },
+            new Group { Id = 12, Abbr = "L01", Type = (int)GroupType.Laboratory },
+            new Group { Id = 13, Abbr = "L02", Type = (int)GroupType.Laboratory },
+            new Group { Id = 14, Abbr = "L03", Type = (int)GroupType.Laboratory },
+            new Group { Id = 15, Abbr = "L04", Type = (int)GroupType.Laboratory },
+            new Group { Id = 16, Abbr = "L05", Type = (int)GroupType.Laboratory },
+            new Group { Id = 17, Abbr = "1", Type = (int)GroupType.DeanGroup },
+            new Group { Id = 18, Abbr = "2", Type = (int)GroupType.DeanGroup },
+            new Group { Id = 19, Abbr = "3", Type = (int)GroupType.DeanGroup }
         );
-
+        
         modelBuilder.Entity<Hour>()
             .Property(h => h.Id)
             .ValueGeneratedOnAdd();
         modelBuilder.Entity<Hour>().HasData(
-            new Hour
-            {
-                Id = 1,
-                HourInterval="7:30 - 8:15"
-            },
-            new Hour
-            {
-                Id = 2,
-                HourInterval="8:15 - 9:00"
-            },
-            new Hour
-            {
-                Id = 3,
-                HourInterval="9:15 - 10:00"
-            },
-            new Hour
-            {
-                Id = 4,
-                HourInterval="10:00 - 10:45"
-            }
+            new Hour { Id = 1, HourInterval = "7:30 - 8:15" },
+            new Hour { Id = 2, HourInterval = "8:15 - 9:00" },
+            new Hour { Id = 3, HourInterval = "9:15 - 10:00" },
+            new Hour { Id = 4, HourInterval = "10:00 - 10:45" },
+            new Hour { Id = 5, HourInterval = "11:45 - 12:30" },
+            new Hour { Id = 6, HourInterval = "12:45 - 13:30" },
+            new Hour { Id = 7, HourInterval = "13:30 - 14:15" },
+            new Hour { Id = 8, HourInterval = "14:30 - 15:15" },
+            new Hour { Id = 9, HourInterval = "15:15 - 16:00" },
+            new Hour { Id = 10, HourInterval = "16:15 - 17:00" },
+            new Hour { Id = 11, HourInterval = "17:00 - 17:45" },
+            new Hour { Id = 12, HourInterval = "18:00 - 18:45" },
+            new Hour { Id = 13, HourInterval = "18:45 - 19:30" },
+            new Hour { Id = 14, HourInterval = "19:45 - 20:30" }
         );
         
         modelBuilder.Entity<Year>()
             .Property(y => y.Id)
             .ValueGeneratedOnAdd();
         modelBuilder.Entity<Year>().HasData(
-            new Year
-            {
-                Id = 1,
-                Name="2024/2025"
-            }
+            new Year { Id = 1, Name="2024/2025" }
         );
         
         modelBuilder.Entity<OrganizationOfTheYear>()
@@ -208,7 +188,7 @@ public class AppDbContext: DbContext
             {
                 Id = 1,
                 UserId = new Guid("dd205297-4d6d-4ef3-a139-350c55518085"),
-                AlbumNumber = "144863"
+                AlbumNumber = "D/123231/"
             }
         );
         
