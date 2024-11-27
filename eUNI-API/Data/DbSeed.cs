@@ -122,6 +122,15 @@ public static class DbSeed
                 StudiesCycle = 1,
                 SemesterCount = 7,
                 IsFullTime = true
+            },
+            new FieldOfStudy
+            {
+                Id = 2,
+                Abbr="S",
+                Name="Pojazdy Samochodowe",
+                StudiesCycle = 1,
+                SemesterCount = 4,
+                IsFullTime = false
             }
         );
 
@@ -135,7 +144,14 @@ public static class DbSeed
                 FieldOfStudyId = 1,
                 OrganizationsOfTheYearId = 1,
                 Semester = 7
-            }    
+            },
+            new FieldOfStudyLog
+            {
+                Id = 2,
+                FieldOfStudyId = 2,
+                OrganizationsOfTheYearId = 1,
+                Semester = 5
+            }  
         );
         
         modelBuilder.Entity<Class>()
