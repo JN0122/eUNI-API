@@ -182,13 +182,6 @@ public static class DbSeed
         modelBuilder.Entity<StudentGroup>()
             .Property(s => s.Id)
             .ValueGeneratedOnAdd();
-        modelBuilder.Entity<StudentGroup>().HasData(
-            new StudentGroup{
-                Id = 1,
-                GroupId = 1,
-                StudentsFieldsOfStudyLogId = 1,
-            }
-        );
         
         modelBuilder.Entity<Assignment>()
             .Property(a => a.Id)
