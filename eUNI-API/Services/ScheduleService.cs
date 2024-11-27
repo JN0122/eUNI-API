@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Enums;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.Schedule;
@@ -10,11 +11,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class ScheduleService(AppDbContext context, IOrganizationRepository organizationRepository, IClassesRepository classesRepository): IScheduleService
+public class ScheduleService(AppDbContext context, IOrganizationRepository organizationRepository, IClassesRepository classesRepository, IGroupRepository groupRepository): IScheduleService
 {
     private readonly AppDbContext _context = context;
     private readonly IOrganizationRepository _organizationRepository = organizationRepository;
     private readonly IClassesRepository _classesRepository = classesRepository;
+    private readonly IGroupRepository _groupRepository = groupRepository;
 
     private class ThisWeekClass
     {
@@ -55,6 +57,7 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
     {
         var classes = await _context.Classes
             .Where(c=>c.FieldOfStudyLogId == fieldOfStudyLogId)
+            .Include(c=>c.Group)
             .ToListAsync();
         
         return classes;
@@ -118,12 +121,13 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
                 var assignment = GetClassAssigment(thisWeekClass.classEntity.Id, thisWeekClass.date);
                 var weekDay = DateHelper.GetWeekDay(thisWeekClass.date);
                 var prop = weekDays.GetType().GetProperty(weekDay);
+                var group = _groupRepository.GetGroupName(thisWeekClass.classEntity.Id);
                 
                 if(prop == null) throw new Exception($"Property '{weekDay}' not found in ScheduleWeekDays");
                 prop.SetValue(weekDays, new ScheduleClass
                 {
                     Hours = thisWeekClass.classEntity.EndHourId - thisWeekClass.classEntity.StartHourId + 1,
-                    Name = thisWeekClass.classEntity.Name,
+                    Name = $"{thisWeekClass.classEntity.Name} ({group})",
                     Room = thisWeekClass.classEntity.Room,
                     Type = GetGroupType(thisWeekClass.classEntity.GroupId),
                     Assignment = assignment

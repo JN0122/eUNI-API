@@ -1,6 +1,8 @@
 using eUNI_API.Data;
+using eUNI_API.Enums;
 using eUNI_API.Models.Dto.Group;
 using eUNI_API.Models.Dto.Student;
+using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Models.Entities.Student;
 using eUNI_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,16 @@ namespace eUNI_API.Repositories;
 public class StudentRepository(AppDbContext context): IStudentRepository
 {
     private readonly AppDbContext _context = context;
+
+    private FieldOfStudy GetFieldOfStudy(int fieldOfStudyLogId)
+    {
+        var fieldOfStudy = _context.FieldOfStudyLogs
+            .AsNoTracking()
+            .Include(f=>f.FieldOfStudy)
+            .First(f => f.Id == fieldOfStudyLogId);
+        if(fieldOfStudy == null) throw new ArgumentException("Group not found");
+        return fieldOfStudy.FieldOfStudy;
+    }
 
     private Group GetGroup(int groupId)
     {
@@ -46,20 +58,29 @@ public class StudentRepository(AppDbContext context): IStudentRepository
         return _context.StudentGroups
             .Where(group => group.StudentsFieldsOfStudyLogId == studentFieldOfStudy.Id)
             .Include(sg => sg.Group)
-            .Select(g=> new GroupDto
+            .Select(sg=> new GroupDto
             {
-                GroupId = g.GroupId,
-                GroupName = g.Group.Abbr,
-                Type = g.Group.Type,
-            }).ToList();
+                GroupId = sg.Group.Id,
+                GroupName = GetGroupName(studentFieldOfStudy.FieldsOfStudyLog.FieldOfStudy, sg.Group),
+                Type = sg.Group.Type,
+            });
     }
 
-    public IEnumerable<GroupDto> GetAllGroups()
+    private static string GetGroupName(FieldOfStudy fieldOfStudy, Group group)
     {
-        return _context.Groups.ToList().Select(g => new GroupDto
+        if (group.Type != (int)GroupType.DeanGroup)
+            return group.Abbr;
+        
+        return fieldOfStudy.Abbr + group.Abbr;
+    }
+
+    public IEnumerable<GroupDto> GetAllGroups(int fieldOfStudyLogId)
+    {
+        var fieldOfStudy = GetFieldOfStudy(fieldOfStudyLogId);
+        return _context.Groups.Select(g => new GroupDto
         {
             GroupId = g.Id,
-            GroupName = g.Abbr,
+            GroupName = GetGroupName(fieldOfStudy, g),
             Type = g.Type,
         });
     }

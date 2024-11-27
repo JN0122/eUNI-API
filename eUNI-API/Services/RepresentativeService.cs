@@ -11,13 +11,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository fieldOfStudyRepository, IAuthRepository authRepository, IOrganizationRepository organizationRepository, IStudentRepository studentRepository): IRepresentativeService
+public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository fieldOfStudyRepository, IAuthRepository authRepository, IOrganizationRepository organizationRepository, IStudentRepository studentRepository, IGroupRepository groupRepository): IRepresentativeService
 {
     private readonly AppDbContext _context = context;
     private readonly IFieldOfStudyRepository _fieldOfStudyRepository = fieldOfStudyRepository;
     private readonly IAuthRepository _authRepository = authRepository;
     private readonly IOrganizationRepository _organizationRepository = organizationRepository;
     private readonly IStudentRepository _studentRepository = studentRepository;
+    private readonly IGroupRepository _groupRepository = groupRepository;
 
     public async Task<IEnumerable<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId)
     {
@@ -53,7 +54,7 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
                 Id = classEntity.Id,
                 ClassName = classEntity.Name,
                 GroupId = classEntity.GroupId,
-                GroupName = classEntity.Group.Abbr,
+                GroupName = _groupRepository.GetGroupName(classEntity.Id),
                 EndHourId = classEntity.EndHourId,
                 EndHour = classEntity.EndHour.HourInterval,
                 StartHourId = classEntity.StartHourId,
@@ -187,8 +188,8 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
         await _context.SaveChangesAsync();
     }
 
-    public IEnumerable<GroupDto> GetAllGroups()
+    public IEnumerable<GroupDto> GetAllGroups(int fieldOfStudyLogId)
     {
-        return _studentRepository.GetAllGroups();
+        return _studentRepository.GetAllGroups(fieldOfStudyLogId);
     }
 }

@@ -15,5 +15,5 @@ public interface IRepresentativeService
     public Task CreateAssignment(CreateAssignmentRequestDto assignmentRequestDto);
     public Task UpdateAssignment(int id, CreateAssignmentRequestDto assignmentRequestDto);
     public Task DeleteAssignment(int id);
-    public IEnumerable<GroupDto> GetAllGroups();
+    public IEnumerable<GroupDto> GetAllGroups(int fieldOfStudyLogId);
 }

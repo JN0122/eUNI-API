@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Enums;
 using eUNI_API.Models.Dto.Group;
 using eUNI_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +16,23 @@ public class GroupRepository(AppDbContext context): IGroupRepository
         return new GroupDto
         {
             GroupId = classEntity.GroupId,
-            GroupName = classEntity.Group.Abbr,
+            GroupName = GetGroupName(classEntity.Id),
             Type = classEntity.Group.Type
         };
+    }
+    
+    public string GetGroupName(int classId)
+    {
+        var classEntity = _context.Classes.AsNoTracking().Include(c => c.Group)
+            .Include(c => c.FieldOfStudyLog)
+            .ThenInclude(f => f.FieldOfStudy)
+            .FirstOrDefault(c => c.Id == classId); 
+        
+        if(classEntity == null) throw new NullReferenceException($"Class not found: classId={classId}");
+
+        if (classEntity.Group.Type != (int)GroupType.DeanGroup)
+            return classEntity.Group.Abbr;
+        
+        return classEntity.FieldOfStudyLog.FieldOfStudy.Abbr + classEntity.Group.Abbr;
     }
 }

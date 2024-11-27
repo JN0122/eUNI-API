@@ -8,7 +8,7 @@ public interface IStudentRepository
 {
     public Task<int?> GetStudentId(Guid userId);
     public Task<IEnumerable<GroupDto>?> GetGroups(int fieldOfStudyLogId, int studentId);
-    public IEnumerable<GroupDto> GetAllGroups();
+    public IEnumerable<GroupDto> GetAllGroups(int fieldOfStudyLogId);
     public Task<IEnumerable<StudentFieldOfStudyDto>?> GetStudentFieldsOfStudy(int studentId, int academicOrganizationId);
     public string? GetAlbumNumber(int studentId);
     public bool IsRepresentativeForFieldOfStudy(int fieldsOfStudyLogId, int studentId);

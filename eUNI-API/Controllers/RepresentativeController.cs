@@ -81,9 +81,9 @@ public class RepresentativeController(IRepresentativeService representativeServi
     }
     
     [HttpGet("all-groups")]
-    public async Task<IActionResult> GetAllGroups()
+    public async Task<IActionResult> GetAllGroups([Required] int fieldOfStudyLogId)
     {
-        var groups = _representativeService.GetAllGroups();
+        var groups = _representativeService.GetAllGroups(fieldOfStudyLogId);
         return Ok(groups);
     }
 }

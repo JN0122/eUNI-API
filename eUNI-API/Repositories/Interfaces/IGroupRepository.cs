@@ -5,4 +5,5 @@ namespace eUNI_API.Repositories.Interfaces;
 public interface IGroupRepository
 {
     public GroupDto GetGroup(int classId);
+    public string GetGroupName(int classId);
 }
