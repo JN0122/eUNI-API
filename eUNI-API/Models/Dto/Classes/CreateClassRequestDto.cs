@@ -14,8 +14,7 @@ public class CreateClassRequestDto
     [Required]
     public string Room { get; set; }
     
-    [Required]
-    public bool IsOddWeek { get; set; }
+    public bool? IsOddWeek { get; set; }
     
     [Required]
     public WeekDay WeekDay { get; set; }
