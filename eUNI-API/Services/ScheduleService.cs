@@ -80,10 +80,13 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
         var hours = GetClassesHours(userClasses);
         var (startOfWeek, endOfWeek) = DateHelper.GetWeekStartAndEndDates(scheduleInfoRequest.Year, scheduleInfoRequest.WeekNumber);
         var thisWeekClasses = FilterClassesBetweenDates(userClasses, startOfWeek, endOfWeek);
+        var organization = _organizationRepository.GetOrganizationsInfo(scheduleInfoRequest.fieldOfStudyLogId).Result;
         
         var schedule = new ScheduleDto
         {
             Date = $"{startOfWeek} - {endOfWeek}",
+            CanFetchNextWeek =  DateHelper.GetDayDifference(organization.EndDay, startOfWeek.AddDays(7)) > 0,
+            CanFetchPreviousWeek = DateHelper.GetDayDifference(organization.StartDay, endOfWeek.AddDays(-7)) < 0,
             Schedule = []
         };
 

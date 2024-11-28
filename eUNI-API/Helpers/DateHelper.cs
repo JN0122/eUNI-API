@@ -39,6 +39,11 @@ public static class DateHelper
     
     public static string GetWeekDay(DateOnly date)
     {
-        return DateHelper.ConvertToWeekDay(date.DayOfWeek).ToString();
+        return ConvertToWeekDay(date.DayOfWeek).ToString();
+    }
+
+    public static int GetDayDifference(DateOnly date1, DateOnly date2)
+    {
+        return (date1.ToDateTime(TimeOnly.MinValue) - date2.ToDateTime(TimeOnly.MinValue)).Days;
     }
 }
