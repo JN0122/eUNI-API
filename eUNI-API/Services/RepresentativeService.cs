@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using eUNI_API.Data;
+using eUNI_API.Enums;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
@@ -71,33 +72,18 @@ public class RepresentativeService(AppDbContext context,
             .ToList();
     }
     
-    private async Task<DateOnly?> CalculateClassDate(
-        Class classEntity, 
-        OrganizationOfTheYear organizationInfo, 
-        DateOnly startDay, 
-        DateOnly endDay)
+    private List<DateOnly> CalculateClassDate(OrganizationOfTheYear organizationInfo, bool? isOddWeek, WeekDay weekDay)
     {
-        if (classEntity.WeekDay == null) throw new ArgumentException("Cannot calculate classes when week day is null");
-        if (organizationInfo.StartDay > startDay) return null;
-        
-        var repeatClassInDays = classEntity.IsOddWeek == null ? 7 : 14;
-        var startFirstWeek = classEntity.IsOddWeek ?? true;
+        var repeatClassInDays = isOddWeek == null ? 7 : 14;
+        var startFirstWeek = isOddWeek ?? true;
 
-        var date = DateHelper.CalculateDate
-        (
-            organizationInfo.StartDay, 
-            organizationInfo.EndDay,
-            classEntity.WeekDay.Value, 
-            startDay,
-            endDay,
-            repeatClassInDays, 
-            startFirstWeek
+        var dates = DateHelper.CalculateDates(
+            organizationInfo.StartDay, organizationInfo.EndDay, weekDay, 
+            repeatClassInDays, startFirstWeek
         );
-        if(date == null) return null;
         
-        var daysOff = await _organizationRepository.GetDaysOff(organizationInfo.Id);
-
-        return daysOff.Any(dayOff => dayOff == date) ? null : date;
+        var daysOff = _organizationRepository.GetDaysOff(organizationInfo.Id).Result;
+        return dates.Where(d => !daysOff.Contains(d)).ToList();
     }
 
     public async Task CreateClass(CreateClassRequestDto classRequestDto)
@@ -106,8 +92,9 @@ public class RepresentativeService(AppDbContext context,
         var group = _groupRepository.GetGroupById(classRequestDto.GroupId);
         var startHour = _hourRepository.GetHourById(classRequestDto.StartHourId);
         var endHour = _hourRepository.GetHourById(classRequestDto.EndHourId);
-
-        _context.Classes.Add(new Class
+        var organization = _organizationRepository.GetOrganizationsInfo(classRequestDto.FieldOfStudyLogId).Result;
+        
+        var classEntity = _context.Classes.Add(new Class
         {
             Name = classRequestDto.Name,
             Room = classRequestDto.Room,
@@ -115,7 +102,16 @@ public class RepresentativeService(AppDbContext context,
             FieldOfStudyLog = fieldOfStudyLog,
             StartHour = startHour,
             EndHour = endHour
-        });
+        }).Entity;
+        
+        var dates = CalculateClassDate(organization, classRequestDto.IsOddWeek, classRequestDto.WeekDay);
+        if (dates.Count == 0) throw new ArgumentException("Cannot create class with no dates, please check if you selected a valid days.");
+        
+        _context.ClassDates.AddRange(dates.Select(d=>new ClassDate
+        {
+            Class = classEntity,
+            Date = d
+        }));
         
         await _context.SaveChangesAsync();
     }

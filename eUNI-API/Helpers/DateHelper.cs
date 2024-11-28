@@ -9,22 +9,23 @@ public static class DateHelper
         return (WeekDay)Enum.Parse(typeof(WeekDay), dayOfWeek.ToString());
     }
     
-    public static DateOnly? CalculateDate(DateOnly yearStart, DateOnly yearEnd, WeekDay classWeekDay, 
-        DateOnly startDay, DateOnly endDay, int repeatClassInDays, bool startFirstWeek)
+    public static List<DateOnly> CalculateDates(DateOnly yearStart, DateOnly yearEnd, WeekDay classWeekDay, 
+        int repeatClassInDays, bool startFirstWeek)
     {
-        var date = yearStart.AddDays((int)classWeekDay - (int)DateHelper.ConvertToWeekDay(yearStart.DayOfWeek));
+        var dayDifference = (int)classWeekDay - (int)ConvertToWeekDay(yearStart.DayOfWeek);
+        var startDate = yearStart.AddDays(dayDifference);
         
         if(!startFirstWeek)
-            date = date.AddDays(7);
+            startDate = startDate.AddDays(7);
         
-        if (date < yearStart)
-            date = date.AddDays(repeatClassInDays);
+        if (startDate < yearStart)
+            startDate = startDate.AddDays(repeatClassInDays);
         
-        var dates = new List<DateOnly> { date };
-        for (; date <= yearEnd && date <= endDay; date = date.AddDays(repeatClassInDays))
-            dates.Add(date);
+        var dates = new List<DateOnly> { startDate };
+        for (; startDate <= yearEnd; startDate = startDate.AddDays(repeatClassInDays))
+            dates.Add(startDate);
         
-        return dates.Last() < startDay? null : dates.Last();
+        return dates;
     }
     
     public static (DateOnly StartOfWeek, DateOnly EndOfWeek) GetWeekStartAndEndDates(int year, int weekNumber)
