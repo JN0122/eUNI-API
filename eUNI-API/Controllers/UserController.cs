@@ -11,9 +11,8 @@ namespace eUNI_API.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(AppDbContext context, IUserService userService): ControllerBase
+public class UserController(IUserService userService): ControllerBase
 {
-    private readonly AppDbContext _context = context;
     private readonly IUserService _userService = userService;
     
     [HttpGet("info")]

@@ -1,7 +1,8 @@
 using eUNI_API.Data;
 using eUNI_API.Models.Entities.Auth;
+using eUNI_API.Repositories.Interfaces;
 
-namespace eUNI_API.Repositories.Interfaces;
+namespace eUNI_API.Repositories;
 
 public class UserRepository(AppDbContext context): IUserRepository
 {
