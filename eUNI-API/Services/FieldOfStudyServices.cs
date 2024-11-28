@@ -17,7 +17,7 @@ public class FieldOfStudyServices(AppDbContext context, IGroupRepository groupRe
             .AsNoTracking()
             .Where(c => c.FieldOfStudyLogId == fieldOfStudyLogId)
             .ToListAsync();
-        var groups = classes.Select(c => _groupRepository.GetGroup(c.Id)).DistinctBy(g => g.GroupId);
+        var groups = classes.Select(c => _groupRepository.GetGroupByClass(c.Id)).DistinctBy(g => g.GroupId);
         return groups;
     }
 }
