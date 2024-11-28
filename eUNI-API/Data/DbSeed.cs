@@ -157,20 +157,6 @@ public static class DbSeed
         modelBuilder.Entity<Class>()
             .Property(c => c.Id)
             .ValueGeneratedOnAdd();
-        modelBuilder.Entity<Class>().HasData(
-            new Class
-            {
-                Id = 1,
-                FieldOfStudyLogId = 1,
-                Name = "Wytrzymałość materiałów",
-                Room="A103",
-                IsOddWeek = true,
-                WeekDay = WeekDay.Monday,
-                GroupId = 2,
-                StartHourId = 1,
-                EndHourId = 3,
-            }    
-        );
 
         modelBuilder.Entity<Student>()
             .Property(s => s.Id)
@@ -204,14 +190,5 @@ public static class DbSeed
         modelBuilder.Entity<Assignment>()
             .Property(a => a.Id)
             .ValueGeneratedOnAdd();
-        modelBuilder.Entity<Assignment>().HasData(
-           new Assignment
-           {
-               Id = 1,
-               ClassId = 1,
-               Name = "Sprawozdanie 1",
-               DeadlineDate = new DateOnly(2024, 11, 15)
-           }
-        );
     }
 }
