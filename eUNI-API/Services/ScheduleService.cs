@@ -95,12 +95,22 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
         return _hourRepository.GetHoursRange(startHourId, endHourId).ToList();
     }
 
-    private List<Class> FilterClassesBetweenDates(List<Class> classes, DateOnly startOfWeek, DateOnly endOfWeek)
+    private List<ThisWeekClass> FilterClassesBetweenDates(List<Class> classes, DateOnly startOfWeek, DateOnly endOfWeek)
     {
         if(classes.Count == 0) return [];
-        return classes.Where(c=>
-            _classesRepository.GetClassDates(c.Id).Any(cd=> cd.Date >= startOfWeek && cd.Date <= endOfWeek)
-            ).ToList();
+        var filteredClasses = new List<ThisWeekClass>();
+        foreach (var classEntity in classes)
+        {
+            var date = _classesRepository.GetClassDates(classEntity.Id)
+                .Where(cd => cd.Date >= startOfWeek && cd.Date <= endOfWeek);
+            if(!date.Any()) continue;
+            filteredClasses.AddRange(date.Select(d => new ThisWeekClass
+            {
+                classEntity = classEntity,
+                date = d.Date
+            }));
+        }
+        return filteredClasses;
     }
 
     public async Task<ScheduleDto> GetSchedule(ScheduleInfoRequestDto scheduleInfoRequest)
@@ -126,18 +136,18 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
             };
             foreach (var thisWeekClass in thisWeekClasses)
             {
-                if(thisWeekClass.StartHourId != hour.HourId) continue;
-                var weekDay = thisWeekClass.WeekDay.ToString();
+                if(thisWeekClass.classEntity.StartHourId != hour.HourId) continue;
+                var weekDay = DateHelper.GetWeekDay(thisWeekClass.date);
                 var prop = scheduleWeekDays.GetType().GetProperty(weekDay);
-                var group = _groupRepository.GetGroupName(thisWeekClass.Id);
+                var group = _groupRepository.GetGroupName(thisWeekClass.classEntity.Id);
                 
                 if(prop == null) throw new Exception($"Property '{weekDay}' not found in ScheduleWeekDays");
                 prop.SetValue(scheduleWeekDays, new ScheduleClass
                 {
-                    Hours = thisWeekClass.EndHourId - thisWeekClass.StartHourId + 1,
-                    Name = $"{thisWeekClass.Name} ({group})",
-                    Room = thisWeekClass.Room,
-                    Type = GetGroupType(thisWeekClass.GroupId)
+                    Hours = thisWeekClass.classEntity.EndHourId - thisWeekClass.classEntity.StartHourId + 1,
+                    Name = $"{thisWeekClass.classEntity.Name} ({group})",
+                    Room = thisWeekClass.classEntity.Room,
+                    Type = GetGroupType(thisWeekClass.classEntity.GroupId)
                 });
             }
             schedule.Schedule.Add(scheduleWeekDays);

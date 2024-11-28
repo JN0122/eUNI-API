@@ -92,22 +92,56 @@ public class RepresentativeService(AppDbContext context,
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateClass(int id, CreateClassRequestDto classRequestDto)
+    private void UpdateClassDates(int classId, List<DateOnly> dates)
     {
-        var fieldOfStudyLog = _fieldOfStudyRepository.GetFieldOfStudyLogById(classRequestDto.FieldOfStudyLogId);
-        var group = _groupRepository.GetGroupById(classRequestDto.GroupId);
-        var startHour = _hourRepository.GetHourById(classRequestDto.StartHourId);
-        var endHour = _hourRepository.GetHourById(classRequestDto.EndHourId);
+        var classDates = _classesRepository.GetClassDates(classId).ToList();
+        if(classDates.Count == 0) throw new Exception("Use CreateClassDates function");
+        var entityDifference = dates.Count - classDates.Count;
+        
+        switch (entityDifference)
+        {
+            case > 0:
+                var classDatesToAdd = new List<ClassDate>();
+                for(var i = 0; i < entityDifference; i++) classDatesToAdd.Add(new ClassDate{ClassId = classId});
+                _context.ClassDates.AddRange(classDatesToAdd);
+                break;
+            case < 0:
+                var classDatesToRemove = classDates.Slice(classDates.Count + entityDifference - 1, -entityDifference);
+                _context.ClassDates.RemoveRange(classDatesToRemove);
+                break;
+        }
+
+        if (entityDifference != 0)
+        {
+            _context.SaveChanges();
+            classDates = _classesRepository.GetClassDates(classId).ToList();
+        }
+        
+        var newClassDates = classDates.Select((classDate, index) =>
+        {
+            classDate.Date = dates[index];
+            return classDate;
+        });
+        _context.ClassDates.UpdateRange(newClassDates);
+        _context.SaveChanges();
+    }
+
+    public async Task UpdateClass(int id, UpdateClassRequestDto updateClassRequestDto)
+    {
+        var fieldOfStudyLog = _fieldOfStudyRepository.GetFieldOfStudyLogById(updateClassRequestDto.FieldOfStudyLogId);
+        var group = _groupRepository.GetGroupById(updateClassRequestDto.GroupId);
+        var startHour = _hourRepository.GetHourById(updateClassRequestDto.StartHourId);
+        var endHour = _hourRepository.GetHourById(updateClassRequestDto.EndHourId);
         var classEntity = _classesRepository.GetClassById(id);
         
-        classEntity.Name = classRequestDto.Name;
-        classEntity.Room = classRequestDto.Room;
-        classEntity.IsOddWeek = classRequestDto.IsOddWeek;
-        classEntity.WeekDay = classRequestDto.WeekDay;
+        classEntity.Name = updateClassRequestDto.Name;
+        classEntity.Room = updateClassRequestDto.Room;
         classEntity.Group = group;
         classEntity.StartHour = startHour;
         classEntity.EndHour = endHour;
         classEntity.FieldOfStudyLog = fieldOfStudyLog;
+        
+        UpdateClassDates(classEntity.Id, updateClassRequestDto.Dates.ToList());
         
         _context.Classes.Update(classEntity);
         await _context.SaveChangesAsync();

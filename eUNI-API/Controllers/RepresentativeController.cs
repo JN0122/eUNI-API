@@ -39,9 +39,9 @@ public class RepresentativeController(IRepresentativeService representativeServi
     }
     
     [HttpPut("classes/{id:int}")]
-    public async Task<IActionResult> UpdateClass([FromBody] CreateClassRequestDto classRequestDto, [FromRoute] int id)
+    public async Task<IActionResult> UpdateClass([FromBody] UpdateClassRequestDto updateClassRequestDto, [FromRoute] int id)
     {
-        await _representativeService.UpdateClass(id, classRequestDto);
+        await _representativeService.UpdateClass(id, updateClassRequestDto);
         return Ok();
     }
     
