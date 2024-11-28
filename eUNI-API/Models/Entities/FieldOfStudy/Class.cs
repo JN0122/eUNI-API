@@ -43,4 +43,5 @@ public class Class
     public Group Group { get; set; }
     
     public IEnumerable<Assignment>? Assignments { get; set; }
+    public IEnumerable<ClassDate> ClassDates { get; set; }
 }

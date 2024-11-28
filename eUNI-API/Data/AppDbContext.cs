@@ -34,6 +34,7 @@ public class AppDbContext: DbContext
     public DbSet<FieldOfStudy> FieldOfStudies { get; set; }
     public DbSet<FieldOfStudyLog> FieldOfStudyLogs { get; set; }
     public DbSet<Assignment> Assignments { get; set; }
+    public DbSet<ClassDate> ClassDates { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
