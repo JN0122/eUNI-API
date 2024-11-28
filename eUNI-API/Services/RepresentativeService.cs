@@ -11,7 +11,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository fieldOfStudyRepository, IAuthRepository authRepository, IOrganizationRepository organizationRepository, IStudentRepository studentRepository, IGroupRepository groupRepository, IHourRepository hourRepository): IRepresentativeService
+public class RepresentativeService(AppDbContext context, 
+    IFieldOfStudyRepository fieldOfStudyRepository, IAuthRepository authRepository, 
+    IOrganizationRepository organizationRepository, IStudentRepository studentRepository, 
+    IGroupRepository groupRepository, IHourRepository hourRepository,
+    IClassesRepository classesRepository): IRepresentativeService
 {
     private readonly AppDbContext _context = context;
     private readonly IFieldOfStudyRepository _fieldOfStudyRepository = fieldOfStudyRepository;
@@ -20,6 +24,7 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
     private readonly IStudentRepository _studentRepository = studentRepository;
     private readonly IGroupRepository _groupRepository = groupRepository;
     private readonly IHourRepository _hourRepository = hourRepository;
+    private readonly IClassesRepository _classesRepository = classesRepository;
 
     public async Task<IEnumerable<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId)
     {
@@ -96,11 +101,7 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
         var group = _groupRepository.GetGroupById(classRequestDto.GroupId);
         var startHour = _hourRepository.GetHourById(classRequestDto.StartHourId);
         var endHour = _hourRepository.GetHourById(classRequestDto.EndHourId);
-        var classEntity = await _context.Classes.FirstOrDefaultAsync(c => c.Id == id);
-        
-        if(fieldOfStudyLog == null || group == null || startHour == null || endHour == null 
-           || classEntity == null)
-            throw new ArgumentException("Cannot find field of study, group, hours or class.");
+        var classEntity = _classesRepository.GetClassById(id);
         
         classEntity.Name = classRequestDto.Name;
         classEntity.Room = classRequestDto.Room;
@@ -117,9 +118,7 @@ public class RepresentativeService(AppDbContext context, IFieldOfStudyRepository
 
     public async Task DeleteClass(int id)
     {
-        var classEntity = _context.Classes.FirstOrDefault(c => c.Id == id);
-        if(classEntity == null)
-            throw new ArgumentException("Class not found.");
+        var classEntity = _classesRepository.GetClassById(id);
         _context.Remove(classEntity);
         await _context.SaveChangesAsync();
     }
