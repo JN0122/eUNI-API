@@ -5,6 +5,7 @@ using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Dto.Group;
 using eUNI_API.Models.Entities.FieldOfStudy;
+using eUNI_API.Models.Entities.OrganizationInfo;
 using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -69,6 +70,35 @@ public class RepresentativeService(AppDbContext context,
             })
             .ToList();
     }
+    
+    private async Task<DateOnly?> CalculateClassDate(
+        Class classEntity, 
+        OrganizationOfTheYear organizationInfo, 
+        DateOnly startDay, 
+        DateOnly endDay)
+    {
+        if (classEntity.WeekDay == null) throw new ArgumentException("Cannot calculate classes when week day is null");
+        if (organizationInfo.StartDay > startDay) return null;
+        
+        var repeatClassInDays = classEntity.IsOddWeek == null ? 7 : 14;
+        var startFirstWeek = classEntity.IsOddWeek ?? true;
+
+        var date = DateHelper.CalculateDate
+        (
+            organizationInfo.StartDay, 
+            organizationInfo.EndDay,
+            classEntity.WeekDay.Value, 
+            startDay,
+            endDay,
+            repeatClassInDays, 
+            startFirstWeek
+        );
+        if(date == null) return null;
+        
+        var daysOff = await _organizationRepository.GetDaysOff(organizationInfo.Id);
+
+        return daysOff.Any(dayOff => dayOff == date) ? null : date;
+    }
 
     public async Task CreateClass(CreateClassRequestDto classRequestDto)
     {
@@ -81,8 +111,6 @@ public class RepresentativeService(AppDbContext context,
         {
             Name = classRequestDto.Name,
             Room = classRequestDto.Room,
-            IsOddWeek = classRequestDto.IsOddWeek,
-            WeekDay = classRequestDto.WeekDay,
             Group = group,
             FieldOfStudyLog = fieldOfStudyLog,
             StartHour = startHour,
