@@ -13,8 +13,6 @@ public class ClassDto
     public int GroupId { get; set; }
     public string GroupName { get; set; }
     public WeekDay? WeekDay { get; set; }
-    public int StartHourId { get; set; }
-    public string StartHour { get; set; }
-    public int EndHourId { get; set; }
-    public string EndHour { get; set; }
+    public HourDto StartHour { get; set; }
+    public HourDto EndHour { get; set; }
 }

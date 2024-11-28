@@ -72,21 +72,21 @@ public static class DbSeed
             .Property(h => h.Id)
             .ValueGeneratedOnAdd();
         modelBuilder.Entity<Hour>().HasData(
-            new Hour { Id = 1, HourInterval = "7:30 - 8:15" },
-            new Hour { Id = 2, HourInterval = "8:15 - 9:00" },
-            new Hour { Id = 3, HourInterval = "9:15 - 10:00" },
-            new Hour { Id = 4, HourInterval = "10:00 - 10:45" },
-            new Hour { Id = 5, HourInterval = "11:00 - 11:45" },
-            new Hour { Id = 6, HourInterval = "11:45 - 12:30" },
-            new Hour { Id = 7, HourInterval = "12:45 - 13:30" },
-            new Hour { Id = 8, HourInterval = "13:30 - 14:15" },
-            new Hour { Id = 9, HourInterval = "14:30 - 15:15" },
-            new Hour { Id = 10, HourInterval = "15:15 - 16:00" },
-            new Hour { Id = 11, HourInterval = "16:15 - 17:00" },
-            new Hour { Id = 12, HourInterval = "17:00 - 17:45" },
-            new Hour { Id = 13, HourInterval = "18:00 - 18:45" },
-            new Hour { Id = 14, HourInterval = "18:45 - 19:30" },
-            new Hour { Id = 15, HourInterval = "19:45 - 20:30" }
+            new Hour { Id = 1, StartHour = 7, StartMinute = 30, EndHour = 8, EndMinute = 15 },
+            new Hour { Id = 2, StartHour = 8, StartMinute = 15, EndHour = 9, EndMinute = 0 },
+            new Hour { Id = 3, StartHour = 9, StartMinute = 15, EndHour = 10, EndMinute = 0 },
+            new Hour { Id = 4, StartHour = 10, StartMinute = 0, EndHour = 10, EndMinute = 45 },
+            new Hour { Id = 5, StartHour = 11, StartMinute = 0, EndHour = 11, EndMinute = 45 },
+            new Hour { Id = 6, StartHour = 11, StartMinute = 45, EndHour = 12, EndMinute = 30 },
+            new Hour { Id = 7, StartHour = 12, StartMinute = 45, EndHour = 13, EndMinute = 30 },
+            new Hour { Id = 8, StartHour = 13, StartMinute = 30, EndHour = 14, EndMinute = 15 },
+            new Hour { Id = 9, StartHour = 14, StartMinute = 30, EndHour = 15, EndMinute = 15 },
+            new Hour { Id = 10, StartHour = 15, StartMinute = 15, EndHour = 16, EndMinute = 0 },
+            new Hour { Id = 11, StartHour = 16, StartMinute = 15, EndHour = 17, EndMinute = 0 },
+            new Hour { Id = 12, StartHour = 17, StartMinute = 0, EndHour = 17, EndMinute = 45 },
+            new Hour { Id = 13, StartHour = 18, StartMinute = 0, EndHour = 18, EndMinute = 45 },
+            new Hour { Id = 14, StartHour = 18, StartMinute = 45, EndHour = 19, EndMinute = 30 },
+            new Hour { Id = 15, StartHour = 19, StartMinute = 45, EndHour = 20, EndMinute = 30 }
         );
         
         modelBuilder.Entity<Year>()

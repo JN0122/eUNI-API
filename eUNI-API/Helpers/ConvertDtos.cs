@@ -1,7 +1,9 @@
 using eUNI_API.Models.Dto;
+using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Models.Entities.FieldOfStudy;
+using eUNI_API.Models.Entities.OrganizationInfo;
 
 namespace eUNI_API.Helpers;
 
@@ -16,6 +18,18 @@ public static class ConvertDtos
             Semester = fieldOfStudyLog.Semester,
             StudiesCycle = fieldOfStudyLog.FieldOfStudy.StudiesCycle,
             IsFullTime = fieldOfStudyLog.FieldOfStudy.IsFullTime
+        };
+    }
+
+    public static HourDto ToHourDto(Hour hour)
+    {
+        var formatedStartMinute = (hour.StartMinute < 10 ? "0" : "") + hour.StartMinute;
+        var formateEndMinute = (hour.EndMinute < 10 ? "0" : "") + hour.EndMinute;
+        return new HourDto
+        {
+            HourId = hour.Id,
+            StartTime = $"{hour.StartHour}:{formatedStartMinute}",
+            EndTime = $"{hour.EndHour}:{formateEndMinute}"
         };
     }
 }

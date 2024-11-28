@@ -8,9 +8,10 @@ public class Hour
 {
     [Key]
     public int Id { get; set; }
-    
-    [MaxLength(20)]
-    public string HourInterval { get; set; }
+    public byte StartHour { get; set; }
+    public byte StartMinute { get; set; }
+    public byte EndHour { get; set; }
+    public byte EndMinute { get; set; }
     
     [InverseProperty("StartHour")]
     public IEnumerable<Class> ClassesStartHour { get; set; }

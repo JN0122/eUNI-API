@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Repositories.Interfaces;
 
@@ -10,10 +11,6 @@ public class ClassesRepository(AppDbContext context): IClassesRepository
     
     public IEnumerable<HourDto> GetHour()
     {
-        return _context.Hours.ToList().Select(h => new HourDto
-        {
-            HourId = h.Id,
-            HourName = h.HourInterval
-        });
+        return _context.Hours.ToList().Select(ConvertDtos.ToHourDto);
     }
 }

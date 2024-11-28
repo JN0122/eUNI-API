@@ -113,7 +113,7 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
             var weekDays = new ScheduleWeekDays
             {
                 Id = hour.HourId,
-                Hour = hour.HourName
+                Hour = $"{hour.StartTime} - {hour.EndTime}",
             };
             foreach (var thisWeekClass in thisWeekClasses)
             {
