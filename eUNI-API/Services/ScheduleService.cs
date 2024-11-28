@@ -11,12 +11,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class ScheduleService(AppDbContext context, IOrganizationRepository organizationRepository, IClassesRepository classesRepository, IGroupRepository groupRepository): IScheduleService
+public class ScheduleService(AppDbContext context, IOrganizationRepository organizationRepository, 
+    IClassesRepository classesRepository, IGroupRepository groupRepository,
+    IHourRepository hourRepository): IScheduleService
 {
     private readonly AppDbContext _context = context;
     private readonly IOrganizationRepository _organizationRepository = organizationRepository;
     private readonly IClassesRepository _classesRepository = classesRepository;
     private readonly IGroupRepository _groupRepository = groupRepository;
+    private readonly IHourRepository _hourRepository = hourRepository;
 
     private class ThisWeekClass
     {
@@ -84,58 +87,61 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
         return group.Type;
     }
 
+    private List<Hour> GetClassesHours(List<Class> classes)
+    {
+        if(classes.Count == 0) return [];
+        var startHourId = classes.Min(c => c.StartHourId);
+        var endHourId = classes.Max(c => c.EndHourId);
+        return _hourRepository.GetHoursRange(startHourId, endHourId).ToList();
+    }
+
+    private List<Class> FilterClassesBetweenDates(List<Class> classes, DateOnly startOfWeek, DateOnly endOfWeek)
+    {
+        if(classes.Count == 0) return [];
+        return classes.Where(c=>
+            _classesRepository.GetClassDates(c.Id).Any(cd=> cd.Date >= startOfWeek && cd.Date <= endOfWeek)
+            ).ToList();
+    }
+
     public async Task<ScheduleDto> GetSchedule(ScheduleInfoRequestDto scheduleInfoRequest)
     {
-        var classes = await GetClasses(scheduleInfoRequest.fieldOfStudyLogId);
-        var allUserClasses = classes.Where(c => scheduleInfoRequest.GroupIds.Any(groupId => groupId == c.GroupId));
-        var organizationInfo = await _organizationRepository.GetOrganizationsInfo(scheduleInfoRequest.fieldOfStudyLogId);
+        var userClasses = _classesRepository.GetGroupsClasses(scheduleInfoRequest.fieldOfStudyLogId, scheduleInfoRequest.GroupIds).ToList();
+        var hours = GetClassesHours(userClasses);
         var (startOfWeek, endOfWeek) = DateHelper.GetWeekStartAndEndDates(scheduleInfoRequest.Year, scheduleInfoRequest.WeekNumber);
+        var thisWeekClasses = FilterClassesBetweenDates(userClasses, startOfWeek, endOfWeek);
         
-        var thisWeekClasses = new List<ThisWeekClass>();
-        
-        foreach (var userClass in allUserClasses)
-        {
-            var date = await CalculateClassDate(userClass, organizationInfo, startOfWeek, endOfWeek);
-            if(date == null) continue;
-            thisWeekClasses.Add(new ThisWeekClass
-            {
-                classEntity = userClass,
-                date = date.Value
-            });
-        }
-
         var schedule = new ScheduleDto
         {
-            Date = $"{startOfWeek} - {endOfWeek}"
+            Date = $"{startOfWeek} - {endOfWeek}",
+            Schedule = []
         };
-        foreach(var hour in GetHours())
+
+        foreach (var t in hours)
         {
-            var weekDays = new ScheduleWeekDays
+            var hour = ConvertDtos.ToHourDto(t);
+            var scheduleWeekDays = new ScheduleWeekDays
             {
                 Id = hour.HourId,
                 Hour = $"{hour.StartTime} - {hour.EndTime}",
             };
             foreach (var thisWeekClass in thisWeekClasses)
             {
-                if(thisWeekClass.classEntity.StartHourId != hour.HourId) continue;
-                var assignment = GetClassAssigment(thisWeekClass.classEntity.Id, thisWeekClass.date);
-                var weekDay = DateHelper.GetWeekDay(thisWeekClass.date);
-                var prop = weekDays.GetType().GetProperty(weekDay);
-                var group = _groupRepository.GetGroupName(thisWeekClass.classEntity.Id);
+                if(thisWeekClass.StartHourId != hour.HourId) continue;
+                var weekDay = thisWeekClass.WeekDay.ToString();
+                var prop = scheduleWeekDays.GetType().GetProperty(weekDay);
+                var group = _groupRepository.GetGroupName(thisWeekClass.Id);
                 
                 if(prop == null) throw new Exception($"Property '{weekDay}' not found in ScheduleWeekDays");
-                prop.SetValue(weekDays, new ScheduleClass
+                prop.SetValue(scheduleWeekDays, new ScheduleClass
                 {
-                    Hours = thisWeekClass.classEntity.EndHourId - thisWeekClass.classEntity.StartHourId + 1,
-                    Name = $"{thisWeekClass.classEntity.Name} ({group})",
-                    Room = thisWeekClass.classEntity.Room,
-                    Type = GetGroupType(thisWeekClass.classEntity.GroupId),
-                    Assignment = assignment
+                    Hours = thisWeekClass.EndHourId - thisWeekClass.StartHourId + 1,
+                    Name = $"{thisWeekClass.Name} ({group})",
+                    Room = thisWeekClass.Room,
+                    Type = GetGroupType(thisWeekClass.GroupId)
                 });
             }
-            schedule.Schedule.Add(weekDays);
+            schedule.Schedule.Add(scheduleWeekDays);
         }
-
         return schedule;
     }
 }

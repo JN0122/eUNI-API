@@ -7,4 +7,6 @@ public interface IClassesRepository
 {
     public Class GetClassById(int classId);
     public IEnumerable<HourDto> GetHour();
+    public IEnumerable<Class> GetGroupsClasses(int fieldOfStudyLogId, IEnumerable<int> groupIds);
+    public IEnumerable<ClassDate> GetClassDates(int classId);
 }
