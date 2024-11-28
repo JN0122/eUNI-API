@@ -37,8 +37,8 @@ public static class DbSeed
                 LastName = "Nowak", 
                 Email = "adam.nowak@pk.edu.pl", 
                 RoleId = (int)UserRole.Student,
-                PasswordHash = "4QQOqhGWUw4eHTZQdzStsPlGCtmiJ6Tz6bF9mwYXiVg=", 
-                Salt = "f/5Yd/pRp65N6nbMHH8wlg=="
+                PasswordHash = "51/dKFYnVgWWl9Cxcow03Bz9ppMSTMMJej5kHKqEXHM=", 
+                Salt = "ZIns1PnAHT8nRwfFclPfLA=="
             }
         );
 
