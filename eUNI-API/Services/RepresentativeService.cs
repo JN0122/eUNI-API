@@ -49,14 +49,13 @@ public class RepresentativeService(AppDbContext context,
     
     public async Task<IEnumerable<ClassDto>> GetClasses(int fieldOfStudyLogId)
     {
-        var classes = await _context.Classes
-            .AsNoTracking()
-            .Where(c => c.FieldOfStudyLogId == fieldOfStudyLogId)
-            .Include(c => c.EndHour)
-            .Include(c => c.StartHour)
-            .Include(c=>c.Group)
-            .ToListAsync();
-        var classesDto = classes.Select(classEntity => new ClassDto
+        var classes = _classesRepository.GetClasses(fieldOfStudyLogId)
+            .Include(c=>c.EndHour)
+            .Include(c=>c.StartHour)
+            .Include(c=>c.ClassDates)
+            .ToList();
+
+        return classes.Select(classEntity => new ClassDto
             {
                 Id = classEntity.Id,
                 ClassName = classEntity.Name,
@@ -65,12 +64,10 @@ public class RepresentativeService(AppDbContext context,
                 EndHour = ConvertDtos.ToHourDto(classEntity.EndHour),
                 StartHour = ConvertDtos.ToHourDto(classEntity.StartHour),
                 FieldOfStudyLogId = classEntity.FieldOfStudyLogId,
-                IsOddWeek = classEntity.IsOddWeek,
                 ClassRoom = classEntity.Room,
-                WeekDay = classEntity.WeekDay
+                Dates = classEntity.ClassDates.Select(cd => cd.Date)
             })
             .ToList();
-        return classesDto;
     }
 
     public async Task CreateClass(CreateClassRequestDto classRequestDto)

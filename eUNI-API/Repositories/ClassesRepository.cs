@@ -20,15 +20,20 @@ public class ClassesRepository(AppDbContext context): IClassesRepository
 
     public IEnumerable<HourDto> GetHour()
     {
-        return _context.Hours.ToList().Select(ConvertDtos.ToHourDto);
+        return _context.Hours.Select(ConvertDtos.ToHourDto);
     }
 
-    public IEnumerable<Class> GetGroupsClasses(int fieldOfStudyLogId, IEnumerable<int> groupIds)
+    public IQueryable<Class> GetGroupsClasses(int fieldOfStudyLogId, IEnumerable<int> groupIds)
     {
         return _context.Classes.Where(c => c.FieldOfStudyLogId == fieldOfStudyLogId && groupIds.Any(g => g == c.GroupId));
     }
 
-    public IEnumerable<ClassDate> GetClassDates(int classId)
+    public IQueryable<Class> GetClasses(int fieldOfStudyLogId)
+    {
+        return _context.Classes.Where(c => c.FieldOfStudyLogId == fieldOfStudyLogId);
+    }
+
+    public IQueryable<ClassDate> GetClassDates(int classId)
     {
         return _context.ClassDates.Where(c =>c.ClassId == classId);
     }
