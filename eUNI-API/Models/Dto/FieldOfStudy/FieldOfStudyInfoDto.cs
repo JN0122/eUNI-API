@@ -7,4 +7,5 @@ public class FieldOfStudyInfoDto
     public string Name { get; set; }
     public int StudiesCycle { get; set; }
     public bool IsFullTime { get; set; }
+    public string YearName { get; set; }
 }

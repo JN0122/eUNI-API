@@ -17,7 +17,8 @@ public static class ConvertDtos
             Name = fieldOfStudyLog.FieldOfStudy.Name,
             Semester = fieldOfStudyLog.Semester,
             StudiesCycle = fieldOfStudyLog.FieldOfStudy.StudiesCycle,
-            IsFullTime = fieldOfStudyLog.FieldOfStudy.IsFullTime
+            IsFullTime = fieldOfStudyLog.FieldOfStudy.IsFullTime,
+            YearName = fieldOfStudyLog.OrganizationsOfTheYear.Year.Name
         };
     }
 

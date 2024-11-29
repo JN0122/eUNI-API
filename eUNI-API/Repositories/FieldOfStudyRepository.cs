@@ -21,12 +21,13 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
 
     public async Task<List<FieldOfStudyInfoDto>?> GetFieldOfStudyLogs(int academicOrganizationId)
     {
-        var fieldOfStudyLogs = await _context.FieldOfStudyLogs
+        var fieldOfStudyLogs = _context.FieldOfStudyLogs
             .AsNoTracking()
             .Where(f => f.OrganizationsOfTheYearId == academicOrganizationId)
-            .Include(f => f.FieldOfStudy)
-            .Select(f => ConvertDtos.ToFieldOfStudyInfoDto(f))
-            .ToListAsync();
+            .Include(f=>f.FieldOfStudy)
+            .Include(f => f.OrganizationsOfTheYear)
+            .ThenInclude(o => o.Year)
+            .Select(ConvertDtos.ToFieldOfStudyInfoDto).ToList();
 
         return fieldOfStudyLogs;
     }
