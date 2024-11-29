@@ -9,12 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class UserService(AppDbContext context, IStudentRepository studentRepository, IOrganizationRepository organizationRepository, IAuthRepository authRepository): IUserService
+public class UserService(AppDbContext context): IUserService
 {
     private readonly AppDbContext _context = context;
-    private readonly IStudentRepository _studentRepository = studentRepository;
-    private readonly IOrganizationRepository _organizationRepository = organizationRepository;
-    private readonly IAuthRepository _authRepository = authRepository;
 
     public async Task<User> FindUserByClaim(IEnumerable<Claim> claims)
     {
@@ -49,22 +46,5 @@ public class UserService(AppDbContext context, IStudentRepository studentReposit
         
         _context.Users.Update(user);
         _context.SaveChanges();
-    }
-
-    public UserInfoDto GetUserInfo(User user)
-    {
-        return new UserInfoDto
-        {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-            RoleId = user.RoleId
-        };
-    }
-
-    public IEnumerable<UserInfoDto> GetUsersInfo(IEnumerable<User> users)
-    {
-        return users.Select(GetUserInfo);
     }
 }

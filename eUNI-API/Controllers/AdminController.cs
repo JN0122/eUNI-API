@@ -10,17 +10,20 @@ namespace eUNI_API.Controllers;
 [Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 [ApiController]
-public class AdminController(IAdminService adminService, IUserService userService, IOrganizationService organizationService): ControllerBase
+public class AdminController(IAdminService adminService, IUserService userService, 
+    IOrganizationService organizationService, IRepresentativeService representativeService): ControllerBase
 {
     private readonly IAdminService _adminService = adminService;
     private readonly IUserService _userService = userService;
     private readonly IOrganizationService _organizationService = organizationService;
+    private readonly IRepresentativeService _representativeService = representativeService;
     
     [HttpGet("users")]
     public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetUsers()
     {
         var users = await _adminService.GetUsers();
-        return Ok(_userService.GetUsersInfo(users));
+        var usersInfo = _representativeService.GetUsersInfoDto(users);
+        return Ok(usersInfo);
     }
 
     [HttpDelete("users/{id:guid}")]

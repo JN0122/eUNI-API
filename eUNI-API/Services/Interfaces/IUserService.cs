@@ -10,6 +10,4 @@ public interface IUserService
     Task<User> FindUserByClaim(IEnumerable<Claim> claims);
     void ChangePassword(User user, string newPassword);
     void ChangeEmail(User user, string newEmail);
-    public UserInfoDto GetUserInfo(User user);
-    public IEnumerable<UserInfoDto> GetUsersInfo(IEnumerable<User> users);
 }

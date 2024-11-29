@@ -1,10 +1,11 @@
-using System.Security.Claims;
 using eUNI_API.Data;
 using eUNI_API.Enums;
 using eUNI_API.Helpers;
+using eUNI_API.Models.Dto;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Dto.Group;
+using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Models.Entities.OrganizationInfo;
 using eUNI_API.Repositories.Interfaces;
@@ -47,7 +48,25 @@ public class RepresentativeService(AppDbContext context,
             IsFullTime = dto.IsFullTime
         });
     }
-    
+
+    public UserInfoDto GetUserInfoDto(User user)
+    {
+        return new UserInfoDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            RoleId = user.RoleId,
+            RepresentativeFieldsOfStudyLogIds = FieldOfStudyLogsToEdit(user.Id).Result!.Select(f => f.FieldOfStudyLogId)
+        };
+    }
+
+    public IEnumerable<UserInfoDto> GetUsersInfoDto(IEnumerable<User> users)
+    {
+        return users.Select(GetUserInfoDto);
+    }
+
     public async Task<IEnumerable<ClassDto>> GetClasses(int fieldOfStudyLogId)
     {
         var classes = _classesRepository.GetClasses(fieldOfStudyLogId)
