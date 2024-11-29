@@ -18,24 +18,20 @@ public class StudentService(IStudentRepository studentRepository, IOrganizationR
     public async Task<StudentInfoDto> GetStudentInfo(Guid userId)
     {
         var academicOrganizationId = _organizationRepository.GetNewestOrganizationId();
-        var studentId = await _studentRepository.GetStudentId(userId);
-        if (studentId == null) throw new ArgumentException("Invalid user");
-        var fieldsOfStudy = await _studentRepository.GetStudentFieldsOfStudy(studentId.Value, academicOrganizationId);
-        var studentAlbumNumber = _studentRepository.GetAlbumNumber(studentId.Value);
+        if (!_studentRepository.IsStudent(userId)) throw new ArgumentException("Invalid user");
+        var fieldsOfStudy = await _studentRepository.GetStudentFieldsOfStudy(userId, academicOrganizationId);
 
         return new StudentInfoDto
         {
-            Id = studentId.Value,
-            AlbumNumber = studentAlbumNumber,
+            Id = userId,
             FieldsOfStudyInfo = fieldsOfStudy
         };
     }
 
     public async Task ChangeStudentGroup(Guid userId, StudentChangeGroupRequestDto studentChangeGroupRequestDto)
     {
-        var studentId = await _studentRepository.GetStudentId(userId);
-        if(studentId == null) throw new ArgumentException("Invalid user");
-        var studentFieldOfStudyLog = _studentRepository.GetStudentFieldOfStudyLog(studentChangeGroupRequestDto.FieldOfStudyLogId, studentId.Value);
+        if(!_studentRepository.IsStudent(userId)) throw new ArgumentException("Invalid user");
+        var studentFieldOfStudyLog = _studentRepository.GetStudentFieldOfStudyLog(studentChangeGroupRequestDto.FieldOfStudyLogId, userId);
         var studentGroup =
             _studentRepository.GetStudentGroup(studentFieldOfStudyLog.Id, studentChangeGroupRequestDto.GroupType);
 

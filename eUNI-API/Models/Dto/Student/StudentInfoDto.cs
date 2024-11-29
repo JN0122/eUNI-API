@@ -4,7 +4,6 @@ namespace eUNI_API.Models.Dto.Student;
 
 public class StudentInfoDto
 {  
-    public int Id { get; set; }
-    public string? AlbumNumber { get; set; }
+    public Guid Id { get; set; }
     public IEnumerable<StudentFieldOfStudyDto>? FieldsOfStudyInfo { get; set; }
 }

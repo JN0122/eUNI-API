@@ -6,15 +6,14 @@ namespace eUNI_API.Repositories.Interfaces;
 
 public interface IStudentRepository
 {
-    public Task<int?> GetStudentId(Guid userId);
-    public Task<IEnumerable<GroupDto>?> GetGroups(int fieldOfStudyLogId, int studentId);
+    public bool IsStudent(Guid userId);
+    public Task<IEnumerable<GroupDto>?> GetGroups(int fieldOfStudyLogId, Guid userId);
     public IEnumerable<GroupDto> GetAllGroups(int fieldOfStudyLogId);
-    public Task<IEnumerable<StudentFieldOfStudyDto>?> GetStudentFieldsOfStudy(int studentId, int academicOrganizationId);
-    public string? GetAlbumNumber(int studentId);
-    public bool IsRepresentativeForFieldOfStudy(int fieldsOfStudyLogId, int studentId);
+    public Task<IEnumerable<StudentFieldOfStudyDto>?> GetStudentFieldsOfStudy(Guid userId, int academicOrganizationId);
+    public bool IsRepresentativeForFieldOfStudy(int fieldsOfStudyLogId, Guid userId);
     public bool IsRepresentative(Guid userId, int academicOrganizationId);
-    public IEnumerable<StudentFieldOfStudyDto>? GetRepresentativeFieldsOfStudy(int studentId, int academicOrganizationId);
-    public StudentFieldsOfStudyLog GetStudentFieldOfStudyLog(int fieldOfStudyLogId, int studentId);
+    public IEnumerable<StudentFieldOfStudyDto>? GetRepresentativeFieldsOfStudy(Guid userId, int academicOrganizationId);
+    public StudentFieldsOfStudyLog GetStudentFieldOfStudyLog(int fieldOfStudyLogId, Guid userId);
     public StudentGroup? GetStudentGroup(int studentFieldOfStudyLogId, int groupType);
     public void JoinGroup(int studentFieldOfStudyLogId, int groupId);
     public void ChangeGroup(int studentGroupId, int groupId);

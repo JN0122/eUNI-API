@@ -157,18 +157,6 @@ public static class DbSeed
         modelBuilder.Entity<Class>()
             .Property(c => c.Id)
             .ValueGeneratedOnAdd();
-
-        modelBuilder.Entity<Student>()
-            .Property(s => s.Id)
-            .ValueGeneratedOnAdd();
-        modelBuilder.Entity<Student>().HasData(
-            new Student
-            {
-                Id = 1,
-                UserId = new Guid("dd205297-4d6d-4ef3-a139-350c55518085"),
-                AlbumNumber = "D/123231/"
-            }
-        );
         
         modelBuilder.Entity<StudentFieldsOfStudyLog>()
             .Property(s => s.Id)
@@ -178,7 +166,7 @@ public static class DbSeed
             {
                 Id = 1,
                 FieldsOfStudyLogId = 1,
-                StudentId = 1,
+                UserId = new Guid("dd205297-4d6d-4ef3-a139-350c55518085"),
                 IsRepresentative  = true
             }    
         );

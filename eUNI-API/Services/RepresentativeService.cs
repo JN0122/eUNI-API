@@ -37,9 +37,8 @@ public class RepresentativeService(AppDbContext context,
             return fieldOfStudyLogs;
         }
         
-        var studentId = await _studentRepository.GetStudentId(userId);
-        if(studentId == null) return null;
-        return _studentRepository.GetRepresentativeFieldsOfStudy(studentId.Value, newestAcademicOrganizationId)!.Select(dto => new FieldOfStudyInfoDto
+        if(!_studentRepository.IsStudent(userId)) return null;
+        return _studentRepository.GetRepresentativeFieldsOfStudy(userId, newestAcademicOrganizationId)!.Select(dto => new FieldOfStudyInfoDto
         {
             FieldOfStudyLogId = dto.FieldOfStudyLogId,
             Name = dto.Name,

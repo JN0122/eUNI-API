@@ -19,7 +19,6 @@ public class AppDbContext: DbContext
     
     //Student
     public DbSet<Group> Groups { get; set; }
-    public DbSet<Student> Students { get; set; }
     public DbSet<StudentFieldsOfStudyLog> StudentFieldsOfStudyLogs { get; set; }
     public DbSet<StudentGroup> StudentGroups { get; set; }
     
