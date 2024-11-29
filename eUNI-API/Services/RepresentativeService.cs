@@ -174,6 +174,8 @@ public class RepresentativeService(AppDbContext context,
     public async Task DeleteClass(int id)
     {
         var classEntity = _classesRepository.GetClassById(id);
+        var classDates = _classesRepository.GetClassDates(classEntity.Id);
+        _context.RemoveRange(classDates);
         _context.Remove(classEntity);
         await _context.SaveChangesAsync();
     }
