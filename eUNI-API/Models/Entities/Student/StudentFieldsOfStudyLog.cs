@@ -19,8 +19,8 @@ public class StudentFieldsOfStudyLog
     [ForeignKey("FieldsOfStudyLogId")]
     public FieldOfStudyLog FieldsOfStudyLog { get; set; }
     
-    [ForeignKey("StudentId")]
-    public User? User { get; set; }
+    [ForeignKey("UserId")]
+    public User User { get; set; }
     
     public IEnumerable<StudentGroup> StudentGroups { get; set; }
 }
