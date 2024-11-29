@@ -32,13 +32,8 @@ public class RepresentativeService(AppDbContext context,
     public async Task<IEnumerable<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId)
     {
         var newestAcademicOrganizationId = _organizationRepository.GetNewestOrganizationId();
-        if (_authRepository.IsAdmin(userId))
-        {
-            var fieldOfStudyLogs = await _fieldOfStudyRepository.GetFieldOfStudyLogs(newestAcademicOrganizationId);
-            return fieldOfStudyLogs;
-        }
         
-        if(!_studentRepository.IsStudent(userId)) return null;
+        if(!_studentRepository.IsStudent(userId)) return [];
         return _studentRepository.GetRepresentativeFieldsOfStudy(userId, newestAcademicOrganizationId)!.Select(dto => new FieldOfStudyInfoDto
         {
             FieldOfStudyLogId = dto.FieldOfStudyLogId,
