@@ -74,6 +74,31 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
         return filteredClasses;
     }
 
+    private ScheduleDto AddDaysOffToSchedule(ScheduleDto schedule, List<DateOnly> daysOff)
+    {
+        if(daysOff.Count == 0) return schedule;
+        var hourCount = schedule.Schedule.Count;
+        foreach (var weekDay in daysOff.Select(DateHelper.GetWeekDay))
+        {
+            schedule.Schedule = schedule.Schedule.Select((weekDays, index) =>
+            {
+                var prop = weekDays.GetType().GetProperty(weekDay);
+                if (index == 0)
+                    prop.SetValue(weekDays, new ScheduleClass
+                    {
+                        Hours = hourCount,
+                        Name = null,
+                        Room = null,
+                        Type = -1
+                    });
+                else
+                    prop.SetValue(weekDays, null);
+                return weekDays;
+            }).ToList();
+        }
+        return schedule;
+    }
+
     public async Task<ScheduleDto> GetSchedule(ScheduleInfoRequestDto scheduleInfoRequest)
     {
         var userClasses = _classesRepository.GetGroupsClasses(scheduleInfoRequest.fieldOfStudyLogId, scheduleInfoRequest.GroupIds).ToList();
@@ -81,6 +106,9 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
         var (startOfWeek, endOfWeek) = DateHelper.GetWeekStartAndEndDates(scheduleInfoRequest.Year, scheduleInfoRequest.WeekNumber);
         var thisWeekClasses = FilterClassesBetweenDates(userClasses, startOfWeek, endOfWeek);
         var organization = _organizationRepository.GetOrganizationsInfo(scheduleInfoRequest.fieldOfStudyLogId).Result;
+        
+        var daysOff = _organizationRepository.GetDaysOff(organization.Id).Result
+            .Where(d => d >= startOfWeek && d <= endOfWeek).ToList();
         
         var schedule = new ScheduleDto
         {
@@ -116,6 +144,6 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
             }
             schedule.Schedule.Add(scheduleWeekDays);
         }
-        return schedule;
+        return AddDaysOffToSchedule(schedule, daysOff);
     }
 }

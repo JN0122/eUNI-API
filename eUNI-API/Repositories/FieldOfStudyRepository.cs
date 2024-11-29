@@ -2,6 +2,7 @@ using eUNI_API.Data;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Entities.FieldOfStudy;
+using eUNI_API.Models.Entities.OrganizationInfo;
 using eUNI_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,5 +29,13 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
             .ToListAsync();
 
         return fieldOfStudyLogs;
+    }
+
+    public List<DayOff> GetDaysOff(int fieldOfStudyLogId)
+    {
+        var fieldOfStudyLog = _context.FieldOfStudyLogs.FirstOrDefault(f => f.Id == fieldOfStudyLogId);
+        if(fieldOfStudyLog == null) throw new ArgumentException($"Field of study log not found: {fieldOfStudyLogId}");
+        return _context.DaysOff.Where(d => d.OrganizationsOfTheYearId == fieldOfStudyLog.OrganizationsOfTheYearId)
+            .ToList();
     }
 }
