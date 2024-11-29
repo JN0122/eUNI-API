@@ -38,4 +38,14 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
         return _context.DaysOff.Where(d => d.OrganizationsOfTheYearId == fieldOfStudyLog.OrganizationsOfTheYearId)
             .ToList();
     }
+
+    public IEnumerable<FieldOfStudyInfoDto> GetAllFieldOfStudyLogs()
+    {
+        return _context.FieldOfStudyLogs
+            .AsNoTracking()
+            .Include(f=>f.FieldOfStudy)
+            .Include(f => f.OrganizationsOfTheYear)
+            .ThenInclude(o => o.Year)
+            .Select(ConvertDtos.ToFieldOfStudyInfoDto);;
+    }
 }

@@ -18,4 +18,11 @@ public class FieldOfStudyController(IFieldOfStudyServices fieldOfStudyServices):
         var groups = await _fieldOfStudyServices.GetGroups(fieldOfStudyLogId);
         return Ok(groups);
     }
+    
+    [HttpGet("logs")]
+    public async Task<IActionResult> GetAllFieldsOfStudyLogs()
+    {
+        var groups = _fieldOfStudyServices.GetAllFieldsOfStudyLogs();
+        return Ok(groups);
+    }
 }
