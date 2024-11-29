@@ -19,10 +19,6 @@ public class Class
     
     [MaxLength(15)]
     public string Room { get; set; }
-    
-    public bool? IsOddWeek { get; set; }
-    
-    public WeekDay? WeekDay { get; set; }
 
     public int GroupId { get; set; }
     
