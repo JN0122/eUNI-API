@@ -12,16 +12,25 @@ namespace eUNI_API.Controllers;
 [RepresentativeOnly]
 [ApiController]
 [Route("api/[controller]")]
-public class RepresentativeController(IRepresentativeService representativeService, IUserService userService): ControllerBase
+public class RepresentativeController(IRepresentativeService representativeService, IUserService userService, 
+    IOrganizationService organizationService): ControllerBase
 {
     private readonly IRepresentativeService _representativeService = representativeService;
     private readonly IUserService _userService = userService;
+    private readonly IOrganizationService _organizationService = organizationService;
     
     [HttpGet("fields-of-study")]
     public async Task<IActionResult> GetFieldsOfStudyToEdit()
     {
         var user = await _userService.FindUserByClaim(User.Claims); 
         return Ok(await _representativeService.FieldOfStudyLogsToEdit(user.Id));
+    }
+    
+    [HttpGet("academic-year-days-off")]
+    public async Task<IActionResult> GetDaysOff([FromQuery] [Required] int fieldOfStudyLogId)
+    {
+        var academicYearDaysOff = _organizationService.GetAcademicYearDaysOff(fieldOfStudyLogId); 
+        return Ok(academicYearDaysOff);
     }
 
     [HttpGet("classes")]
