@@ -38,8 +38,8 @@ public class StudentRepository(AppDbContext context): IStudentRepository
     
     private StudentFieldsOfStudyLog GetStudentFieldOfStudyLog(int studentFieldOfStudyLogId)
     {
-        var studentFieldOfStudyLog = _context.StudentFieldsOfStudyLogs.FirstOrDefault(sf => sf.FieldsOfStudyLogId == studentFieldOfStudyLogId);
-        if(studentFieldOfStudyLog == null) throw new ArgumentException("StudentFieldOfStudyLog not found");
+        var studentFieldOfStudyLog = _context.StudentFieldsOfStudyLogs.FirstOrDefault(sf => sf.Id == studentFieldOfStudyLogId);
+        if(studentFieldOfStudyLog == null) throw new ArgumentException($"StudentFieldOfStudyLog not found: id={studentFieldOfStudyLogId}");
         return studentFieldOfStudyLog;
     }
 
