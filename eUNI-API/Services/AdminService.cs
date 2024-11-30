@@ -9,11 +9,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class AdminService(AppDbContext context, IUserService userService, IUserRepository userRepository): IAdminService
+public class AdminService(AppDbContext context, IUserService userService, IUserRepository userRepository,
+    IStudentRepository studentRepository): IAdminService
 {
     private readonly AppDbContext _context = context;
     private readonly IUserService _userService = userService;
     private readonly IUserRepository _userRepository = userRepository;
+    private readonly IStudentRepository _studentRepository = studentRepository;
     
     private async Task<bool> IsValidRole(int roleId)
     {
@@ -76,6 +78,8 @@ public class AdminService(AppDbContext context, IUserService userService, IUserR
 
         if (updateUserRequestDto.NewPassword != null)
             _userService.ChangePassword(user, updateUserRequestDto.NewPassword);
+        
+        await _studentRepository.UpdateRepresentativeFields(userId, updateUserRequestDto.RepresentativeFieldsOfStudyLogIds);
         
         _context.Users.Update(user);
         await _context.SaveChangesAsync();

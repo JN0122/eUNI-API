@@ -163,4 +163,45 @@ public class StudentRepository(AppDbContext context): IStudentRepository
         _context.Update(studentGroup);
         _context.SaveChanges();
     }
+    
+    public async Task UpdateRepresentativeFields(Guid userId, List<int> representativeFieldsOfStudyLogIds)
+    {
+        var studentFieldsOfStudyLogs =_context.StudentFieldsOfStudyLogs
+            .Where(sf => sf.UserId == userId)
+            .ToList();
+
+        var representativeFieldsOfStudy = studentFieldsOfStudyLogs
+            .Where(sf => sf.IsRepresentative)
+            .ToList();
+        
+        if (representativeFieldsOfStudy.Count == representativeFieldsOfStudyLogIds.Count) return;
+        
+        if (representativeFieldsOfStudy.Count > representativeFieldsOfStudyLogIds.Count)
+        {
+            foreach (var studentFieldsOfStudyLog in representativeFieldsOfStudy)
+            {
+                studentFieldsOfStudyLog.IsRepresentative = representativeFieldsOfStudyLogIds.Any(
+                    representativeFieldsOfStudyLogId => studentFieldsOfStudyLog.Id == representativeFieldsOfStudyLogId);
+            }
+        }
+        else
+        {
+            foreach(var id in representativeFieldsOfStudyLogIds)
+            {
+                var fieldOfStudy = studentFieldsOfStudyLogs.FirstOrDefault(sf => sf.FieldsOfStudyLogId == id);
+                if (fieldOfStudy != null)
+                {
+                    fieldOfStudy.IsRepresentative = true;
+                    continue;
+                }
+                _context.StudentFieldsOfStudyLogs.Add(new StudentFieldsOfStudyLog
+                {
+                    FieldsOfStudyLogId = id,
+                    UserId = userId,
+                    IsRepresentative = true,
+                });
+            }
+        }
+        await _context.SaveChangesAsync();
+    }
 }

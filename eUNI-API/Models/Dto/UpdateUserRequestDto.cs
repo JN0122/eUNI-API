@@ -4,14 +4,20 @@ namespace eUNI_API.Models.Dto;
 
 public class UpdateUserRequestDto
 {
+    [Required]
     public string? FirstName { get; set; }
     
+    [Required]
     public string? LastName { get; set; }
-    
-    [EmailAddress]
+
+    [Required, EmailAddress] 
     public string? Email { get; set; }
     
+    [Required]
     public int? RoleId { get; set; }
+
+    [Required]
+    public List<int> RepresentativeFieldsOfStudyLogIds { get; set; } = [];
     
     public string? NewPassword { get; set; }
 }
