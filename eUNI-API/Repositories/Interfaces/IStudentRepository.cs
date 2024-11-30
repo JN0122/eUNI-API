@@ -18,4 +18,5 @@ public interface IStudentRepository
     public void JoinGroup(int studentFieldOfStudyLogId, int groupId);
     public void ChangeGroup(int studentGroupId, int groupId);
     public Task UpdateRepresentativeFields(Guid userId, List<int> representativeFieldsOfStudyLogIds);
+    public Task SetCurrentFieldOfStudy(Guid userId, int fieldOfStudyId);
 }

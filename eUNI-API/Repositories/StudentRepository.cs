@@ -204,4 +204,45 @@ public class StudentRepository(AppDbContext context): IStudentRepository
         }
         await _context.SaveChangesAsync();
     }
+        
+    public StudentFieldOfStudyDto? GetStudentCurrentFieldsOfStudy(Guid userId)
+    {
+        var studentFieldsOfStudyLog = _context.StudentFieldsOfStudyLogs
+            .Include(f => f.FieldsOfStudyLog)
+            .ThenInclude(f => f.FieldOfStudy)
+            .FirstOrDefault(f => f.UserId == userId && f.IsCurrentFieldOfStudy);
+        
+        if(studentFieldsOfStudyLog == null) return null;
+        
+        return new StudentFieldOfStudyDto
+        {
+            FieldOfStudyLogId = studentFieldsOfStudyLog.FieldsOfStudyLogId,
+            Semester = studentFieldsOfStudyLog.FieldsOfStudyLog.Semester,
+            Name = studentFieldsOfStudyLog.FieldsOfStudyLog.FieldOfStudy.Name,
+            StudiesCycle = studentFieldsOfStudyLog.FieldsOfStudyLog.FieldOfStudy.StudiesCycle,
+            IsRepresentative = IsRepresentativeForFieldOfStudy(studentFieldsOfStudyLog.FieldsOfStudyLogId, userId),
+            Groups = GetGroups(studentFieldsOfStudyLog.FieldsOfStudyLogId, userId).Result,
+            IsFullTime = studentFieldsOfStudyLog.FieldsOfStudyLog.FieldOfStudy.IsFullTime
+        };
+    }
+
+    public async Task SetCurrentFieldOfStudy(Guid userId, int fieldOfStudyLogId)
+    {
+        StudentFieldsOfStudyLog? fieldOfStudy = null;
+        foreach (var studentFieldOfStudyLog in _context.StudentFieldsOfStudyLogs.Where(sf => sf.UserId == userId))
+        {
+            studentFieldOfStudyLog.IsCurrentFieldOfStudy = false;
+            if (studentFieldOfStudyLog.FieldsOfStudyLogId == fieldOfStudyLogId) fieldOfStudy = studentFieldOfStudyLog;
+        }
+        
+        fieldOfStudy ??= new StudentFieldsOfStudyLog
+        {
+            FieldsOfStudyLogId = fieldOfStudyLogId,
+            UserId = userId,
+        };
+        
+        fieldOfStudy.IsCurrentFieldOfStudy = true;
+
+        await _context.SaveChangesAsync();
+    }
 }

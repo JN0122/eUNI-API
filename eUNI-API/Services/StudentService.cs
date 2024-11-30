@@ -40,4 +40,9 @@ public class StudentService(IStudentRepository studentRepository, IOrganizationR
         else
             _studentRepository.ChangeGroup(studentGroup.Id, studentChangeGroupRequestDto.GroupId);
     }
+
+    public async Task SetCurrentFieldOfStudy(Guid userId, int fieldOfStudyId)
+    {
+        await _studentRepository.SetCurrentFieldOfStudy(userId, fieldOfStudyId);
+    }
 }

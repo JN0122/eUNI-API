@@ -14,7 +14,9 @@ public class StudentFieldsOfStudyLog
     
     public Guid UserId { get; set; }
 
-    public bool IsRepresentative { get; set; } = false;
+    public bool IsRepresentative { get; set; }
+    
+    public bool IsCurrentFieldOfStudy { get; set; }
     
     [ForeignKey("FieldsOfStudyLogId")]
     public FieldOfStudyLog FieldsOfStudyLog { get; set; }

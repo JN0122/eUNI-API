@@ -30,4 +30,12 @@ public class StudentController(IStudentService studentService, IUserService user
         await _studentService.ChangeStudentGroup(user.Id, studentChangeGroupRequestDto);
         return Ok();
     }
+    
+    [HttpPost("current-field-of-study/{currentFieldOfStudyId:int}")]
+    public async Task<IActionResult> ChangeStudentGroup([FromRoute] int currentFieldOfStudyId)
+    {
+        var user = await _userService.FindUserByClaim(User.Claims); 
+        await _studentService.SetCurrentFieldOfStudy(user.Id, currentFieldOfStudyId);
+        return Ok();
+    }
 }
