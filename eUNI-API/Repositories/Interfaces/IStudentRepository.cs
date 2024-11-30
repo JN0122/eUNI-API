@@ -9,7 +9,7 @@ public interface IStudentRepository
     public bool IsStudent(Guid userId);
     public Task<IEnumerable<GroupDto>?> GetGroups(int fieldOfStudyLogId, Guid userId);
     public IEnumerable<GroupDto> GetAllGroups(int fieldOfStudyLogId);
-    public Task<IEnumerable<StudentFieldOfStudyDto>?> GetStudentFieldsOfStudy(Guid userId, int academicOrganizationId);
+    public StudentFieldOfStudyDto? GetStudentCurrentFieldsOfStudy(Guid userId);
     public bool IsRepresentativeForFieldOfStudy(int fieldsOfStudyLogId, Guid userId);
     public bool IsRepresentative(Guid userId, int academicOrganizationId);
     public IEnumerable<StudentFieldOfStudyDto>? GetRepresentativeFieldsOfStudy(Guid userId, int academicOrganizationId);

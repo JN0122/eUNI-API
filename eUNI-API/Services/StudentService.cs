@@ -10,21 +10,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class StudentService(IStudentRepository studentRepository, IOrganizationRepository organizationRepository): IStudentService
+public class StudentService(IStudentRepository studentRepository): IStudentService
 {
     private readonly IStudentRepository _studentRepository = studentRepository;
-    private readonly IOrganizationRepository _organizationRepository = organizationRepository;
     
-    public async Task<StudentInfoDto> GetStudentInfo(Guid userId)
+    public StudentInfoDto GetStudentInfo(Guid userId)
     {
-        var academicOrganizationId = _organizationRepository.GetNewestOrganizationId();
         if (!_studentRepository.IsStudent(userId)) throw new ArgumentException("Invalid user");
-        var fieldsOfStudy = await _studentRepository.GetStudentFieldsOfStudy(userId, academicOrganizationId);
-
+        var fieldsOfStudy = _studentRepository.GetStudentCurrentFieldsOfStudy(userId);
+        
         return new StudentInfoDto
         {
             Id = userId,
-            FieldsOfStudyInfo = fieldsOfStudy
+            CurrentFieldOfStudyInfo = fieldsOfStudy
         };
     }
 

@@ -16,10 +16,10 @@ public class StudentController(IStudentService studentService, IUserService user
     private readonly IUserService _userService = userService;
 
     [HttpGet("info")]
-    public async Task<IActionResult> StudentFieldsOfStudies()
+    public async Task<IActionResult> GetStudentInfo()
     {
         var user = await _userService.FindUserByClaim(User.Claims); 
-        var studentInfo = await _studentService.GetStudentInfo(user.Id);
+        var studentInfo = _studentService.GetStudentInfo(user.Id);
         return Ok(studentInfo);
     }
     
