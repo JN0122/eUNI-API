@@ -21,7 +21,7 @@ public static class DateHelper
         if (startDate < yearStart)
             startDate = startDate.AddDays(repeatClassInDays);
         
-        var dates = new List<DateOnly> { startDate };
+        var dates = new List<DateOnly>();
         for (; startDate <= yearEnd; startDate = startDate.AddDays(repeatClassInDays))
             dates.Add(startDate);
         
