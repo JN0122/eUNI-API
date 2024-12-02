@@ -35,6 +35,7 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 builder.Services.AddScoped<IRepresentativeService, RepresentativeService>();
 builder.Services.AddScoped<IFieldOfStudyServices, FieldOfStudyServices>();
+builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
@@ -117,6 +118,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
+app.UseStaticFiles();
 app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();

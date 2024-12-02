@@ -1,8 +1,11 @@
 using eUNI_API.Data;
+using eUNI_API.Enums;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Entities.FieldOfStudy;
+using eUNI_API.Models.Entities.Student;
 using eUNI_API.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Repositories;
 
@@ -36,5 +39,42 @@ public class ClassesRepository(AppDbContext context): IClassesRepository
     public IQueryable<ClassDate> GetClassDates(int classId)
     {
         return _context.ClassDates.Where(c =>c.ClassId == classId);
+    }
+
+    private string GetGroupName(Group group, int classId)
+    {
+        if (group.Type != (int)GroupType.DeanGroup)
+            return group.Abbr;
+        var classEntity = _context.Classes
+            .AsNoTracking()
+            .Include(c => c.FieldOfStudyLog)
+            .ThenInclude(f => f.FieldOfStudy)
+            .FirstOrDefault(c => c.Id == classId);
+        if(classEntity == null) throw new ArgumentException($"Class not found: {classId}");
+        return classEntity.FieldOfStudyLog.FieldOfStudy.Abbr + group.Abbr;
+    }
+
+    public List<ClassDto> GetClassesDto(IQueryable<Class> classEntities)
+    {
+        var classes = classEntities
+            .Include(c=>c.EndHour)
+            .Include(c=>c.StartHour)
+            .Include(c=>c.ClassDates)
+            .Include(c => c.Group)
+            .ToList();
+
+        return classes.Select(classEntity => new ClassDto
+            {
+                Id = classEntity.Id,
+                ClassName = classEntity.Name,
+                GroupId = classEntity.GroupId,
+                GroupName = GetGroupName(classEntity.Group, classEntity.Id),
+                EndHour = ConvertDtos.ToHourDto(classEntity.EndHour),
+                StartHour = ConvertDtos.ToHourDto(classEntity.StartHour),
+                FieldOfStudyLogId = classEntity.FieldOfStudyLogId,
+                ClassRoom = classEntity.Room,
+                Dates = classEntity.ClassDates.Select(cd => cd.Date)
+            })
+            .ToList();
     }
 }

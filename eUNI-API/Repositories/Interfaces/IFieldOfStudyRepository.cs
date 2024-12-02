@@ -7,6 +7,7 @@ namespace eUNI_API.Repositories.Interfaces;
 public interface IFieldOfStudyRepository
 {
     public FieldOfStudyLog GetFieldOfStudyLogById(int fieldOfStudyLogId);
+    public FieldOfStudyInfoDto GetFieldOfStudyInfo(int fieldOfStudyLogId);
     public Task<List<FieldOfStudyInfoDto>?> GetFieldOfStudyLogs(int academicOrganizationId);
     public List<DayOff> GetDaysOff(int fieldOfStudyLogId);
     public IEnumerable<FieldOfStudyInfoDto> GetAllFieldOfStudyLogs();

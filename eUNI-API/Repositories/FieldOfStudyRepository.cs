@@ -19,6 +19,18 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
         return fieldOfStudyLog;
     }
 
+    public FieldOfStudyInfoDto GetFieldOfStudyInfo(int fieldOfStudyLogId)
+    {
+        var fieldOfStudyLog = _context.FieldOfStudyLogs
+            .AsNoTracking()
+            .Include(f=>f.FieldOfStudy)
+            .Include(f => f.OrganizationsOfTheYear)
+            .ThenInclude(o => o.Year)
+            .FirstOrDefault(f=>f.Id == fieldOfStudyLogId);
+        if(fieldOfStudyLog == null) throw new ArgumentException($"Field of study log not found: {fieldOfStudyLogId}");
+        return ConvertDtos.ToFieldOfStudyInfoDto(fieldOfStudyLog);
+    }
+
     public async Task<List<FieldOfStudyInfoDto>?> GetFieldOfStudyLogs(int academicOrganizationId)
     {
         var fieldOfStudyLogs = _context.FieldOfStudyLogs

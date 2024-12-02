@@ -15,14 +15,14 @@ using Microsoft.EntityFrameworkCore;
 namespace eUNI_API.Services;
 
 public class RepresentativeService(AppDbContext context, 
-    IFieldOfStudyRepository fieldOfStudyRepository, IAuthRepository authRepository, 
+    IFieldOfStudyRepository fieldOfStudyRepository, ICalendarRepository calendarRepository, 
     IOrganizationRepository organizationRepository, IStudentRepository studentRepository, 
     IGroupRepository groupRepository, IHourRepository hourRepository,
     IClassesRepository classesRepository): IRepresentativeService
 {
     private readonly AppDbContext _context = context;
     private readonly IFieldOfStudyRepository _fieldOfStudyRepository = fieldOfStudyRepository;
-    private readonly IAuthRepository _authRepository = authRepository;
+    private readonly ICalendarRepository _calendarRepository = calendarRepository;
     private readonly IOrganizationRepository _organizationRepository = organizationRepository;
     private readonly IStudentRepository _studentRepository = studentRepository;
     private readonly IGroupRepository _groupRepository = groupRepository;
@@ -98,6 +98,17 @@ public class RepresentativeService(AppDbContext context,
         var daysOff = _organizationRepository.GetDaysOff(organizationInfo.Id).Result;
         return dates.Where(d => !daysOff.Contains(d)).ToList();
     }
+    
+    private async Task UpdateCalendar(int fieldOfStudyLogId, int classId)
+    {
+        var groupDto = _groupRepository.GetGroupByClass(classId);
+        var classes = _classesRepository.GetGroupsClasses(fieldOfStudyLogId, [groupDto.GroupId]);
+        var classesDto = _classesRepository.GetClassesDto(classes);
+        var calendar = _calendarRepository.CreateGroupCalendar(ConvertDtos.ToEventDto(classesDto));
+        var fieldOfStudyInfo = _fieldOfStudyRepository.GetFieldOfStudyInfo(fieldOfStudyLogId);
+        var path = _calendarRepository.GetCalendarFilePath(fieldOfStudyInfo, groupDto.GroupName);
+        await _calendarRepository.WriteCalendarFileAsync(path, calendar);
+    }
 
     public async Task CreateClass(CreateClassRequestDto classRequestDto)
     {
@@ -127,6 +138,7 @@ public class RepresentativeService(AppDbContext context,
         }));
         
         await _context.SaveChangesAsync();
+        await UpdateCalendar(classRequestDto.FieldOfStudyLogId, classEntity.Id);
     }
 
     private void UpdateClassDates(int classId, List<DateOnly> dates)
@@ -182,6 +194,7 @@ public class RepresentativeService(AppDbContext context,
         
         _context.Classes.Update(classEntity);
         await _context.SaveChangesAsync();
+        await UpdateCalendar(updateClassRequestDto.FieldOfStudyLogId, classEntity.Id);
     }
 
     public async Task DeleteClass(int id)
@@ -191,6 +204,7 @@ public class RepresentativeService(AppDbContext context,
         _context.RemoveRange(classDates);
         _context.Remove(classEntity);
         await _context.SaveChangesAsync();
+        await UpdateCalendar(classEntity.FieldOfStudyLogId, classEntity.Id);
     }
 
     public async Task<IEnumerable<AssignmentDto>> GetAssignments(int fieldOfStudyLogId)

@@ -1,7 +1,6 @@
-using eUNI_API.Models.Dto;
+using eUNI_API.Models.Dto.Calendar;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
-using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Models.Entities.OrganizationInfo;
 
@@ -32,5 +31,22 @@ public static class ConvertDtos
             StartTime = $"{hour.StartHour}:{formatedStartMinute}",
             EndTime = $"{hour.EndHour}:{formateEndMinute}"
         };
+    }
+
+    public static EventDto ToEventDto(ClassDto classDto)
+    {
+        return new EventDto
+        {
+            ClassName = ClassHelper.GetClassWithGroup(classDto.ClassName, classDto.GroupName),
+            ClassRoom = classDto.ClassRoom,
+            Dates = classDto.Dates.ToList(),
+            StartTime = classDto.StartHour.StartTime,
+            EndTime = classDto.EndHour.EndTime
+        };
+    }
+    
+    public static List<EventDto> ToEventDto(List<ClassDto> classes)
+    {
+        return classes.Select(ToEventDto).ToList();
     }
 }
