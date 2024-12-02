@@ -10,7 +10,7 @@ namespace eUNI_API.Repositories;
 
 public class CalendarRepository(IWebHostEnvironment env): ICalendarRepository
 {
-    private readonly string _calendarFolder = $"{env.ContentRootPath}/calendars";
+    private readonly string _calendarFolder = $"{env.WebRootPath}/calendars";
     
     public Calendar CreateGroupCalendar(List<EventDto> events)
     {
