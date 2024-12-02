@@ -175,13 +175,13 @@ public class RepresentativeService(AppDbContext context,
         _context.SaveChanges();
     }
 
-    public async Task UpdateClass(int id, UpdateClassRequestDto updateClassRequestDto)
+    public async Task UpdateClass(int classId, UpdateClassRequestDto updateClassRequestDto)
     {
         var fieldOfStudyLog = _fieldOfStudyRepository.GetFieldOfStudyLogById(updateClassRequestDto.FieldOfStudyLogId);
         var group = _groupRepository.GetGroupById(updateClassRequestDto.GroupId);
         var startHour = _hourRepository.GetHourById(updateClassRequestDto.StartHourId);
         var endHour = _hourRepository.GetHourById(updateClassRequestDto.EndHourId);
-        var classEntity = _classesRepository.GetClassById(id);
+        var classEntity = _classesRepository.GetClassById(classId);
         
         classEntity.Name = updateClassRequestDto.Name;
         classEntity.Room = updateClassRequestDto.Room;
@@ -197,9 +197,9 @@ public class RepresentativeService(AppDbContext context,
         await UpdateCalendar(updateClassRequestDto.FieldOfStudyLogId, classEntity.Id);
     }
 
-    public async Task DeleteClass(int id)
+    public async Task DeleteClass(int classId)
     {
-        var classEntity = _classesRepository.GetClassById(id);
+        var classEntity = _classesRepository.GetClassById(classId);
         var classDates = _classesRepository.GetClassDates(classEntity.Id);
         _context.RemoveRange(classDates);
         _context.Remove(classEntity);

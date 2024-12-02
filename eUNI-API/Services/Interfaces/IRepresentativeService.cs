@@ -13,8 +13,8 @@ public interface IRepresentativeService
     public IEnumerable<UserInfoDto> GetUsersInfoDto(IEnumerable<User> users);
     public Task<IEnumerable<ClassDto>> GetClasses(int fieldOfStudyLogId);
     public Task CreateClass(CreateClassRequestDto classRequestDto);
-    public Task UpdateClass(int id, UpdateClassRequestDto updateClassRequestDto);
-    public Task DeleteClass(int id);
+    public Task UpdateClass(int classId, UpdateClassRequestDto updateClassRequestDto);
+    public Task DeleteClass(int classId);
     public Task<IEnumerable<AssignmentDto>> GetAssignments(int fieldOfStudyLogId);
     public Task CreateAssignment(CreateAssignmentRequestDto assignmentRequestDto);
     public Task UpdateAssignment(int id, CreateAssignmentRequestDto assignmentRequestDto);
