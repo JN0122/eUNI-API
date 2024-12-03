@@ -8,4 +8,5 @@ public interface IGroupRepository
     public GroupDto GetGroupByClass(int classId);
     public Group GetGroupById(int groupId);
     public string GetGroupName(int classId);
+    public string GetGroupName(int fieldOfStudyLogId, Group group);
 }

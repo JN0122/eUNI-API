@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using eUNI_API.Models.Dto.Schedule;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -23,5 +24,11 @@ public class ScheduleController(IScheduleService scheduleService): ControllerBas
     public async Task<IActionResult> GetHours()
     {
         return Ok(_scheduleService.GetHours());
+    }
+
+    [HttpGet("group-calendar-path")]
+    public async Task<IActionResult> GetGroupCalendarPath([FromQuery, Required] int fieldOfStudyLogId, [FromQuery, Required] int groupId)
+    {
+        return Ok(_scheduleService.GetGroupCalendarPath(fieldOfStudyLogId, groupId));
     }
 }

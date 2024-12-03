@@ -10,5 +10,6 @@ public interface IScheduleService
     public IEnumerable<HourDto> GetHours();
     public ClassAssignment? GetClassAssigment(int classId, DateOnly date);
     public int GetGroupType(int groupId);
+    public string GetGroupCalendarPath(int fieldOfStudyLogId, int groupId);
     // classes, assignment logic
 }

@@ -10,8 +10,8 @@ namespace eUNI_API.Repositories;
 
 public class CalendarRepository(IWebHostEnvironment env): ICalendarRepository
 {
-    private readonly string _calendarFolder = $"{env.WebRootPath}/calendars";
-    
+    private const string CalendarFolder = "/calendars";
+
     public Calendar CreateGroupCalendar(List<EventDto> events)
     {
         var calendar = new Calendar
@@ -39,24 +39,34 @@ public class CalendarRepository(IWebHostEnvironment env): ICalendarRepository
         return calendar;
     }
 
-    public async Task WriteCalendarFileAsync(string filePath, Calendar calendar)
+    public async Task WriteCalendarFileAsync(string relativeFilePath, Calendar calendar)
     {
-        var directoryPath = Path.GetDirectoryName(filePath);
+        var absoluteFilePath = env.WebRootPath + relativeFilePath;
+        var absoluteDirectoryPath = Path.GetDirectoryName(absoluteFilePath);
         var serializer = new CalendarSerializer();
         var calendarString = serializer.SerializeToString(calendar);
         
-        if(!Directory.Exists(directoryPath))
-            Directory.CreateDirectory(directoryPath!);
-        
-        await File.WriteAllTextAsync(filePath, calendarString);
+        if(!Directory.Exists(absoluteDirectoryPath))
+            Directory.CreateDirectory(absoluteDirectoryPath!);
+        await File.WriteAllTextAsync(absoluteFilePath, calendarString);
+    }
+
+    private static List<string> SanitizePaths(params string[] paths)
+    {
+        return paths.Select(path => path.Replace('/', '-').Replace(' ', '-').ToLower()).ToList();
     }
     
     public string GetCalendarFilePath(FieldOfStudyInfoDto fieldOfStudyInfo, string groupName)
     {
-        var studiesCycle = fieldOfStudyInfo.StudiesCycle == 1 ? "Inżynierskie" : 
-            fieldOfStudyInfo.StudiesCycle == 2? "Magisterskie":throw new Exception("Not defined studies cycle");
+        var studiesCycle = fieldOfStudyInfo.StudiesCycle == 1 ? "inz" : 
+            fieldOfStudyInfo.StudiesCycle == 2? "mgr":throw new Exception("Not defined studies cycle");
         var typeOfStudies = fieldOfStudyInfo.IsFullTime ? "Stacjonarne" : "Niestacjonarne";
-        return Path.Combine(_calendarFolder, fieldOfStudyInfo.YearName.Replace("/","-"), studiesCycle, fieldOfStudyInfo.Name, 
-            typeOfStudies, fieldOfStudyInfo.Semester.ToString(), $"{groupName}.ics");
+
+        var sanitizedPaths = new List<string> { CalendarFolder };
+        sanitizedPaths.AddRange(SanitizePaths(fieldOfStudyInfo.YearName, studiesCycle, fieldOfStudyInfo.Name,
+            typeOfStudies, fieldOfStudyInfo.Semester.ToString()));
+        sanitizedPaths.Add($"{groupName}.ics");
+        
+        return Path.Combine(sanitizedPaths.ToArray());
     }
 }

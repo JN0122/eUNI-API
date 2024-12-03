@@ -13,13 +13,16 @@ namespace eUNI_API.Services;
 
 public class ScheduleService(AppDbContext context, IOrganizationRepository organizationRepository, 
     IClassesRepository classesRepository, IGroupRepository groupRepository,
-    IHourRepository hourRepository): IScheduleService
+    IHourRepository hourRepository, IFieldOfStudyRepository fieldOfStudyRepository,
+    ICalendarRepository calendarRepository): IScheduleService
 {
     private readonly AppDbContext _context = context;
     private readonly IOrganizationRepository _organizationRepository = organizationRepository;
     private readonly IClassesRepository _classesRepository = classesRepository;
     private readonly IGroupRepository _groupRepository = groupRepository;
     private readonly IHourRepository _hourRepository = hourRepository;
+    private readonly IFieldOfStudyRepository _fieldOfStudyRepository = fieldOfStudyRepository;
+    private readonly ICalendarRepository _calendarRepository = calendarRepository;
 
     private class ThisWeekClass
     {
@@ -46,6 +49,13 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
     {
         var group = _context.Groups.First(g => g.Id == groupId);
         return group.Type;
+    }
+
+    public string GetGroupCalendarPath(int fieldOfStudyLogId, int groupId)
+    {
+        var fieldOfStudyInfo = _fieldOfStudyRepository.GetFieldOfStudyInfo(fieldOfStudyLogId);
+        var group = _groupRepository.GetGroupById(groupId);
+        return _calendarRepository.GetCalendarFilePath(fieldOfStudyInfo, _groupRepository.GetGroupName(fieldOfStudyLogId, group));
     }
 
     private List<Hour> GetClassesHours(List<Class> classes)
