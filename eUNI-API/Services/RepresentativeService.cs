@@ -99,9 +99,8 @@ public class RepresentativeService(AppDbContext context,
         return dates.Where(d => !daysOff.Contains(d)).ToList();
     }
     
-    private async Task UpdateCalendar(int fieldOfStudyLogId, int classId)
+    private async Task UpdateCalendar(int fieldOfStudyLogId, GroupDto groupDto)
     {
-        var groupDto = _groupRepository.GetGroupByClass(classId);
         var classes = _classesRepository.GetGroupsClasses(fieldOfStudyLogId, [groupDto.GroupId]);
         var classesDto = _classesRepository.GetClassesDto(classes);
         var calendar = _calendarRepository.CreateGroupCalendar(ConvertDtos.ToEventDto(classesDto));
@@ -138,7 +137,9 @@ public class RepresentativeService(AppDbContext context,
         }));
         
         await _context.SaveChangesAsync();
-        await UpdateCalendar(classRequestDto.FieldOfStudyLogId, classEntity.Id);
+        
+        var groupDto = _groupRepository.GetGroupByClass(classEntity.Id);
+        await UpdateCalendar(classRequestDto.FieldOfStudyLogId, groupDto);
     }
 
     private void UpdateClassDates(int classId, List<DateOnly> dates)
@@ -194,17 +195,23 @@ public class RepresentativeService(AppDbContext context,
         
         _context.Classes.Update(classEntity);
         await _context.SaveChangesAsync();
-        await UpdateCalendar(updateClassRequestDto.FieldOfStudyLogId, classEntity.Id);
+        
+        var groupDto = _groupRepository.GetGroupByClass(classId);
+        await UpdateCalendar(updateClassRequestDto.FieldOfStudyLogId, groupDto);
     }
 
     public async Task DeleteClass(int classId)
     {
         var classEntity = _classesRepository.GetClassById(classId);
         var classDates = _classesRepository.GetClassDates(classEntity.Id);
+        var groupDto = _groupRepository.GetGroupByClass(classId);
+        
         _context.RemoveRange(classDates);
         _context.Remove(classEntity);
+        
         await _context.SaveChangesAsync();
-        await UpdateCalendar(classEntity.FieldOfStudyLogId, classEntity.Id);
+        
+        await UpdateCalendar(classEntity.FieldOfStudyLogId, groupDto);
     }
 
     public async Task<IEnumerable<AssignmentDto>> GetAssignments(int fieldOfStudyLogId)
