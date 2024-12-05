@@ -36,7 +36,7 @@ public class AuthService(AppDbContext context, IOptions<JwtSettings> jwtSettings
         cookies.Append("refresh-token", refreshToken, new CookieOptions
         {
             HttpOnly = true,
-            //Secure = true, //https
+            Secure = true,
             SameSite = SameSiteMode.Strict,
             Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays)
         });
