@@ -9,7 +9,14 @@ namespace eUNI_API.Repositories;
 public class OrganizationRepository(AppDbContext context): IOrganizationRepository
 {
     private readonly AppDbContext _context = context;
-    
+
+    public async Task<List<OrganizationOfTheYear>> GetYearOrganizations()
+    {
+        return await _context.OrganizationsOfTheYear
+            .Include(o=>o.DayOffs)
+            .ToListAsync();
+    }
+
     public async Task<OrganizationOfTheYear> GetOrganizationsInfo(int fieldOfStudyLogsId)
     {
         var fieldOfStudyLog = await _context.FieldOfStudyLogs
@@ -21,7 +28,7 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
         return fieldOfStudyLog.OrganizationsOfTheYear;
     }
     
-    public async Task<IEnumerable<DateOnly>> GetDaysOff(int organizationId)
+    public async Task<List<DateOnly>> GetDaysOff(int organizationId)
     {
         var organizationOfTheYear = await GetOrganizationsInfo(organizationId);
 
@@ -31,6 +38,11 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
             .ToList();
         
         return daysOff;
+    }
+
+    public async Task<List<DayOff>> GetAllDaysOff()
+    {
+        return await _context.DaysOff.ToListAsync();
     }
 
     public async Task<OrganizationOfTheYear> GetNewestOrganization()

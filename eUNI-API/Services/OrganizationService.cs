@@ -5,12 +5,23 @@ using eUNI_API.Services.Interfaces;
 
 namespace eUNI_API.Services;
 
-public class OrganizationService(AppDbContext appDbContext, IOrganizationRepository organizationRepository): IOrganizationService
+public class OrganizationService(IOrganizationRepository organizationRepository): IOrganizationService
 {
     private readonly IOrganizationRepository _organizationRepository = organizationRepository;
-    public Task<List<YearOrganization>> GetYearOrganizations()
+    public async Task<List<YearOrganization>> GetYearOrganizations()
     {
-        throw new NotImplementedException();
+        var organizations = await _organizationRepository.GetYearOrganizations();
+        var daysOff = await _organizationRepository.GetAllDaysOff();
+        
+        return organizations.Select(o=> new YearOrganization
+        {
+            Id = o.Id,
+            YearId = o.YearId,
+            FirstHalfOfYear = o.FirstHalfOfYear,
+            StartDate = o.StartDay,
+            EndDate = o.EndDay,
+            DaysOff = daysOff.Where(d=>d.OrganizationsOfTheYearId == o.Id).Select(dayOff => dayOff.Day).ToList(),
+        }).ToList();
     }
 
     public Task CreateYearOrganization(YearOrganizationRequest yearOrganizationRequest)

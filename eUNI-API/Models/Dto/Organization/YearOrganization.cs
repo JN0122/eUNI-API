@@ -5,8 +5,6 @@ public class YearOrganization
     public int Id { get; set; }
     
     public int YearId { get; set; }
-    
-    public string YearName { get; set; }
 
     public bool FirstHalfOfYear { get; set; }
 
@@ -14,5 +12,5 @@ public class YearOrganization
     
     public DateOnly EndDate { get; set; }
     
-    public List<DateOnly>? DatesOff { get; set; }
+    public List<DateOnly>? DaysOff { get; set; }
 }
