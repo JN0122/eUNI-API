@@ -48,7 +48,7 @@ public class AdminController(IAdminService adminService, IUserService userServic
         return Ok();
     }
 
-    [HttpPatch("users/{id:guid}")]
+    [HttpPut("users/{id:guid}")]
     public async Task<ActionResult> GetUserById([FromRoute] Guid id, [FromBody] UpdateUserRequestDto updateUserRequestDto)
     {
         await _adminService.UpdateUser(id, updateUserRequestDto);
