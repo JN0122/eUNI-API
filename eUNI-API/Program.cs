@@ -34,7 +34,7 @@ builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 builder.Services.AddScoped<IRepresentativeService, RepresentativeService>();
-builder.Services.AddScoped<IFieldOfStudyServices, FieldOfStudyServices>();
+builder.Services.AddScoped<IFieldOfStudyService, FieldOfStudyService>();
 builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();

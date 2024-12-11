@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
-public class FieldOfStudyServices(AppDbContext context, IGroupRepository groupRepository, 
-    IFieldOfStudyRepository fieldOfStudyRepository): IFieldOfStudyServices
+public class FieldOfStudyService(AppDbContext context, IGroupRepository groupRepository, 
+    IFieldOfStudyRepository fieldOfStudyRepository): IFieldOfStudyService
 {
     private readonly AppDbContext _context = context;
     private readonly IGroupRepository _groupRepository = groupRepository;

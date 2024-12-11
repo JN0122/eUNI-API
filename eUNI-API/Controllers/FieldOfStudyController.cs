@@ -8,9 +8,9 @@ namespace eUNI_API.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class FieldOfStudyController(IFieldOfStudyServices fieldOfStudyServices): ControllerBase
+public class FieldOfStudyController(IFieldOfStudyService fieldOfStudyServices): ControllerBase
 {
-    private readonly IFieldOfStudyServices _fieldOfStudyServices = fieldOfStudyServices;
+    private readonly IFieldOfStudyService _fieldOfStudyServices = fieldOfStudyServices;
     
     [HttpGet("groups")]
     public async Task<IActionResult> FieldsOfStudiesGroups([FromQuery] [Required] int fieldOfStudyLogId)
