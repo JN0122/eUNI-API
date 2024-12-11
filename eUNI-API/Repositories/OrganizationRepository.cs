@@ -76,6 +76,52 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
         return daysOff;
     }
 
+    public async Task UpdateYearOrganization(int organizationId, YearOrganizationRequest yearOrganizationRequest)
+    {
+        var organization = GetOrganizationOfTheYear(organizationId);
+        organization.StartDay = yearOrganizationRequest.StartDate;
+        organization.EndDay = yearOrganizationRequest.EndDate;
+        await UpdateOrganizationDaysOff(organization, yearOrganizationRequest.DaysOff);
+    }
+
+    private async Task UpdateOrganizationDaysOff(OrganizationOfTheYear organization, List<DateOnly> daysOff)
+    {
+        var organizationDaysOff = await GetOrganizationDaysOff(organization.Id);
+        var entityDifference = daysOff.Count - organizationDaysOff.Count;
+        
+        switch (entityDifference)
+        {
+            case > 0:
+                var daysOffToAdd = new List<DayOff>();
+                for(var i = 0; i < entityDifference; i++) daysOffToAdd.Add(new DayOff{OrganizationsOfTheYearId = organization.Id});
+                _context.DaysOff.AddRange(daysOffToAdd);
+                break;
+            case < 0:
+                var daysOffToRemove = organizationDaysOff.Slice(organizationDaysOff.Count + entityDifference - 1, -entityDifference);
+                _context.DaysOff.RemoveRange(daysOffToRemove);
+                break;
+        }
+
+        if (entityDifference != 0)
+        {
+            await _context.SaveChangesAsync();
+            organizationDaysOff = await GetOrganizationDaysOff(organization.Id);
+        }
+        
+        var newDaysOff = organizationDaysOff.Select((dayOff, index) =>
+        {
+            dayOff.Day = daysOff[index];
+            return dayOff;
+        });
+        _context.DaysOff.UpdateRange(newDaysOff);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<DayOff>> GetOrganizationDaysOff(int organizationId)
+    {
+        return await _context.DaysOff.Where(d => d.OrganizationsOfTheYearId == organizationId).ToListAsync();
+    }
+
     public async Task<List<DayOff>> GetAllDaysOff()
     {
         return await _context.DaysOff.ToListAsync();

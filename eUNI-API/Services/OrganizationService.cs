@@ -30,9 +30,9 @@ public class OrganizationService(IOrganizationRepository organizationRepository)
         await _organizationRepository.CreateYearOrganization(nextSemesterDetails, yearOrganizationRequest);
     }
 
-    public Task UpdateYearOrganization(int id, YearOrganizationRequest yearOrganizationRequest)
+    public async Task UpdateYearOrganization(int id, YearOrganizationRequest yearOrganizationRequest)
     {
-        throw new NotImplementedException();
+        await _organizationRepository.UpdateYearOrganization(id, yearOrganizationRequest);
     }
 
     public async Task DeleteYearOrganization(int id)
