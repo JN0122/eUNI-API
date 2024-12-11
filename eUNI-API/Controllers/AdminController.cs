@@ -92,4 +92,11 @@ public class AdminController(IAdminService adminService, IUserService userServic
         var years = await _organizationService.GetYears();
         return Ok(years);
     }
+    
+    [HttpGet("next-semester-details")]
+    public async Task<ActionResult<IEnumerable<YearDto>>> GetNextSemesterDetails()
+    {
+        var details = await _organizationService.GetNextSemesterDetails();
+        return Ok(details);
+    }
 }

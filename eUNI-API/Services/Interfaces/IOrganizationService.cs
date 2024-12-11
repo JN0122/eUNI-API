@@ -11,4 +11,5 @@ public interface IOrganizationService
     public Task UpdateYearOrganization(int id, YearOrganizationRequest yearOrganizationRequest);
     public Task DeleteYearOrganization(int id);
     public Task<List<YearDto>> GetYears();
+    public Task<NextAcademicYear> GetNextSemesterDetails();
 }

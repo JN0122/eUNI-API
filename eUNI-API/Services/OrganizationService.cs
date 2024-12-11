@@ -1,9 +1,7 @@
 using eUNI_API.Data;
 using eUNI_API.Models.Dto.Organization;
-using eUNI_API.Models.Entities.OrganizationInfo;
 using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Services;
 
@@ -50,5 +48,24 @@ public class OrganizationService(AppDbContext appDbContext, IOrganizationReposit
             Id = year.Id,
             Name = year.Name,
         }).ToList();
+    }
+
+    public async Task<NextAcademicYear> GetNextSemesterDetails()
+    {
+        var newestOrganization = await _organizationRepository.GetNewestOrganization();
+        Console.WriteLine(newestOrganization.Id);
+        if (newestOrganization.FirstHalfOfYear)
+            return new NextAcademicYear
+            {
+                YearId = newestOrganization.YearId,
+                FirstHalfOfYear = false,
+            };
+
+        var newYear = await _organizationRepository.GetOrCreateNextYear(newestOrganization.YearId);
+        return new NextAcademicYear
+        {
+            YearId = newYear.Id,
+            FirstHalfOfYear = true
+        };
     }
 }

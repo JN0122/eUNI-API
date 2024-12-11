@@ -8,4 +8,5 @@ public interface IOrganizationRepository
     public Task<IEnumerable<DateOnly>> GetDaysOff(int organizationId);
     public Task<OrganizationOfTheYear> GetNewestOrganization();
     public Task<List<Year>> GetYears();
+    public Task<Year> GetOrCreateNextYear(int yearId);
 }

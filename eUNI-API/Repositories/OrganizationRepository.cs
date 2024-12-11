@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Helpers;
 using eUNI_API.Models.Entities.OrganizationInfo;
 using eUNI_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -52,5 +53,23 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
     public async Task<List<Year>> GetYears()
     {
         return await _context.Years.ToListAsync();
+    }
+
+    public async Task<Year> GetOrCreateNextYear(int yearId)
+    {
+        var years = await GetYears();
+        var year = years.First(year => year.Id == yearId);
+        var nextYearName = OrganizationHelper.GetNextYearName(year.Name);
+        var nextYear = years.FirstOrDefault(y => y.Name == nextYearName);
+
+        if (nextYear != null) return nextYear;
+        
+        var newYear = new Year
+        {
+            Name = nextYearName, 
+        };
+        _context.Years.Add(newYear);
+        await _context.SaveChangesAsync();
+        return newYear;
     }
 }
