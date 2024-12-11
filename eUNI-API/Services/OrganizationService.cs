@@ -13,18 +13,6 @@ public class OrganizationService(AppDbContext appDbContext, IOrganizationReposit
         throw new NotImplementedException();
     }
 
-    public AcademicYearDaysOff GetAcademicYearDaysOff(int fieldOfStudyLogId)
-    {
-        var organizationsInfo = _organizationRepository.GetOrganizationsInfo(fieldOfStudyLogId).Result;
-        var daysOff = _organizationRepository.GetDaysOff(organizationsInfo.Id).Result;
-        return new AcademicYearDaysOff
-        {
-            StartYearDate = organizationsInfo.StartDay,
-            EndYearDate = organizationsInfo.EndDay,
-            DaysOff = daysOff,
-        };
-    }
-
     public Task CreateYearOrganization(YearOrganizationRequest yearOrganizationRequest)
     {
         throw new NotImplementedException();
@@ -38,6 +26,18 @@ public class OrganizationService(AppDbContext appDbContext, IOrganizationReposit
     public Task DeleteYearOrganization(int id)
     {
         throw new NotImplementedException();
+    }
+    
+    public AcademicYearDaysOff GetAcademicYearDaysOff(int fieldOfStudyLogId)
+    {
+        var organizationsInfo = _organizationRepository.GetOrganizationsInfo(fieldOfStudyLogId).Result;
+        var daysOff = _organizationRepository.GetDaysOff(organizationsInfo.Id).Result;
+        return new AcademicYearDaysOff
+        {
+            StartYearDate = organizationsInfo.StartDay,
+            EndYearDate = organizationsInfo.EndDay,
+            DaysOff = daysOff,
+        };
     }
 
     public async Task<List<YearDto>> GetYears()
