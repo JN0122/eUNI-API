@@ -12,6 +12,11 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
 {
     private readonly AppDbContext _context = context;
 
+    public async Task<List<FieldOfStudy>> GetFieldsOfStudy()
+    {
+        return await _context.FieldOfStudies.ToListAsync();
+    }
+
     public FieldOfStudyLog GetFieldOfStudyLogById(int fieldOfStudyLogId)
     {
         var fieldOfStudyLog = _context.FieldOfStudyLogs.FirstOrDefault(f => f.Id == fieldOfStudyLogId);

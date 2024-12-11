@@ -6,6 +6,7 @@ namespace eUNI_API.Repositories.Interfaces;
 
 public interface IFieldOfStudyRepository
 {
+    public Task<List<FieldOfStudy>> GetFieldsOfStudy(); 
     public FieldOfStudyLog GetFieldOfStudyLogById(int fieldOfStudyLogId);
     public FieldOfStudyInfoDto GetFieldOfStudyInfo(int fieldOfStudyLogId);
     public Task<List<FieldOfStudyInfoDto>?> GetFieldOfStudyLogs(int academicOrganizationId);

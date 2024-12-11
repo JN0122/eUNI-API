@@ -1,5 +1,5 @@
-using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
+using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Dto.Organization;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -11,12 +11,14 @@ namespace eUNI_API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class AdminController(IAdminService adminService, IUserService userService, 
-    IOrganizationService organizationService, IRepresentativeService representativeService): ControllerBase
+    IOrganizationService organizationService, IRepresentativeService representativeService,
+    IFieldOfStudyService fieldOfStudyService): ControllerBase
 {
     private readonly IAdminService _adminService = adminService;
     private readonly IUserService _userService = userService;
     private readonly IOrganizationService _organizationService = organizationService;
     private readonly IRepresentativeService _representativeService = representativeService;
+    private readonly IFieldOfStudyService _fieldOfStudyService = fieldOfStudyService;
     
     [HttpGet("users")]
     public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetUsers()
@@ -98,5 +100,36 @@ public class AdminController(IAdminService adminService, IUserService userServic
     {
         var details = await _organizationService.GetNextSemesterDetails();
         return Ok(details);
+    }
+
+    [HttpGet("available-fields")]
+    public async Task<ActionResult<IEnumerable<FieldOfStudyDto>>> GetAvailableFields()
+    {
+        var fields = await _fieldOfStudyService.GetFieldsOfStudy();
+        return Ok(fields);
+    }
+    
+    [HttpPost("available-fields")]
+    public async Task<ActionResult> CreateAvailableField(
+        [FromBody] CreateFieldOfStudyRequest createFieldOfStudyRequest)
+    {
+        await _fieldOfStudyService.CreateFieldOfStudy(createFieldOfStudyRequest);
+        return Ok();
+    }
+    
+    [HttpPut("available-fields/{id:int}")]
+    public async Task<ActionResult> UpdateAvailableField(
+        [FromBody] CreateFieldOfStudyRequest createFieldOfStudyRequest,
+        [FromRoute] int id)
+    {
+        await _fieldOfStudyService.UpdateFieldOfStudy(id, createFieldOfStudyRequest);
+        return Ok();
+    }
+
+    [HttpDelete("available-fields/{id:int}")]
+    public async Task<ActionResult> DeleteAvailableField([FromRoute] int id)
+    {
+        await _fieldOfStudyService.DeleteFieldOfStudy(id);
+        return Ok();
     }
 }

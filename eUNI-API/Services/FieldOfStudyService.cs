@@ -14,7 +14,37 @@ public class FieldOfStudyService(AppDbContext context, IGroupRepository groupRep
     private readonly AppDbContext _context = context;
     private readonly IGroupRepository _groupRepository = groupRepository;
     private readonly IFieldOfStudyRepository _fieldOfStudyRepository = fieldOfStudyRepository;
-    
+
+    public async Task<IEnumerable<FieldOfStudyDto>> GetFieldsOfStudy()
+    {
+        var fields = await _fieldOfStudyRepository.GetFieldsOfStudy();
+        
+        return fields.Select(field => new FieldOfStudyDto
+        {
+            Id = field.Id,
+            Abbr = field.Abbr,
+            FullTime = field.IsFullTime,
+            Name = field.Name,
+            SemesterCount = field.SemesterCount,
+            StudiesCycle = field.StudiesCycle,
+        });
+    }
+
+    public Task CreateFieldOfStudy(CreateFieldOfStudyRequest createFieldOfStudyRequest)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateFieldOfStudy(int id, CreateFieldOfStudyRequest createFieldOfStudyRequest)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteFieldOfStudy(int id)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<IEnumerable<GroupDto>> GetGroups(int fieldOfStudyLogId)
     {
         var classes = await _context.Classes
