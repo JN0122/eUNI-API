@@ -31,10 +31,10 @@ public class RepresentativeService(AppDbContext context,
 
     public async Task<IEnumerable<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId)
     {
-        var newestAcademicOrganizationId = _organizationRepository.GetNewestOrganizationId();
+        var newestAcademicOrganization = await _organizationRepository.GetNewestOrganization();
         
         if(!_studentRepository.IsStudent(userId)) return [];
-        return _studentRepository.GetRepresentativeFieldsOfStudy(userId, newestAcademicOrganizationId)!.Select(dto => new FieldOfStudyInfoDto
+        return _studentRepository.GetRepresentativeFieldsOfStudy(userId, newestAcademicOrganization.Id)!.Select(dto => new FieldOfStudyInfoDto
         {
             FieldOfStudyLogId = dto.FieldOfStudyLogId,
             Name = dto.Name,

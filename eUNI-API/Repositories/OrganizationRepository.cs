@@ -32,12 +32,21 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
         return daysOff;
     }
 
-    public int GetNewestOrganizationId()
+    public async Task<OrganizationOfTheYear> GetNewestOrganization()
     {
-        var yearMaxId = _context.Years.Max(year => year.Id);
-        var newestAcademicOrganizationId = _context.OrganizationsOfTheYear.FirstOrDefault(y => y.Id == yearMaxId)?.Id;
-        if(newestAcademicOrganizationId == null) throw new ArgumentException("Organization not found");
-        return newestAcademicOrganizationId.Value;
+        var organizations = await _context.OrganizationsOfTheYear.ToListAsync();
+        var newestOrganizationId = organizations.Max(organization => organization.Id);
+        var newestAcademicOrganizations = await _context.OrganizationsOfTheYear
+            .Where(y => y.Id == newestOrganizationId)
+            .ToListAsync();
+        
+        if (newestAcademicOrganizations.Count == 1) return newestAcademicOrganizations[0];
+        
+        var newestOrganization = newestAcademicOrganizations.FirstOrDefault(
+            academicOrganization => academicOrganization.FirstHalfOfYear == false);
+        
+        if(newestOrganization == null) throw new ArgumentException("Organization not found");
+        return newestOrganization;
     }
 
     public async Task<List<Year>> GetYears()
