@@ -30,19 +30,19 @@ public class FieldOfStudyService(AppDbContext context, IGroupRepository groupRep
         });
     }
 
-    public Task CreateFieldOfStudy(CreateFieldOfStudyRequest createFieldOfStudyRequest)
+    public async Task CreateFieldOfStudy(CreateFieldOfStudyRequest createFieldOfStudyRequest)
     {
-        throw new NotImplementedException();
+        await _fieldOfStudyRepository.CreateFieldOfStudy(createFieldOfStudyRequest);
     }
 
-    public Task UpdateFieldOfStudy(int id, CreateFieldOfStudyRequest createFieldOfStudyRequest)
+    public async Task UpdateFieldOfStudy(int id, CreateFieldOfStudyRequest createFieldOfStudyRequest)
     {
-        throw new NotImplementedException();
+        await _fieldOfStudyRepository.UpdateFieldOfStudy(id, createFieldOfStudyRequest);
     }
 
-    public Task DeleteFieldOfStudy(int id)
+    public async Task DeleteFieldOfStudy(int id)
     {
-        throw new NotImplementedException();
+        await _fieldOfStudyRepository.DeleteFieldOfStudy(id);
     }
 
     public async Task<IEnumerable<GroupDto>> GetGroups(int fieldOfStudyLogId)

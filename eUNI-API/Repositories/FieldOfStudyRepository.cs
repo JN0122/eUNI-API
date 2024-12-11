@@ -12,9 +12,48 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
 {
     private readonly AppDbContext _context = context;
 
+    private FieldOfStudy GetFieldOfStudyById(int id)
+    {
+        var field = _context.FieldOfStudies.AsNoTracking().FirstOrDefault(f => f.Id == id);
+        if(field == null) throw new ArgumentException($"Field of study with id {id} does not exist");
+        return field;
+    }
+
     public async Task<List<FieldOfStudy>> GetFieldsOfStudy()
     {
         return await _context.FieldOfStudies.ToListAsync();
+    }
+
+    public async Task CreateFieldOfStudy(CreateFieldOfStudyRequest createFieldOfStudyRequest)
+    {
+        _context.Add(new FieldOfStudy
+        {
+            Name = createFieldOfStudyRequest.Name,
+            Abbr = createFieldOfStudyRequest.Abbr,
+            StudiesCycle = createFieldOfStudyRequest.StudiesCycle,
+            SemesterCount = createFieldOfStudyRequest.SemesterCount,
+            IsFullTime = createFieldOfStudyRequest.FullTime
+        });
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateFieldOfStudy(int id, CreateFieldOfStudyRequest createFieldOfStudyRequest)
+    {
+        var fieldOfStudy = GetFieldOfStudyById(id);
+        fieldOfStudy.Name = createFieldOfStudyRequest.Name;
+        fieldOfStudy.Abbr = createFieldOfStudyRequest.Abbr;
+        fieldOfStudy.StudiesCycle = createFieldOfStudyRequest.StudiesCycle;
+        fieldOfStudy.SemesterCount = createFieldOfStudyRequest.SemesterCount;
+        fieldOfStudy.IsFullTime = createFieldOfStudyRequest.FullTime;
+        _context.Update(fieldOfStudy);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteFieldOfStudy(int id)
+    {
+        var fieldOfStudy = GetFieldOfStudyById(id);
+        _context.Remove(fieldOfStudy);
+        await _context.SaveChangesAsync();
     }
 
     public FieldOfStudyLog GetFieldOfStudyLogById(int fieldOfStudyLogId)
