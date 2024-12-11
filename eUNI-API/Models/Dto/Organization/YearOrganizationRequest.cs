@@ -4,13 +4,12 @@ namespace eUNI_API.Models.Dto.Organization;
 
 public class YearOrganizationRequest
 {
-    public int YearId { get; set; }
-    
-    public bool FirstHalfOfYear { get; set; }
-    
+    [Required]
     public DateOnly StartDate { get; set; }
     
+    [Required]
     public DateOnly EndDate { get; set; }
-    
-    public List<DateOnly>? DatesOff { get; set; }
+
+    [Required] 
+    public List<DateOnly> DaysOff { get; set; }
 }

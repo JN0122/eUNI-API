@@ -1,5 +1,6 @@
 using eUNI_API.Data;
 using eUNI_API.Helpers;
+using eUNI_API.Models.Dto.Organization;
 using eUNI_API.Models.Entities.OrganizationInfo;
 using eUNI_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +11,46 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
 {
     private readonly AppDbContext _context = context;
 
+    public OrganizationOfTheYear GetOrganizationOfTheYear(int id)
+    {
+        var organizationOfTheYear = _context.OrganizationsOfTheYear.FirstOrDefault(o => o.Id == id);
+        if(organizationOfTheYear == null) throw new ArgumentException($"No organization found with id {id}");
+        return organizationOfTheYear;
+    }
+    
     public async Task<List<OrganizationOfTheYear>> GetYearOrganizations()
     {
         return await _context.OrganizationsOfTheYear
             .Include(o=>o.DayOffs)
             .ToListAsync();
+    }
+
+    public async Task CreateYearOrganization(NextAcademicYear nextSemesterDetails, YearOrganizationRequest yearOrganizationRequest)
+    {
+        var newOrganization = new OrganizationOfTheYear
+        {
+            YearId = nextSemesterDetails.YearId,
+            FirstHalfOfYear = nextSemesterDetails.FirstHalfOfYear,
+            StartDay = yearOrganizationRequest.StartDate,
+            EndDay = yearOrganizationRequest.EndDate
+        };
+        
+        _context.OrganizationsOfTheYear.Add(newOrganization);
+        if(yearOrganizationRequest.DaysOff.Count != 0)
+            _context.DaysOff.AddRange(yearOrganizationRequest.DaysOff.Select(day => new DayOff
+            {
+                OrganizationsOfTheYear = newOrganization,
+                Day = day
+            }));
+        
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteYearOrganization(int yearOrganizationId)
+    {
+        var organization = GetOrganizationOfTheYear(yearOrganizationId);
+        _context.Remove(organization);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<OrganizationOfTheYear> GetOrganizationsInfo(int fieldOfStudyLogsId)

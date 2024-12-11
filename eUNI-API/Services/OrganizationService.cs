@@ -24,9 +24,10 @@ public class OrganizationService(IOrganizationRepository organizationRepository)
         }).ToList();
     }
 
-    public Task CreateYearOrganization(YearOrganizationRequest yearOrganizationRequest)
+    public async Task CreateYearOrganization(YearOrganizationRequest yearOrganizationRequest)
     {
-        throw new NotImplementedException();
+        var nextSemesterDetails = await GetNextSemesterDetails();
+        await _organizationRepository.CreateYearOrganization(nextSemesterDetails, yearOrganizationRequest);
     }
 
     public Task UpdateYearOrganization(int id, YearOrganizationRequest yearOrganizationRequest)
@@ -34,9 +35,9 @@ public class OrganizationService(IOrganizationRepository organizationRepository)
         throw new NotImplementedException();
     }
 
-    public Task DeleteYearOrganization(int id)
+    public async Task DeleteYearOrganization(int id)
     {
-        throw new NotImplementedException();
+        await _organizationRepository.DeleteYearOrganization(id);
     }
     
     public AcademicYearDaysOff GetAcademicYearDaysOff(int fieldOfStudyLogId)
@@ -64,7 +65,6 @@ public class OrganizationService(IOrganizationRepository organizationRepository)
     public async Task<NextAcademicYear> GetNextSemesterDetails()
     {
         var newestOrganization = await _organizationRepository.GetNewestOrganization();
-        Console.WriteLine(newestOrganization.Id);
         if (newestOrganization.FirstHalfOfYear)
             return new NextAcademicYear
             {
