@@ -92,25 +92,4 @@ public class AdminController(IAdminService adminService, IUserService userServic
         var years = await _organizationService.GetYears();
         return Ok(years);
     }
-    
-    [HttpPost("years")]
-    public async Task<ActionResult> CreateYear([FromBody] YearRequest yearRequest)
-    {
-        await _organizationService.CreateYear(yearRequest);
-        return Ok();
-    }
-    
-    [HttpPut("years/{id:int}")]
-    public async Task<ActionResult> UpdateYear([FromBody] YearRequest yearRequest, [FromRoute] int id)
-    {
-        await _organizationService.UpdateYear(id, yearRequest);
-        return Ok();
-    }
-
-    [HttpDelete("years/{id:int}")]
-    public async Task<ActionResult> DeleteYear([FromRoute] int id)
-    {
-        await _organizationService.DeleteYear(id);
-        return Ok();
-    }
 }

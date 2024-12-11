@@ -42,23 +42,13 @@ public class OrganizationService(AppDbContext appDbContext, IOrganizationReposit
         throw new NotImplementedException();
     }
 
-    public Task<List<YearOrganization>> GetYears()
+    public async Task<List<YearDto>> GetYears()
     {
-        throw new NotImplementedException();
-    }
-
-    public Task CreateYear(YearRequest yearRequest)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateYear(int id, YearRequest yearRequest)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteYear(int id)
-    {
-        throw new NotImplementedException();
+        var years = await organizationRepository.GetYears();
+        return years.Select((year) => new YearDto
+        {
+            Id = year.Id,
+            Name = year.Name,
+        }).ToList();
     }
 }

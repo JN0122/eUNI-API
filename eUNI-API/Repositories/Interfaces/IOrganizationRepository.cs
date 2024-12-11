@@ -7,4 +7,5 @@ public interface IOrganizationRepository
     public Task<OrganizationOfTheYear> GetOrganizationsInfo(int fieldOfStudyLogsId);
     public Task<IEnumerable<DateOnly>> GetDaysOff(int organizationId);
     public int GetNewestOrganizationId();
+    public Task<List<Year>> GetYears();
 }

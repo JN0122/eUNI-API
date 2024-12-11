@@ -39,4 +39,9 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
         if(newestAcademicOrganizationId == null) throw new ArgumentException("Organization not found");
         return newestAcademicOrganizationId.Value;
     }
+
+    public async Task<List<Year>> GetYears()
+    {
+        return await _context.Years.ToListAsync();
+    }
 }
