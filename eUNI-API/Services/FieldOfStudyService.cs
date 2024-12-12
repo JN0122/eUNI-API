@@ -2,6 +2,7 @@ using eUNI_API.Data;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Dto.Group;
+using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -73,5 +74,45 @@ public class FieldOfStudyService(AppDbContext context, IGroupRepository groupRep
     public async Task DeleteFieldOfStudyLog(int id)
     {
         await _fieldOfStudyRepository.DeleteFieldOfStudyLog(id);
+    }
+
+    public async Task UpgradeFieldOfStudyLogs(UpgradeFieldsOfStudyLogsRequest upgradeFieldsOfStudyLogsRequest)
+    {
+        var organizationToUpgrade = await _organizationRepository.GetOrganizationToUpgrade();
+        var newOrganization = await _organizationRepository.GetNewestOrganization();
+        var fieldsOfStudyLogs = await _fieldOfStudyRepository.GetFieldsOfStudyLogs();
+        var fieldsToUpgrade = fieldsOfStudyLogs
+            .Where(f => upgradeFieldsOfStudyLogsRequest.FieldOfStudyLogIds.Contains(f.Id))
+            .ToList();
+
+        if (fieldsToUpgrade.Count != upgradeFieldsOfStudyLogsRequest.FieldOfStudyLogIds.Count())
+            throw new ArgumentException("Some fields are not in the database.");
+
+        if (fieldsToUpgrade.All(fieldOfStudyLog => fieldOfStudyLog.OrganizationsOfTheYear == organizationToUpgrade))
+            throw new ArgumentException("Some fields cannot be upgraded!");
+
+        var newFieldsLogs = new List<FieldOfStudyLog>();
+        fieldsToUpgrade.ForEach(field =>
+        {
+            var newSemester = (byte)(field.Semester + 1);
+
+            var isFieldUpgraded = fieldsOfStudyLogs.FirstOrDefault(fl =>
+                fl.OrganizationsOfTheYearId == newOrganization.Id &&
+                fl.Semester == newSemester &&
+                fl.FieldOfStudyId == field.FieldOfStudyId) != null;
+
+            if (field.FieldOfStudy.SemesterCount < newSemester || isFieldUpgraded)
+                return;
+
+            newFieldsLogs.Add(new FieldOfStudyLog
+            {
+                OrganizationsOfTheYearId = newOrganization.Id,
+                Semester = newSemester,
+                FieldOfStudyId = field.FieldOfStudyId,
+            });
+        });
+        
+        await _context.AddRangeAsync(newFieldsLogs!);
+        await _context.SaveChangesAsync();
     }
 }

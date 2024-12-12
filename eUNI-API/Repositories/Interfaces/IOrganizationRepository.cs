@@ -14,6 +14,7 @@ public interface IOrganizationRepository
     public Task UpdateYearOrganization(int organizationId, YearOrganizationRequest yearOrganizationRequest);
     public Task<List<DayOff>> GetAllDaysOff();
     public Task<OrganizationOfTheYear> GetNewestOrganization();
+    public Task<OrganizationOfTheYear?> GetOrganizationToUpgrade();
     public Task<List<Year>> GetYears();
     public Task<Year?> GetPreviousYear(int yearId);
     public Task<Year> GetOrCreateNextYear(int yearId);

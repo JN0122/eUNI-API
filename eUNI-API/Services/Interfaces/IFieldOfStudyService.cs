@@ -13,4 +13,5 @@ public interface IFieldOfStudyService
     public Task<List<FieldOfStudyInfoDto>> GetFieldsOfStudyLogsInfoDtos();
     public Task CreateFieldOfStudyLog(CreateFieldOfStudyLogRequest createFieldOfStudyLogRequest);
     public Task DeleteFieldOfStudyLog(int id);
+    public Task UpgradeFieldOfStudyLogs(UpgradeFieldsOfStudyLogsRequest upgradeFieldsOfStudyLogsRequest);
 }

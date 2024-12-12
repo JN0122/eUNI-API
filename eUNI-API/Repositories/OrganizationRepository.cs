@@ -13,7 +13,9 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
 
     public OrganizationOfTheYear GetOrganizationOfTheYear(int id)
     {
-        var organizationOfTheYear = _context.OrganizationsOfTheYear.FirstOrDefault(o => o.Id == id);
+        var organizationOfTheYear = _context.OrganizationsOfTheYear
+            .AsNoTracking()
+            .FirstOrDefault(o => o.Id == id);
         if(organizationOfTheYear == null) throw new ArgumentException($"No organization found with id {id}");
         return organizationOfTheYear;
     }
@@ -27,10 +29,11 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
 
     public async Task CreateYearOrganization(AcademicYearDetails semesterDetails, YearOrganizationRequest yearOrganizationRequest)
     {
+        if (semesterDetails.YearId == null || semesterDetails.FirstHalfOfYear == null) return;
         var newOrganization = new OrganizationOfTheYear
         {
-            YearId = semesterDetails.YearId,
-            FirstHalfOfYear = semesterDetails.FirstHalfOfYear,
+            YearId = semesterDetails.YearId.Value,
+            FirstHalfOfYear = semesterDetails.FirstHalfOfYear.Value,
             StartDay = yearOrganizationRequest.StartDate,
             EndDay = yearOrganizationRequest.EndDate
         };
@@ -138,9 +141,12 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
 
     public async Task<OrganizationOfTheYear> GetNewestOrganization()
     {
-        var organizations = await _context.OrganizationsOfTheYear.ToListAsync();
+        var organizations = await _context.OrganizationsOfTheYear
+            .AsNoTracking()
+            .ToListAsync();
         var newestOrganizationId = organizations.Max(organization => organization.Id);
         var newestAcademicOrganizations = await _context.OrganizationsOfTheYear
+            .AsNoTracking()
             .Where(y => y.Id == newestOrganizationId)
             .ToListAsync();
         
@@ -153,9 +159,35 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
         return newestOrganization;
     }
 
+    private async Task<List<OrganizationOfTheYear>> GetOrganizationsOfTheYear()
+    {
+        return await _context.OrganizationsOfTheYear
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<OrganizationOfTheYear?> GetOrganizationToUpgrade()
+    {
+        var newestOrganization = await GetNewestOrganization();
+        var organizations = await GetOrganizationsOfTheYear();
+
+        if (newestOrganization.FirstHalfOfYear == false)
+            return organizations.First(o => 
+                o.YearId == newestOrganization.YearId && 
+                o.FirstHalfOfYear);
+        
+        var previousYear = await GetPreviousYear(newestOrganization.YearId);
+
+        return previousYear == null ? 
+            null : 
+            organizations.First(o=> o.YearId == previousYear.Id && o.FirstHalfOfYear == false);
+    }
+
     public async Task<List<Year>> GetYears()
     {
-        return await _context.Years.ToListAsync();
+        return await _context.Years
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task<Year?> GetPreviousYear(int yearId)

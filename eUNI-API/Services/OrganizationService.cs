@@ -84,28 +84,12 @@ public class OrganizationService(IOrganizationRepository organizationRepository)
 
     public async Task<AcademicYearDetails> GetSemesterDetailsToUpgrade()
     {
-        var newestOrganization = await _organizationRepository.GetNewestOrganization();
-        
-        if(newestOrganization.FirstHalfOfYear == false)
-            return new AcademicYearDetails
-            {
-                YearId = newestOrganization.YearId,
-                FirstHalfOfYear = true
-            };
-        
-        var previousYear = await _organizationRepository.GetPreviousYear(newestOrganization.YearId);
-        
-        if(previousYear == null) 
-            return new AcademicYearDetails
-            {
-                YearId = newestOrganization.YearId,
-                FirstHalfOfYear = newestOrganization.FirstHalfOfYear
-            };
+        var organization = await _organizationRepository.GetOrganizationToUpgrade();
         
         return new AcademicYearDetails
         {
-            YearId = previousYear.Id,
-            FirstHalfOfYear = false
+            YearId = organization?.YearId,
+            FirstHalfOfYear = organization?.FirstHalfOfYear
         };
     }
 }

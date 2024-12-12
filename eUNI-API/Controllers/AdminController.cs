@@ -154,4 +154,12 @@ public class AdminController(IAdminService adminService, IUserService userServic
         await _fieldOfStudyService.DeleteFieldOfStudyLog(id);
         return Ok();
     }
+    
+    [HttpPost("current-fields/upgrade")]
+    public async Task<ActionResult> UpgradeCurrentField(
+        [FromBody] UpgradeFieldsOfStudyLogsRequest upgradeFieldsOfStudyLogsRequest)
+    {
+        await _fieldOfStudyService.UpgradeFieldOfStudyLogs(upgradeFieldsOfStudyLogsRequest);
+        return Ok();
+    }
 }

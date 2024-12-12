@@ -117,8 +117,8 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
     {
         var fieldOfStudyLog = new FieldOfStudyLog
         {
-            FieldOfStudy = fieldOfStudy,
-            OrganizationsOfTheYear = organization,
+            FieldOfStudyId = fieldOfStudy.Id,
+            OrganizationsOfTheYearId = organization.Id,
             Semester = semester,
         };
         _context.Add(fieldOfStudyLog);
