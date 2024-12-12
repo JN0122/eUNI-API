@@ -127,7 +127,7 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
 
     public async Task DeleteFieldOfStudyLog(int fieldOfStudyLog)
     {
-        var fieldOfStudy = GetFieldOfStudy(fieldOfStudyLog);
+        var fieldOfStudy = GetFieldOfStudyLogById(fieldOfStudyLog);
         _context.Remove(fieldOfStudy);
         await _context.SaveChangesAsync();
     }

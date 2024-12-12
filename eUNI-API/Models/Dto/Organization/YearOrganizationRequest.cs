@@ -10,6 +10,5 @@ public class YearOrganizationRequest
     [Required]
     public DateOnly EndDate { get; set; }
 
-    [Required] 
-    public List<DateOnly> DaysOff { get; set; }
+    public List<DateOnly> DaysOff { get; set; } = [];
 }
