@@ -137,6 +137,19 @@ public static class DbSeed
         modelBuilder.Entity<FieldOfStudyLog>()
             .Property(f => f.Id)
             .ValueGeneratedOnAdd();
+        
+        modelBuilder.Entity<FieldOfStudyLog>()
+            .HasOne(fl => fl.FieldOfStudy)
+            .WithMany(f => f.FieldOfStudyLogs)
+            .HasForeignKey(fl => fl.FieldOfStudyId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<FieldOfStudyLog>()
+            .HasOne(fl => fl.OrganizationsOfTheYear)
+            .WithMany(o => o.FieldOfStudyLogs)
+            .HasForeignKey(fl => fl.OrganizationsOfTheYearId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
         modelBuilder.Entity<FieldOfStudyLog>().HasData(
             new FieldOfStudyLog
             {
