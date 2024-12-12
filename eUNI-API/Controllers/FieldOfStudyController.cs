@@ -22,7 +22,7 @@ public class FieldOfStudyController(IFieldOfStudyService fieldOfStudyServices): 
     [HttpGet("logs")]
     public async Task<IActionResult> GetAllFieldsOfStudyLogs()
     {
-        var groups = _fieldOfStudyServices.GetAllFieldsOfStudyLogs();
+        var groups = await _fieldOfStudyServices.GetFieldsOfStudyLogsInfoDtos();
         return Ok(groups);
     }
 }

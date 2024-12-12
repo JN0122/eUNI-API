@@ -10,5 +10,5 @@ public interface IFieldOfStudyService
     public Task UpdateFieldOfStudy(int id, CreateFieldOfStudyRequest createFieldOfStudyRequest);
     public Task DeleteFieldOfStudy(int id);
     public Task<IEnumerable<GroupDto>> GetGroups(int fieldOfStudyLogId);
-    public IEnumerable<FieldOfStudyInfoDto> GetAllFieldsOfStudyLogs();
+    public Task<List<FieldOfStudyInfoDto>> GetFieldsOfStudyLogsInfoDtos();
 }

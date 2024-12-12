@@ -55,9 +55,9 @@ public class FieldOfStudyService(AppDbContext context, IGroupRepository groupRep
         return groups;
     }
 
-    public IEnumerable<FieldOfStudyInfoDto> GetAllFieldsOfStudyLogs()
+    public async Task<List<FieldOfStudyInfoDto>> GetFieldsOfStudyLogsInfoDtos()
     {
-        var fieldsOfStudy = _fieldOfStudyRepository.GetAllFieldOfStudyLogs();
-        return fieldsOfStudy;
+        var fieldsOfStudy = await _fieldOfStudyRepository.GetFieldsOfStudyLogs();
+        return fieldsOfStudy.Select(ConvertDtos.ToFieldOfStudyInfoDto).ToList();
     }
 }

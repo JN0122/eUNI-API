@@ -14,5 +14,5 @@ public interface IFieldOfStudyRepository
     public FieldOfStudyInfoDto GetFieldOfStudyInfo(int fieldOfStudyLogId);
     public Task<List<FieldOfStudyInfoDto>?> GetFieldOfStudyLogs(int academicOrganizationId);
     public List<DayOff> GetDaysOff(int fieldOfStudyLogId);
-    public IEnumerable<FieldOfStudyInfoDto> GetAllFieldOfStudyLogs();
+    public Task<List<FieldOfStudyLog>> GetFieldsOfStudyLogs();
 }

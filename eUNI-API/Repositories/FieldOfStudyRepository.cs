@@ -96,13 +96,13 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
             .ToList();
     }
 
-    public IEnumerable<FieldOfStudyInfoDto> GetAllFieldOfStudyLogs()
+    public async Task<List<FieldOfStudyLog>> GetFieldsOfStudyLogs()
     {
-        return _context.FieldOfStudyLogs
+        return await _context.FieldOfStudyLogs
             .AsNoTracking()
             .Include(f=>f.FieldOfStudy)
             .Include(f => f.OrganizationsOfTheYear)
             .ThenInclude(o => o.Year)
-            .Select(ConvertDtos.ToFieldOfStudyInfoDto);;
+            .ToListAsync();
     }
 }
