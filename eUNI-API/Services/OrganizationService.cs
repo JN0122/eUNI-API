@@ -62,21 +62,48 @@ public class OrganizationService(IOrganizationRepository organizationRepository)
         }).ToList();
     }
 
-    public async Task<NextAcademicYear> GetNextSemesterDetails()
+    public async Task<AcademicYearDetails> GetNextSemesterDetails()
     {
         var newestOrganization = await _organizationRepository.GetNewestOrganization();
         if (newestOrganization.FirstHalfOfYear)
-            return new NextAcademicYear
+            return new AcademicYearDetails
             {
                 YearId = newestOrganization.YearId,
                 FirstHalfOfYear = false,
             };
 
         var newYear = await _organizationRepository.GetOrCreateNextYear(newestOrganization.YearId);
-        return new NextAcademicYear
+        return new AcademicYearDetails
         {
             YearId = newYear.Id,
             FirstHalfOfYear = true
+        };
+    }
+
+    public async Task<AcademicYearDetails> GetSemesterDetailsToUpgrade()
+    {
+        var newestOrganization = await _organizationRepository.GetNewestOrganization();
+        
+        if(newestOrganization.FirstHalfOfYear == false)
+            return new AcademicYearDetails
+            {
+                YearId = newestOrganization.YearId,
+                FirstHalfOfYear = true
+            };
+        
+        var previousYear = await _organizationRepository.GetPreviousYear(newestOrganization.YearId);
+        
+        if(previousYear == null) 
+            return new AcademicYearDetails
+            {
+                YearId = newestOrganization.YearId,
+                FirstHalfOfYear = newestOrganization.FirstHalfOfYear
+            };
+        
+        return new AcademicYearDetails
+        {
+            YearId = previousYear.Id,
+            FirstHalfOfYear = false
         };
     }
 }

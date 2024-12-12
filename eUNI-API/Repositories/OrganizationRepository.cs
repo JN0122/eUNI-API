@@ -25,12 +25,12 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
             .ToListAsync();
     }
 
-    public async Task CreateYearOrganization(NextAcademicYear nextSemesterDetails, YearOrganizationRequest yearOrganizationRequest)
+    public async Task CreateYearOrganization(AcademicYearDetails semesterDetails, YearOrganizationRequest yearOrganizationRequest)
     {
         var newOrganization = new OrganizationOfTheYear
         {
-            YearId = nextSemesterDetails.YearId,
-            FirstHalfOfYear = nextSemesterDetails.FirstHalfOfYear,
+            YearId = semesterDetails.YearId,
+            FirstHalfOfYear = semesterDetails.FirstHalfOfYear,
             StartDay = yearOrganizationRequest.StartDate,
             EndDay = yearOrganizationRequest.EndDate
         };
@@ -147,6 +147,17 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
     public async Task<List<Year>> GetYears()
     {
         return await _context.Years.ToListAsync();
+    }
+
+    public async Task<Year?> GetPreviousYear(int yearId)
+    {
+        var years = await GetYears();
+        var currentYear = years.FirstOrDefault(y => y.Id == yearId);
+        
+        if(currentYear == null) throw new ArgumentException($"Year not found: id={yearId}");
+        
+        var prevYearName = OrganizationHelper.GetPrevYearName(currentYear.Name);
+        return years.FirstOrDefault(y => y.Name == prevYearName);
     }
 
     public async Task<Year> GetOrCreateNextYear(int yearId)

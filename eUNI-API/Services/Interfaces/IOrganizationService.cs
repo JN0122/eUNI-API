@@ -11,5 +11,6 @@ public interface IOrganizationService
     public Task DeleteYearOrganization(int id);
     public AcademicYearDaysOff GetAcademicYearDaysOff(int fieldOfStudyLogId);
     public Task<List<YearDto>> GetYears();
-    public Task<NextAcademicYear> GetNextSemesterDetails();
+    public Task<AcademicYearDetails> GetNextSemesterDetails();
+    public Task<AcademicYearDetails> GetSemesterDetailsToUpgrade();
 }

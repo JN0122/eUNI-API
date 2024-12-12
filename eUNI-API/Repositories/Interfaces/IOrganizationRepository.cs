@@ -7,7 +7,7 @@ public interface IOrganizationRepository
 {
     public OrganizationOfTheYear GetOrganizationOfTheYear(int id);
     public Task<List<OrganizationOfTheYear>> GetYearOrganizations();
-    public Task CreateYearOrganization(NextAcademicYear nextSemesterDetails, YearOrganizationRequest yearOrganizationRequest);
+    public Task CreateYearOrganization(AcademicYearDetails semesterDetails, YearOrganizationRequest yearOrganizationRequest);
     public Task DeleteYearOrganization(int yearOrganizationId);
     public Task<OrganizationOfTheYear> GetOrganizationsInfo(int fieldOfStudyLogsId);
     public Task<List<DateOnly>> GetDaysOff(int organizationId);
@@ -15,5 +15,6 @@ public interface IOrganizationRepository
     public Task<List<DayOff>> GetAllDaysOff();
     public Task<OrganizationOfTheYear> GetNewestOrganization();
     public Task<List<Year>> GetYears();
+    public Task<Year?> GetPreviousYear(int yearId);
     public Task<Year> GetOrCreateNextYear(int yearId);
 }

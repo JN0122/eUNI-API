@@ -132,4 +132,11 @@ public class AdminController(IAdminService adminService, IUserService userServic
         await _fieldOfStudyService.DeleteFieldOfStudy(id);
         return Ok();
     }
+    
+    [HttpGet("field-of-study-requirements")]
+    public async Task<ActionResult<AcademicYearDetails>> GetFieldOfStudyRequirements()
+    {
+        var requirements = await _organizationService.GetSemesterDetailsToUpgrade();
+        return Ok(requirements);
+    }
 }
