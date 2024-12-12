@@ -37,6 +37,63 @@ public class AppDbContext: DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Role>()
+            .Property(r => r.Id)
+            .ValueGeneratedOnAdd();
+        
+        modelBuilder.Entity<Group>()
+            .Property(g => g.Id)
+            .ValueGeneratedOnAdd();
+        modelBuilder.Entity<Group>()
+            .HasKey(g => g.Id);
+        
+        modelBuilder.Entity<Hour>()
+            .Property(h => h.Id)
+            .ValueGeneratedOnAdd();
+        
+        modelBuilder.Entity<Year>()
+            .Property(y => y.Id)
+            .ValueGeneratedOnAdd();
+        modelBuilder.Entity<Year>().HasData(
+            new Year { Id = 1, Name="2024/2025" }
+        );
+        
+        modelBuilder.Entity<OrganizationOfTheYear>()
+            .Property(o => o.Id)
+            .ValueGeneratedOnAdd();
+        
+        modelBuilder.Entity<FieldOfStudy>()
+            .Property(f => f.Id)
+            .ValueGeneratedOnAdd();
+        
+        modelBuilder.Entity<FieldOfStudyLog>()
+            .Property(f => f.Id)
+            .ValueGeneratedOnAdd();
+        
+        modelBuilder.Entity<FieldOfStudyLog>()
+            .HasOne(fl => fl.FieldOfStudy)
+            .WithMany(f => f.FieldOfStudyLogs)
+            .HasForeignKey(fl => fl.FieldOfStudyId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<FieldOfStudyLog>()
+            .HasOne(fl => fl.OrganizationsOfTheYear)
+            .WithMany(o => o.FieldOfStudyLogs)
+            .HasForeignKey(fl => fl.OrganizationsOfTheYearId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Class>()
+            .Property(c => c.Id)
+            .ValueGeneratedOnAdd();
+        
+        modelBuilder.Entity<StudentFieldsOfStudyLog>()
+            .Property(s => s.Id)
+            .ValueGeneratedOnAdd();
+        
+        modelBuilder.Entity<StudentGroup>()
+            .Property(s => s.Id)
+            .ValueGeneratedOnAdd();
+        
         DbSeed.seedDb(modelBuilder);
     }
 }

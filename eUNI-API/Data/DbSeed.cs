@@ -11,9 +11,6 @@ public static class DbSeed
 {
     public static void seedDb(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Role>()
-            .Property(r => r.Id)
-            .ValueGeneratedOnAdd();
         modelBuilder.Entity<Role>().HasData(
             new Role { Id = (int)UserRole.Admin, Name = "Admin" },
             new Role { Id = (int)UserRole.Student, Name = "Student" }
@@ -41,11 +38,7 @@ public static class DbSeed
                 Salt = "ZIns1PnAHT8nRwfFclPfLA=="
             }
         );
-
-        modelBuilder.Entity<Group>()
-            .Property(g => g.Id)
-            .ValueGeneratedOnAdd();
-        modelBuilder.Entity<Group>().HasKey(g => g.Id);
+        
         modelBuilder.Entity<Group>().HasData(
             new Group { Id = 1, Abbr = "P01", Type = (int)GroupType.Project },
             new Group { Id = 2, Abbr = "P02", Type = (int)GroupType.Project },
@@ -68,9 +61,6 @@ public static class DbSeed
             new Group { Id = 19, Abbr = "3", Type = (int)GroupType.DeanGroup }
         );
         
-        modelBuilder.Entity<Hour>()
-            .Property(h => h.Id)
-            .ValueGeneratedOnAdd();
         modelBuilder.Entity<Hour>().HasData(
             new Hour { Id = 1, StartHour = 7, StartMinute = 30, EndHour = 8, EndMinute = 15 },
             new Hour { Id = 2, StartHour = 8, StartMinute = 15, EndHour = 9, EndMinute = 0 },
@@ -89,16 +79,6 @@ public static class DbSeed
             new Hour { Id = 15, StartHour = 19, StartMinute = 45, EndHour = 20, EndMinute = 30 }
         );
         
-        modelBuilder.Entity<Year>()
-            .Property(y => y.Id)
-            .ValueGeneratedOnAdd();
-        modelBuilder.Entity<Year>().HasData(
-            new Year { Id = 1, Name="2024/2025" }
-        );
-        
-        modelBuilder.Entity<OrganizationOfTheYear>()
-            .Property(o => o.Id)
-            .ValueGeneratedOnAdd();
         modelBuilder.Entity<OrganizationOfTheYear>().HasData(
             new OrganizationOfTheYear
             {
@@ -109,10 +89,7 @@ public static class DbSeed
                 EndDay = new DateOnly(2025, 1, 26),
             }    
         );
-
-        modelBuilder.Entity<FieldOfStudy>()
-            .Property(f => f.Id)
-            .ValueGeneratedOnAdd();
+        
         modelBuilder.Entity<FieldOfStudy>().HasData(
             new FieldOfStudy
             {
@@ -133,22 +110,6 @@ public static class DbSeed
                 IsFullTime = false
             }
         );
-
-        modelBuilder.Entity<FieldOfStudyLog>()
-            .Property(f => f.Id)
-            .ValueGeneratedOnAdd();
-        
-        modelBuilder.Entity<FieldOfStudyLog>()
-            .HasOne(fl => fl.FieldOfStudy)
-            .WithMany(f => f.FieldOfStudyLogs)
-            .HasForeignKey(fl => fl.FieldOfStudyId)
-            .OnDelete(DeleteBehavior.Restrict);
-        
-        modelBuilder.Entity<FieldOfStudyLog>()
-            .HasOne(fl => fl.OrganizationsOfTheYear)
-            .WithMany(o => o.FieldOfStudyLogs)
-            .HasForeignKey(fl => fl.OrganizationsOfTheYearId)
-            .OnDelete(DeleteBehavior.Restrict);
         
         modelBuilder.Entity<FieldOfStudyLog>().HasData(
             new FieldOfStudyLog
@@ -167,13 +128,6 @@ public static class DbSeed
             }  
         );
         
-        modelBuilder.Entity<Class>()
-            .Property(c => c.Id)
-            .ValueGeneratedOnAdd();
-        
-        modelBuilder.Entity<StudentFieldsOfStudyLog>()
-            .Property(s => s.Id)
-            .ValueGeneratedOnAdd();
         modelBuilder.Entity<StudentFieldsOfStudyLog>().HasData(
             new StudentFieldsOfStudyLog
             {
@@ -183,13 +137,5 @@ public static class DbSeed
                 IsRepresentative  = true
             }    
         );
-        
-        modelBuilder.Entity<StudentGroup>()
-            .Property(s => s.Id)
-            .ValueGeneratedOnAdd();
-        
-        modelBuilder.Entity<Assignment>()
-            .Property(a => a.Id)
-            .ValueGeneratedOnAdd();
     }
 }
