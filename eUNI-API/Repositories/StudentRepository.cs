@@ -50,21 +50,28 @@ public class StudentRepository(AppDbContext context): IStudentRepository
         return studentGroup;
     }
     
-    public async Task<IEnumerable<GroupDto>?> GetGroups(int fieldOfStudyLogId, Guid userId)
+    public async Task<List<GroupDto>> GetGroups(int fieldOfStudyLogId, Guid userId)
     {
         var studentFieldOfStudy = await _context.StudentFieldsOfStudyLogs
+            .AsNoTracking()
+            .Include(sf => sf.FieldsOfStudyLog)
+            .ThenInclude(fl => fl.FieldOfStudy)
             .FirstOrDefaultAsync(f => f.FieldsOfStudyLogId == fieldOfStudyLogId && f.UserId == userId);
-        if (studentFieldOfStudy == null) return null;
-        
-        return _context.StudentGroups
+        if (studentFieldOfStudy == null) return [];
+
+        var groups = _context.StudentGroups
+            .AsNoTracking()
             .Where(group => group.StudentsFieldsOfStudyLogId == studentFieldOfStudy.Id)
-            .Include(sg => sg.Group)
-            .Select(sg=> new GroupDto
+            .Include(sg => sg.Group);
+
+        if (!groups.Any()) return [];
+        
+        return groups.Select(sg=> new GroupDto
             {
                 GroupId = sg.Group.Id,
                 GroupName = GetGroupName(studentFieldOfStudy.FieldsOfStudyLog.FieldOfStudy, sg.Group),
                 Type = sg.Group.Type,
-            });
+            }).ToList();
     }
 
     private static string GetGroupName(FieldOfStudy fieldOfStudy, Group group)
@@ -89,6 +96,7 @@ public class StudentRepository(AppDbContext context): IStudentRepository
     public async Task<IEnumerable<StudentFieldOfStudyDto>?> GetStudentFieldsOfStudy(Guid userId, int academicOrganizationId)
     {
         var studentFieldsOfStudyLogs = await _context.StudentFieldsOfStudyLogs
+            .AsNoTracking()
             .Where(f => f.UserId == userId)
             .Include(f=>f.FieldsOfStudyLog)
             .ThenInclude(f=>f.FieldOfStudy)
@@ -111,6 +119,7 @@ public class StudentRepository(AppDbContext context): IStudentRepository
     public bool IsRepresentativeForFieldOfStudy(int fieldsOfStudyLogId, Guid userId)
     {
         var isRepresentative = _context.StudentFieldsOfStudyLogs
+            .AsNoTracking()
             .FirstOrDefault(log => log.FieldsOfStudyLogId == fieldsOfStudyLogId && log.UserId == userId)
             ?.IsRepresentative;
         return isRepresentative != null && isRepresentative.Value;
@@ -208,6 +217,7 @@ public class StudentRepository(AppDbContext context): IStudentRepository
     public StudentFieldOfStudyDto? GetStudentCurrentFieldsOfStudy(Guid userId)
     {
         var studentFieldsOfStudyLog = _context.StudentFieldsOfStudyLogs
+            .AsNoTracking()
             .Include(f => f.FieldsOfStudyLog)
             .ThenInclude(f => f.FieldOfStudy)
             .FirstOrDefault(f => f.UserId == userId && f.IsCurrentFieldOfStudy);
@@ -234,15 +244,22 @@ public class StudentRepository(AppDbContext context): IStudentRepository
             studentFieldOfStudyLog.IsCurrentFieldOfStudy = false;
             if (studentFieldOfStudyLog.FieldsOfStudyLogId == fieldOfStudyLogId) fieldOfStudy = studentFieldOfStudyLog;
         }
-        
-        fieldOfStudy ??= new StudentFieldsOfStudyLog
+
+        if (fieldOfStudy == null)
         {
-            FieldsOfStudyLogId = fieldOfStudyLogId,
-            UserId = userId,
-        };
+            fieldOfStudy = new StudentFieldsOfStudyLog
+            {
+                FieldsOfStudyLogId = fieldOfStudyLogId,
+                UserId = userId,
+                IsCurrentFieldOfStudy = true,
+            };
+            await _context.AddAsync(fieldOfStudy);
+            await _context.SaveChangesAsync();
+            return;
+        }
         
         fieldOfStudy.IsCurrentFieldOfStudy = true;
-
+        _context.Update(fieldOfStudy);
         await _context.SaveChangesAsync();
     }
 }

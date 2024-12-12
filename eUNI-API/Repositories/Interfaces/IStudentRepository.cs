@@ -7,7 +7,7 @@ namespace eUNI_API.Repositories.Interfaces;
 public interface IStudentRepository
 {
     public bool IsStudent(Guid userId);
-    public Task<IEnumerable<GroupDto>?> GetGroups(int fieldOfStudyLogId, Guid userId);
+    public Task<List<GroupDto>> GetGroups(int fieldOfStudyLogId, Guid userId);
     public IEnumerable<GroupDto> GetAllGroups(int fieldOfStudyLogId);
     public StudentFieldOfStudyDto? GetStudentCurrentFieldsOfStudy(Guid userId);
     public bool IsRepresentativeForFieldOfStudy(int fieldsOfStudyLogId, Guid userId);

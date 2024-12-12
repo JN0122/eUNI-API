@@ -16,19 +16,16 @@ public class StudentService(IStudentRepository studentRepository): IStudentServi
     
     public StudentInfoDto GetStudentInfo(Guid userId)
     {
-        if (!_studentRepository.IsStudent(userId)) throw new ArgumentException("Invalid user");
         var fieldsOfStudy = _studentRepository.GetStudentCurrentFieldsOfStudy(userId);
         
         return new StudentInfoDto
         {
-            Id = userId,
             CurrentFieldOfStudyInfo = fieldsOfStudy
         };
     }
 
     public async Task ChangeStudentGroup(Guid userId, StudentChangeGroupRequestDto studentChangeGroupRequestDto)
     {
-        if(!_studentRepository.IsStudent(userId)) throw new ArgumentException("Invalid user");
         var studentFieldOfStudyLog = _studentRepository.GetStudentFieldOfStudyLog(studentChangeGroupRequestDto.FieldOfStudyLogId, userId);
         var studentGroup =
             _studentRepository.GetStudentGroup(studentFieldOfStudyLog.Id, studentChangeGroupRequestDto.GroupType);
