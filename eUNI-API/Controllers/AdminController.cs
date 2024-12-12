@@ -139,4 +139,19 @@ public class AdminController(IAdminService adminService, IUserService userServic
         var requirements = await _organizationService.GetSemesterDetailsToUpgrade();
         return Ok(requirements);
     }
+    
+    [HttpPost("current-fields")]
+    public async Task<ActionResult> CreateCurrentField(
+        [FromBody] CreateFieldOfStudyLogRequest createFieldOfStudyLog)
+    {
+        await _fieldOfStudyService.CreateFieldOfStudyLog(createFieldOfStudyLog);
+        return Ok();
+    }
+
+    [HttpDelete("current-fields/{id:int}")]
+    public async Task<ActionResult> DeleteCurrentField([FromRoute] int id)
+    {
+        await _fieldOfStudyService.DeleteFieldOfStudyLog(id);
+        return Ok();
+    }
 }

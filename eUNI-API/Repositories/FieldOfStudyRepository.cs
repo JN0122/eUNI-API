@@ -105,4 +105,30 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
             .ThenInclude(o => o.Year)
             .ToListAsync();
     }
+
+    public FieldOfStudy GetFieldOfStudy(int id)
+    {
+        var field = _context.FieldOfStudies.FirstOrDefault(f => f.Id == id);
+        if(field == null) throw new ArgumentException($"Field of study not found: {id}");
+        return field;
+    }
+
+    public async Task CreateFieldOfStudyLog(FieldOfStudy fieldOfStudy, OrganizationOfTheYear organization, byte semester)
+    {
+        var fieldOfStudyLog = new FieldOfStudyLog
+        {
+            FieldOfStudy = fieldOfStudy,
+            OrganizationsOfTheYear = organization,
+            Semester = semester,
+        };
+        _context.Add(fieldOfStudyLog);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteFieldOfStudyLog(int fieldOfStudyLog)
+    {
+        var fieldOfStudy = GetFieldOfStudy(fieldOfStudyLog);
+        _context.Remove(fieldOfStudy);
+        await _context.SaveChangesAsync();
+    }
 }

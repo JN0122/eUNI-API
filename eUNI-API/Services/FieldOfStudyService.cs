@@ -9,11 +9,12 @@ using Microsoft.EntityFrameworkCore;
 namespace eUNI_API.Services;
 
 public class FieldOfStudyService(AppDbContext context, IGroupRepository groupRepository, 
-    IFieldOfStudyRepository fieldOfStudyRepository): IFieldOfStudyService
+    IFieldOfStudyRepository fieldOfStudyRepository, IOrganizationRepository organizationRepository): IFieldOfStudyService
 {
     private readonly AppDbContext _context = context;
     private readonly IGroupRepository _groupRepository = groupRepository;
     private readonly IFieldOfStudyRepository _fieldOfStudyRepository = fieldOfStudyRepository;
+    private readonly IOrganizationRepository _organizationRepository = organizationRepository;
 
     public async Task<IEnumerable<FieldOfStudyDto>> GetFieldsOfStudy()
     {
@@ -59,5 +60,18 @@ public class FieldOfStudyService(AppDbContext context, IGroupRepository groupRep
     {
         var fieldsOfStudy = await _fieldOfStudyRepository.GetFieldsOfStudyLogs();
         return fieldsOfStudy.Select(ConvertDtos.ToFieldOfStudyInfoDto).ToList();
+    }
+
+    public async Task CreateFieldOfStudyLog(CreateFieldOfStudyLogRequest createFieldOfStudyLogRequest)
+    {
+        var fieldOfStudy = _fieldOfStudyRepository.GetFieldOfStudy(createFieldOfStudyLogRequest.FieldOfStudyId);
+        var organization = _organizationRepository.GetOrganizationOfTheYear(createFieldOfStudyLogRequest.OrganizationId);
+
+        await _fieldOfStudyRepository.CreateFieldOfStudyLog(fieldOfStudy, organization, createFieldOfStudyLogRequest.CurrentSemester);
+    }
+
+    public async Task DeleteFieldOfStudyLog(int id)
+    {
+        await _fieldOfStudyRepository.DeleteFieldOfStudyLog(id);
     }
 }

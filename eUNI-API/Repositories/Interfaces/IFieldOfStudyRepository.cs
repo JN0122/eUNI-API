@@ -15,4 +15,7 @@ public interface IFieldOfStudyRepository
     public Task<List<FieldOfStudyInfoDto>?> GetFieldOfStudyLogs(int academicOrganizationId);
     public List<DayOff> GetDaysOff(int fieldOfStudyLogId);
     public Task<List<FieldOfStudyLog>> GetFieldsOfStudyLogs();
+    public FieldOfStudy GetFieldOfStudy(int id);
+    public Task CreateFieldOfStudyLog(FieldOfStudy fieldOfStudy, OrganizationOfTheYear organization, byte semester);
+    public Task DeleteFieldOfStudyLog(int fieldOfStudyLog);
 }
