@@ -49,6 +49,11 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
     public async Task DeleteYearOrganization(int yearOrganizationId)
     {
         var organization = GetOrganizationOfTheYear(yearOrganizationId);
+        var fieldsOfStudyLogs = await _context.FieldOfStudyLogs.Where(f=>f.OrganizationsOfTheYearId == yearOrganizationId).ToListAsync();
+        
+        if(fieldsOfStudyLogs.Count > 0)
+            throw new ArgumentException("Some of the fields of study logs are not in the organization");
+            
         _context.Remove(organization);
         await _context.SaveChangesAsync();
     }
@@ -88,8 +93,14 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
     private async Task UpdateOrganizationDaysOff(OrganizationOfTheYear organization, List<DateOnly> daysOff)
     {
         var organizationDaysOff = await GetOrganizationDaysOff(organization.Id);
-        var entityDifference = daysOff.Count - organizationDaysOff.Count;
+        if(daysOff.Count == 0)
+        {
+            _context.RemoveRange(organizationDaysOff);
+            await _context.SaveChangesAsync();
+            return;
+        }
         
+        var entityDifference = daysOff.Count - organizationDaysOff.Count;
         switch (entityDifference)
         {
             case > 0:
@@ -102,12 +113,9 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
                 _context.DaysOff.RemoveRange(daysOffToRemove);
                 break;
         }
-
-        if (entityDifference != 0)
-        {
-            await _context.SaveChangesAsync();
-            organizationDaysOff = await GetOrganizationDaysOff(organization.Id);
-        }
+        
+        await _context.SaveChangesAsync();
+        organizationDaysOff = await GetOrganizationDaysOff(organization.Id);
         
         var newDaysOff = organizationDaysOff.Select((dayOff, index) =>
         {
