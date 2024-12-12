@@ -39,7 +39,7 @@ public static class ConvertDtos
     {
         return new EventDto
         {
-            ClassName = ClassHelper.GetClassWithGroup(classDto.ClassName, classDto.GroupName),
+            ClassName = ClassHelper.GetClassWithGroup(classDto.Name, classDto.GroupName),
             ClassRoom = classDto.ClassRoom,
             Dates = classDto.Dates.ToList(),
             StartTime = classDto.StartHour.StartTime,

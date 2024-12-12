@@ -7,7 +7,7 @@ public class ClassDto
 {
     public int Id { get; set; }
     public int FieldOfStudyLogId { get; set; }
-    public string ClassName { get; set; }
+    public string Name { get; set; }
     public string ClassRoom { get; set; }
     public int GroupId { get; set; }
     public string GroupName { get; set; }

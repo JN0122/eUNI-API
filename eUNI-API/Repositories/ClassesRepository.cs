@@ -66,7 +66,7 @@ public class ClassesRepository(AppDbContext context): IClassesRepository
         return classes.Select(classEntity => new ClassDto
             {
                 Id = classEntity.Id,
-                ClassName = classEntity.Name,
+                Name = classEntity.Name,
                 GroupId = classEntity.GroupId,
                 GroupName = GetGroupName(classEntity.Group, classEntity.Id),
                 EndHour = ConvertDtos.ToHourDto(classEntity.EndHour),

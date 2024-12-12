@@ -71,7 +71,7 @@ public class RepresentativeService(AppDbContext context,
         return classes.Select(classEntity => new ClassDto
             {
                 Id = classEntity.Id,
-                ClassName = classEntity.Name,
+                Name = classEntity.Name,
                 GroupId = classEntity.GroupId,
                 GroupName = _groupRepository.GetGroupName(classEntity.Id),
                 EndHour = ConvertDtos.ToHourDto(classEntity.EndHour),
