@@ -7,10 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eUNI_API.Data;
 
-public class AppDbContext: DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { } 
-    
     // Auth
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
@@ -32,7 +30,6 @@ public class AppDbContext: DbContext
     public DbSet<Class> Classes { get; set; }
     public DbSet<FieldOfStudy> FieldOfStudies { get; set; }
     public DbSet<FieldOfStudyLog> FieldOfStudyLogs { get; set; }
-    public DbSet<Assignment> Assignments { get; set; }
     public DbSet<ClassDate> ClassDates { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -54,9 +51,6 @@ public class AppDbContext: DbContext
         modelBuilder.Entity<Year>()
             .Property(y => y.Id)
             .ValueGeneratedOnAdd();
-        modelBuilder.Entity<Year>().HasData(
-            new Year { Id = 1, Name="2024/2025" }
-        );
         
         modelBuilder.Entity<OrganizationOfTheYear>()
             .Property(o => o.Id)

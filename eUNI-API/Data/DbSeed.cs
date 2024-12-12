@@ -16,6 +16,21 @@ public static class DbSeed
             new Role { Id = (int)UserRole.Student, Name = "Student" }
         );
         
+        modelBuilder.Entity<Year>().HasData(
+            new Year { Id = 1, Name="2024/2025" }
+        );
+        
+        modelBuilder.Entity<OrganizationOfTheYear>().HasData(
+            new OrganizationOfTheYear
+            {
+                Id = 1,
+                FirstHalfOfYear = true,
+                YearId = 1,
+                StartDay = new DateOnly(2024, 10, 1),
+                EndDay = new DateOnly(2025, 1, 26)
+            }
+        );
+        
         modelBuilder.Entity<User>().HasData(
             new User
             {
