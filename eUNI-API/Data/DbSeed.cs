@@ -26,16 +26,6 @@ public static class DbSeed
                 RoleId = (int)UserRole.Admin,
                 PasswordHash =  "NTWxiNrLLLT2HkXuG9JiPYN0z5UN2eHW5gMsxbP4ATY=", 
                 Salt = "mwmeU7TZlMdR/NMWAJMzrQ=="
-            },
-            new User
-            {
-                Id = new Guid("dd205297-4d6d-4ef3-a139-350c55518085"),
-                FirstName = "Adam", 
-                LastName = "Nowak", 
-                Email = "adam.nowak@pk.edu.pl", 
-                RoleId = (int)UserRole.Student,
-                PasswordHash = "51/dKFYnVgWWl9Cxcow03Bz9ppMSTMMJej5kHKqEXHM=", 
-                Salt = "ZIns1PnAHT8nRwfFclPfLA=="
             }
         );
         
@@ -77,65 +67,6 @@ public static class DbSeed
             new Hour { Id = 13, StartHour = 18, StartMinute = 0, EndHour = 18, EndMinute = 45 },
             new Hour { Id = 14, StartHour = 18, StartMinute = 45, EndHour = 19, EndMinute = 30 },
             new Hour { Id = 15, StartHour = 19, StartMinute = 45, EndHour = 20, EndMinute = 30 }
-        );
-        
-        modelBuilder.Entity<OrganizationOfTheYear>().HasData(
-            new OrganizationOfTheYear
-            {
-                Id = 1,
-                YearId = 1,
-                FirstHalfOfYear = true,
-                StartDay = new DateOnly(2024, 10, 1),
-                EndDay = new DateOnly(2025, 1, 26),
-            }    
-        );
-        
-        modelBuilder.Entity<FieldOfStudy>().HasData(
-            new FieldOfStudy
-            {
-                Id = 1,
-                Abbr="K",
-                Name="Informatyka Stosowana",
-                StudiesCycle = 1,
-                SemesterCount = 7,
-                IsFullTime = true
-            },
-            new FieldOfStudy
-            {
-                Id = 2,
-                Abbr="S",
-                Name="Pojazdy Samochodowe",
-                StudiesCycle = 1,
-                SemesterCount = 4,
-                IsFullTime = false
-            }
-        );
-        
-        modelBuilder.Entity<FieldOfStudyLog>().HasData(
-            new FieldOfStudyLog
-            {
-                Id = 1,
-                FieldOfStudyId = 1,
-                OrganizationsOfTheYearId = 1,
-                Semester = 7
-            },
-            new FieldOfStudyLog
-            {
-                Id = 2,
-                FieldOfStudyId = 2,
-                OrganizationsOfTheYearId = 1,
-                Semester = 5
-            }  
-        );
-        
-        modelBuilder.Entity<StudentFieldsOfStudyLog>().HasData(
-            new StudentFieldsOfStudyLog
-            {
-                Id = 1,
-                FieldsOfStudyLogId = 1,
-                UserId = new Guid("dd205297-4d6d-4ef3-a139-350c55518085"),
-                IsRepresentative  = true
-            }    
         );
     }
 }
