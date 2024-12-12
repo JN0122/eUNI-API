@@ -93,7 +93,7 @@ public class StudentRepository(AppDbContext context): IStudentRepository
         });
     }
 
-    public async Task<IEnumerable<StudentFieldOfStudyDto>?> GetStudentFieldsOfStudy(Guid userId, int academicOrganizationId)
+    public async Task<IEnumerable<StudentFieldOfStudyDto>?> GetStudentFieldsOfStudy(Guid userId)
     {
         var studentFieldsOfStudyLogs = await _context.StudentFieldsOfStudyLogs
             .AsNoTracking()
@@ -125,17 +125,17 @@ public class StudentRepository(AppDbContext context): IStudentRepository
         return isRepresentative != null && isRepresentative.Value;
     }
 
-    public bool IsRepresentative(Guid userId, int academicOrganizationId)
+    public bool IsRepresentative(Guid userId)
     {
         if (!IsStudent(userId)) return false; 
-        var studentFieldsOfStudy = GetStudentFieldsOfStudy(userId, academicOrganizationId).Result;
+        var studentFieldsOfStudy = GetStudentFieldsOfStudy(userId).Result;
         return studentFieldsOfStudy != null && studentFieldsOfStudy.Any(studentFieldOfStudyDto =>
             IsRepresentativeForFieldOfStudy(studentFieldOfStudyDto.FieldOfStudyLogId, userId));
     }
 
-    public IEnumerable<StudentFieldOfStudyDto>? GetRepresentativeFieldsOfStudy(Guid userId, int academicOrganizationId)
+    public IEnumerable<StudentFieldOfStudyDto>? GetRepresentativeFieldsOfStudy(Guid userId)
     {
-        var studentFieldsOfStudy = GetStudentFieldsOfStudy(userId, academicOrganizationId).Result;
+        var studentFieldsOfStudy = GetStudentFieldsOfStudy(userId).Result;
         return studentFieldsOfStudy?.Where(fieldOfStudyDto =>
             IsRepresentativeForFieldOfStudy(fieldOfStudyDto.FieldOfStudyLogId, userId));
     }

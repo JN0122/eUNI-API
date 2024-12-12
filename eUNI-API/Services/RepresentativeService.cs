@@ -31,10 +31,8 @@ public class RepresentativeService(AppDbContext context,
 
     public async Task<IEnumerable<FieldOfStudyInfoDto>?> FieldOfStudyLogsToEdit(Guid userId)
     {
-        var newestAcademicOrganization = await _organizationRepository.GetNewestOrganization();
-        
         if(!_studentRepository.IsStudent(userId)) return [];
-        return _studentRepository.GetRepresentativeFieldsOfStudy(userId, newestAcademicOrganization.Id)!.Select(dto => new FieldOfStudyInfoDto
+        return _studentRepository.GetRepresentativeFieldsOfStudy(userId)!.Select(dto => new FieldOfStudyInfoDto
         {
             FieldOfStudyLogId = dto.FieldOfStudyLogId,
             Name = dto.Name,
@@ -212,67 +210,6 @@ public class RepresentativeService(AppDbContext context,
         await _context.SaveChangesAsync();
         
         await UpdateCalendar(classEntity.FieldOfStudyLogId, groupDto);
-    }
-
-    public async Task<IEnumerable<AssignmentDto>> GetAssignments(int fieldOfStudyLogId)
-    {
-        var assignments = await _context.Assignments
-            .AsNoTracking()
-            .Include(a => a.Class)
-            .ThenInclude(c => c.Group)
-            .Where(a => a.Class.FieldOfStudyLogId == fieldOfStudyLogId)
-            .ToListAsync();
-        var assignmentsDto = assignments.Select(assignment => new AssignmentDto
-            {
-                Id = assignment.Id,
-                AssignmentName = assignment.Name,
-                DeadlineDate = assignment.DeadlineDate,
-                ClassId = assignment.Class.Id,
-                ClassName = ClassHelper.GetClassWithGroup(assignment.Class.Name, assignment.Class.Group.Abbr),
-            })
-            .ToList();
-        return assignmentsDto;
-    }
-
-    public async Task CreateAssignment(CreateAssignmentRequestDto assignmentRequestDto)
-    {
-        var classEntity = await _context.Classes.FirstOrDefaultAsync(f => f.Id == assignmentRequestDto.ClassId);
-        
-        if(classEntity == null)
-            throw new ArgumentException("Cannot find class for assignment.");
-        
-        _context.Assignments.Add(new Assignment
-        {
-            Class = classEntity,
-            DeadlineDate = assignmentRequestDto.DeadlineDate,
-            Name = assignmentRequestDto.AssignmentName,
-        });
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task UpdateAssignment(int id, CreateAssignmentRequestDto assignmentRequestDto)
-    {
-        var assignmentEntity = _context.Assignments.FirstOrDefault(a => a.Id == id);
-        if (assignmentEntity == null) throw new ArgumentException("Assignment not found.");
-        
-        var classEntity = _context.Classes.FirstOrDefault(c => c.Id == assignmentRequestDto.ClassId);
-        if(classEntity == null) throw new ArgumentException("Class not found.");
-        
-        assignmentEntity.Name = assignmentRequestDto.AssignmentName;
-        assignmentEntity.DeadlineDate = assignmentRequestDto.DeadlineDate;
-        assignmentEntity.Class = classEntity;
-        
-        _context.Assignments.Update(assignmentEntity);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task DeleteAssignment(int id)
-    {
-        var assignmentEntity = _context.Assignments.FirstOrDefault(a => a.Id == id);
-        if (assignmentEntity == null) throw new ArgumentException("Assignment not found.");
-        
-        _context.Assignments.Remove(assignmentEntity);
-        await _context.SaveChangesAsync();
     }
 
     public IEnumerable<GroupDto> GetAllGroups(int fieldOfStudyLogId)

@@ -34,17 +34,7 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
     {
         return _classesRepository.GetHour();
     }
-
-    public ClassAssignment? GetClassAssigment(int classId, DateOnly date)
-    {
-        var assignment = _context.Assignments.FirstOrDefault(a => a.Id == classId && a.DeadlineDate == date);
-        
-        return assignment == null ? null : new ClassAssignment
-        {
-            Name = assignment.Name
-        };
-    }
-
+    
     public int GetGroupType(int groupId)
     {
         var group = _context.Groups.First(g => g.Id == groupId);

@@ -172,7 +172,7 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
         var organizations = await GetOrganizationsOfTheYear();
 
         if (newestOrganization.FirstHalfOfYear == false)
-            return organizations.First(o => 
+            return organizations.FirstOrDefault(o => 
                 o.YearId == newestOrganization.YearId && 
                 o.FirstHalfOfYear);
         

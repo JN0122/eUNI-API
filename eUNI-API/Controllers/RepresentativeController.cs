@@ -61,34 +61,6 @@ public class RepresentativeController(IRepresentativeService representativeServi
         return Ok();
     }
     
-    [HttpGet("assignments")]
-    public async Task<IActionResult> GetAssignments([FromQuery] [Required] int fieldOfStudyLogId)
-    {
-        var assignments = await _representativeService.GetAssignments(fieldOfStudyLogId);
-        return Ok(assignments);
-    }
-    
-    [HttpPost("assignments")]
-    public async Task<IActionResult> CreateAssigment([FromBody] CreateAssignmentRequestDto assignmentRequestDto)
-    {
-        await _representativeService.CreateAssignment(assignmentRequestDto);
-        return Ok();
-    }
-    
-    [HttpPut("assignments/{id:int}")]
-    public async Task<IActionResult> UpdateAssigment([FromRoute] [Required] int id, [FromBody] [Required] CreateAssignmentRequestDto assignmentRequestDto)
-    {
-        await _representativeService.UpdateAssignment(id, assignmentRequestDto);
-        return Ok();
-    }
-    
-    [HttpDelete("assignments/{id:int}")]
-    public async Task<IActionResult> DeleteAssignment([FromRoute] [Required] int id)
-    {
-        await _representativeService.DeleteAssignment(id);
-        return Ok();
-    }
-    
     [HttpGet("all-groups")]
     public async Task<IActionResult> GetAllGroups([Required] int fieldOfStudyLogId)
     {

@@ -9,5 +9,4 @@ public interface IStudentService
     public StudentInfoDto GetStudentInfo(Guid userId);
     public Task ChangeStudentGroup(Guid userId, StudentChangeGroupRequestDto studentChangeGroupRequestDto);
     public Task SetCurrentFieldOfStudy(Guid userId, int fieldOfStudyId);
-    // groups, student fields of study
 }

@@ -6,5 +6,4 @@ public class ScheduleClass
     public string Name { get; set; }
     public string Room { get; set; }
     public int Type { get; set; }
-    public ClassAssignment? Assignment { get; set; }
 }

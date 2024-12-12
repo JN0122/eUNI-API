@@ -11,8 +11,8 @@ public interface IStudentRepository
     public IEnumerable<GroupDto> GetAllGroups(int fieldOfStudyLogId);
     public StudentFieldOfStudyDto? GetStudentCurrentFieldsOfStudy(Guid userId);
     public bool IsRepresentativeForFieldOfStudy(int fieldsOfStudyLogId, Guid userId);
-    public bool IsRepresentative(Guid userId, int academicOrganizationId);
-    public IEnumerable<StudentFieldOfStudyDto>? GetRepresentativeFieldsOfStudy(Guid userId, int academicOrganizationId);
+    public bool IsRepresentative(Guid userId);
+    public IEnumerable<StudentFieldOfStudyDto>? GetRepresentativeFieldsOfStudy(Guid userId);
     public StudentFieldsOfStudyLog GetStudentFieldOfStudyLog(int fieldOfStudyLogId, Guid userId);
     public StudentGroup? GetStudentGroup(int studentFieldOfStudyLogId, int groupType);
     public void JoinGroup(int studentFieldOfStudyLogId, int groupId);
