@@ -12,11 +12,13 @@ public class OrganizationService(IOrganizationRepository organizationRepository)
     {
         var organizations = await _organizationRepository.GetYearOrganizations();
         var daysOff = await _organizationRepository.GetAllDaysOff();
+        var years = await _organizationRepository.GetYears();
         
         return organizations.Select(o=> new YearOrganization
         {
             Id = o.Id,
             YearId = o.YearId,
+            YearName = years.FirstOrDefault(y=>y.Id == o.YearId)!.Name,
             FirstHalfOfYear = o.FirstHalfOfYear,
             StartDate = o.StartDay,
             EndDate = o.EndDay,

@@ -5,6 +5,7 @@ public class YearOrganization
     public int Id { get; set; }
     
     public int YearId { get; set; }
+    public string YearName { get; set; }
 
     public bool FirstHalfOfYear { get; set; }
 
