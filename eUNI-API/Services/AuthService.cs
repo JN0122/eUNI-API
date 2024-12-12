@@ -1,21 +1,36 @@
-using System.Security.Claims;
 using eUNI_API.Configuration;
-using eUNI_API.Data;
 using eUNI_API.Enums;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Auth;
 using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace eUNI_API.Services;
 
-public class AuthService(AppDbContext context, IOptions<JwtSettings> jwtSettings, IAuthRepository authRepository): IAuthService
+public class AuthService(IOptions<JwtSettings> jwtSettings, IAuthRepository authRepository, 
+        IUserRepository userRepository): IAuthService
 {
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
     private readonly IAuthRepository _authRepository = authRepository;
+    private readonly IUserRepository _userRepository = userRepository;
+
+    public async Task<User> Register(RegisterRequest registerRequest)
+    {
+        if(registerRequest.Password != registerRequest.RepeatPassword) 
+            throw new ArgumentException("Passwords don't match");
+        
+        if(registerRequest.AgreedToTerms == false) 
+            throw new ArgumentException("Please agree to terms!");
+
+        return await _userRepository.CreateUser(
+            registerRequest.FirstName, 
+            registerRequest.LastName, 
+            registerRequest.Email,
+            registerRequest.Password,
+            (int)UserRole.Student);
+    }
 
     public async Task<User> Login(LoginDto loginDto)
     {

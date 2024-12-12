@@ -14,6 +14,21 @@ public class AuthController(AppDbContext context, IUserService userService, ITok
     private readonly IAuthService _authService = authService;
     private readonly IUserService _userService = userService;
     
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
+    {
+        var user = await _authService.Register(registerRequest);
+        
+        var accessToken = _tokenService.CreateAccessToken(user.Id);
+        var refreshToken = _tokenService.CreateRefreshToken(user.Id);
+        
+        _authService.AddRefreshToken(Response.Cookies, refreshToken);
+
+        return Ok(new {
+            AccessToken = accessToken
+        });
+    }
+    
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {

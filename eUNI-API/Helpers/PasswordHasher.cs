@@ -12,7 +12,7 @@ public static class PasswordHasher
     public static string HashPassword(string password, string salt)
     {
         var hashedPassword = KeyDerivation.Pbkdf2(
-            password: password!,
+            password: password,
             salt: Convert.FromBase64String(salt),
             prf: KeyDerivationPrf.HMACSHA256,
             iterationCount: 100_000,
