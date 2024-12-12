@@ -59,19 +59,20 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
             .Include(f => f.OrganizationsOfTheYear)
             .FirstOrDefaultAsync(f => f.Id == fieldOfStudyLogsId);
         
-        if(fieldOfStudyLog == null) throw new ArgumentException("Organization not found");
+        if(fieldOfStudyLog == null) throw new ArgumentException($"Organization not found: id={fieldOfStudyLogsId}");
         
         return fieldOfStudyLog.OrganizationsOfTheYear;
     }
     
     public async Task<List<DateOnly>> GetDaysOff(int organizationId)
     {
-        var organizationOfTheYear = await GetOrganizationsInfo(organizationId);
+        var organizationOfTheYear = GetOrganizationOfTheYear(organizationId);
 
-        var daysOff = _context.DaysOff
+        var daysOff = await _context.DaysOff
+            .AsNoTracking()
             .Where(d=>d.OrganizationsOfTheYearId == organizationOfTheYear.Id)
             .Select(d=>d.Day)
-            .ToList();
+            .ToListAsync();
         
         return daysOff;
     }

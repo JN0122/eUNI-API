@@ -115,7 +115,7 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
         var hours = GetClassesHours(userClasses);
         var (startOfWeek, endOfWeek) = DateHelper.GetWeekStartAndEndDates(scheduleInfoRequest.Year, scheduleInfoRequest.WeekNumber);
         var thisWeekClasses = FilterClassesBetweenDates(userClasses, startOfWeek, endOfWeek);
-        var organization = _organizationRepository.GetOrganizationsInfo(scheduleInfoRequest.fieldOfStudyLogId).Result;
+        var organization = await _organizationRepository.GetOrganizationsInfo(scheduleInfoRequest.fieldOfStudyLogId);
         
         var daysOff = _organizationRepository.GetDaysOff(organization.Id).Result
             .Where(d => d >= startOfWeek && d <= endOfWeek).ToList();
