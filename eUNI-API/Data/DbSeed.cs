@@ -48,7 +48,8 @@ public static class DbSeed
             new Group { Id = 16, Abbr = "L05", Type = (int)GroupType.Laboratory },
             new Group { Id = 17, Abbr = "1", Type = (int)GroupType.DeanGroup },
             new Group { Id = 18, Abbr = "2", Type = (int)GroupType.DeanGroup },
-            new Group { Id = 19, Abbr = "3", Type = (int)GroupType.DeanGroup }
+            new Group { Id = 19, Abbr = "3", Type = (int)GroupType.DeanGroup },
+            new Group { Id = 20, Abbr = "4", Type = (int)GroupType.DeanGroup }
         );
         
         modelBuilder.Entity<Hour>().HasData(
@@ -66,7 +67,8 @@ public static class DbSeed
             new Hour { Id = 12, StartHour = 17, StartMinute = 0, EndHour = 17, EndMinute = 45 },
             new Hour { Id = 13, StartHour = 18, StartMinute = 0, EndHour = 18, EndMinute = 45 },
             new Hour { Id = 14, StartHour = 18, StartMinute = 45, EndHour = 19, EndMinute = 30 },
-            new Hour { Id = 15, StartHour = 19, StartMinute = 45, EndHour = 20, EndMinute = 30 }
+            new Hour { Id = 15, StartHour = 19, StartMinute = 45, EndHour = 20, EndMinute = 30 },
+            new Hour { Id = 16, StartHour = 20, StartMinute = 30, EndHour = 21, EndMinute = 15 }
         );
     }
 }
