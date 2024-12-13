@@ -6,6 +6,7 @@ using eUNI_API.Models.Dto;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Dto.Group;
+using eUNI_API.Models.Dto.User;
 using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Models.Entities.FieldOfStudy;
 using eUNI_API.Models.Entities.OrganizationInfo;

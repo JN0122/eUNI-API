@@ -2,6 +2,7 @@ using eUNI_API.Exception;
 using eUNI_API.Models.Dto;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Dto.Organization;
+using eUNI_API.Models.Dto.User;
 using eUNI_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

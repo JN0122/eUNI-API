@@ -1,6 +1,7 @@
 using eUNI_API.Data;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
+using eUNI_API.Models.Dto.Auth;
 using Microsoft.AspNetCore.Mvc;
 using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Services.Interfaces;

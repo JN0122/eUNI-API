@@ -2,6 +2,7 @@ using eUNI_API.Models.Dto;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Dto.Group;
+using eUNI_API.Models.Dto.User;
 using eUNI_API.Models.Entities.Auth;
 
 namespace eUNI_API.Services.Interfaces;

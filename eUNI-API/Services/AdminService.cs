@@ -3,6 +3,7 @@ using eUNI_API.Enums;
 using eUNI_API.Exception;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
+using eUNI_API.Models.Dto.User;
 using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services.Interfaces;
