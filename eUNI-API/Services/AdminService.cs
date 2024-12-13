@@ -1,5 +1,6 @@
 using eUNI_API.Data;
 using eUNI_API.Enums;
+using eUNI_API.Exception;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
 using eUNI_API.Models.Entities.Auth;
@@ -32,7 +33,7 @@ public class AdminService(AppDbContext context, IUserService userService, IUserR
     {
         var user = _context.Users.Find(id);
         if (user == null)
-            throw new BadHttpRequestException("Could not find user");
+            throw new HttpBadRequestHttpException("Could not find user");
         
         user.IsDeleted = true;
         context.Users.Update(user);
@@ -42,7 +43,7 @@ public class AdminService(AppDbContext context, IUserService userService, IUserR
     public async Task CreateUser(CreateUserRequestDto createUserRequestDto)
     {
         if(!await IsValidRole(createUserRequestDto.RoleId))
-            throw new ArgumentException("Invalid role");
+            throw new HttpBadRequestHttpException("Invalid role");
         
         var salt = PasswordHasher.GenerateSalt();
         

@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Exception;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Entities.FieldOfStudy;
@@ -15,7 +16,7 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
     private FieldOfStudy GetFieldOfStudyById(int id)
     {
         var field = _context.FieldOfStudies.AsNoTracking().FirstOrDefault(f => f.Id == id);
-        if(field == null) throw new ArgumentException($"Field of study with id {id} does not exist");
+        if(field == null) throw new HttpNotFoundException($"Field of study with id {id} does not exist");
         return field;
     }
 
@@ -59,7 +60,7 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
     public FieldOfStudyLog GetFieldOfStudyLogById(int fieldOfStudyLogId)
     {
         var fieldOfStudyLog = _context.FieldOfStudyLogs.FirstOrDefault(f => f.Id == fieldOfStudyLogId);
-        if(fieldOfStudyLog == null) throw new ArgumentException($"Field of study log not found: {fieldOfStudyLogId}");
+        if(fieldOfStudyLog == null) throw new HttpNotFoundException($"Field of study log not found: {fieldOfStudyLogId}");
         return fieldOfStudyLog;
     }
 
@@ -71,7 +72,7 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
             .Include(f => f.OrganizationsOfTheYear)
             .ThenInclude(o => o.Year)
             .FirstOrDefault(f=>f.Id == fieldOfStudyLogId);
-        if(fieldOfStudyLog == null) throw new ArgumentException($"Field of study log not found: {fieldOfStudyLogId}");
+        if(fieldOfStudyLog == null) throw new HttpNotFoundException($"Field of study log not found: {fieldOfStudyLogId}");
         return ConvertDtos.ToFieldOfStudyInfoDto(fieldOfStudyLog);
     }
 
@@ -91,7 +92,7 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
     public List<DayOff> GetDaysOff(int fieldOfStudyLogId)
     {
         var fieldOfStudyLog = _context.FieldOfStudyLogs.FirstOrDefault(f => f.Id == fieldOfStudyLogId);
-        if(fieldOfStudyLog == null) throw new ArgumentException($"Field of study log not found: {fieldOfStudyLogId}");
+        if(fieldOfStudyLog == null) throw new HttpNotFoundException($"Field of study log not found: {fieldOfStudyLogId}");
         return _context.DaysOff.Where(d => d.OrganizationsOfTheYearId == fieldOfStudyLog.OrganizationsOfTheYearId)
             .ToList();
     }
@@ -109,7 +110,7 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
     public FieldOfStudy GetFieldOfStudy(int id)
     {
         var field = _context.FieldOfStudies.FirstOrDefault(f => f.Id == id);
-        if(field == null) throw new ArgumentException($"Field of study not found: {id}");
+        if(field == null) throw new HttpNotFoundException($"Field of study not found: {id}");
         return field;
     }
 

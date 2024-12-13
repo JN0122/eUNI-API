@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using eUNI_API.Configuration;
 using eUNI_API.Data;
+using eUNI_API.Exception;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Repositories.Interfaces;
@@ -26,7 +27,7 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
         var user = _context.Users.AsNoTracking().Include(u => u.Role).FirstOrDefault(u => u.Id == userId); 
         
         if (user == null)
-            throw new ArgumentException("User not found");
+            throw new HttpNotFoundException("User not found");
         
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
@@ -97,7 +98,7 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
             .FirstOrDefault(r => r.Token == refreshToken);
         
         if(refreshTokenEntity == null)
-            throw new ArgumentException("Refresh token doesn't exist");
+            throw new HttpUnauthorizedHttpException("Refresh token doesn't exist");
         
         return refreshTokenEntity.UserId;
     }

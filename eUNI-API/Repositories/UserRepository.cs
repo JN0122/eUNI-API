@@ -1,5 +1,6 @@
 using eUNI_API.Data;
 using eUNI_API.Enums;
+using eUNI_API.Exception;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Repositories.Interfaces;
@@ -20,7 +21,7 @@ public class UserRepository(AppDbContext context): IUserRepository
     
     public async Task<User> CreateUser(string firstName, string lastName, string email, string password, int roleId)
     {
-        if(GetUserByEmail(email) != null) throw new ArgumentException("Email is already taken");
+        if(GetUserByEmail(email) != null) throw new HttpForbiddenException("Email is already taken");
         var salt = PasswordHasher.GenerateSalt();
         var user = new User
         {

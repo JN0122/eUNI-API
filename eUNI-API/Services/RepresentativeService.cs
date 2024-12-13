@@ -1,5 +1,6 @@
 using eUNI_API.Data;
 using eUNI_API.Enums;
+using eUNI_API.Exception;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
 using eUNI_API.Models.Dto.Classes;
@@ -126,7 +127,7 @@ public class RepresentativeService(AppDbContext context,
         }).Entity;
         
         var dates = CalculateClassDate(organization, classRequestDto.IsOddWeek, classRequestDto.WeekDay);
-        if (dates.Count == 0) throw new ArgumentException("Cannot create class with no dates, please check if you selected a valid days.");
+        if (dates.Count == 0) throw new HttpBadRequestHttpException("Cannot create class with no dates, please check if you selected a valid days.");
         
         _context.ClassDates.AddRange(dates.Select(d=>new ClassDate
         {
@@ -143,7 +144,7 @@ public class RepresentativeService(AppDbContext context,
     private void UpdateClassDates(int classId, List<DateOnly> dates)
     {
         var classDates = _classesRepository.GetClassDates(classId).ToList();
-        if(classDates.Count == 0) throw new Exception("Use CreateClassDates function");
+        if(classDates.Count == 0) throw new System.Exception("Use CreateClassDates function");
         var entityDifference = dates.Count - classDates.Count;
         
         switch (entityDifference)

@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Exception;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Organization;
 using eUNI_API.Models.Entities.OrganizationInfo;
@@ -16,7 +17,7 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
         var organizationOfTheYear = _context.OrganizationsOfTheYear
             .AsNoTracking()
             .FirstOrDefault(o => o.Id == id);
-        if(organizationOfTheYear == null) throw new ArgumentException($"No organization found with id {id}");
+        if(organizationOfTheYear == null) throw new HttpNotFoundException($"No organization found with id {id}");
         return organizationOfTheYear;
     }
     
@@ -55,7 +56,7 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
         var fieldsOfStudyLogs = await _context.FieldOfStudyLogs.Where(f=>f.OrganizationsOfTheYearId == yearOrganizationId).ToListAsync();
         
         if(fieldsOfStudyLogs.Count > 0)
-            throw new ArgumentException("Some of the fields of study logs are not in the organization");
+            throw new HttpBadRequestHttpException("Some of the fields of study logs are not in the organization");
             
         _context.Remove(organization);
         await _context.SaveChangesAsync();
@@ -67,7 +68,7 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
             .Include(f => f.OrganizationsOfTheYear)
             .FirstOrDefaultAsync(f => f.Id == fieldOfStudyLogsId);
         
-        if(fieldOfStudyLog == null) throw new ArgumentException($"Organization not found: id={fieldOfStudyLogsId}");
+        if(fieldOfStudyLog == null) throw new HttpNotFoundException($"Organization not found: id={fieldOfStudyLogsId}");
         
         return fieldOfStudyLog.OrganizationsOfTheYear;
     }
@@ -155,7 +156,7 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
         var newestOrganization = newestAcademicOrganizations.FirstOrDefault(
             academicOrganization => academicOrganization.FirstHalfOfYear == false);
         
-        if(newestOrganization == null) throw new ArgumentException("Organization not found");
+        if(newestOrganization == null) throw new HttpNotFoundException("Organization not found");
         return newestOrganization;
     }
 
@@ -195,7 +196,7 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
         var years = await GetYears();
         var currentYear = years.FirstOrDefault(y => y.Id == yearId);
         
-        if(currentYear == null) throw new ArgumentException($"Year not found: id={yearId}");
+        if(currentYear == null) throw new HttpNotFoundException($"Year not found: id={yearId}");
         
         var prevYearName = OrganizationHelper.GetPrevYearName(currentYear.Name);
         return years.FirstOrDefault(y => y.Name == prevYearName);

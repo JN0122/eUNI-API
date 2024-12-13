@@ -1,5 +1,6 @@
 using eUNI_API.Data;
 using eUNI_API.Enums;
+using eUNI_API.Exception;
 using eUNI_API.Models.Entities.Auth;
 using eUNI_API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -16,7 +17,7 @@ public class AuthRepository(AppDbContext context): IAuthRepository
         var user =  await _context.Users
             .Include(u => u.Role)
             .FirstOrDefaultAsync(u => u.Email == email);
-        if(user == null) throw new UnauthorizedAccessException("Cannot find user");
+        if(user == null) throw new HttpUnauthorizedHttpException("Cannot find user");
         return user;
     }
 

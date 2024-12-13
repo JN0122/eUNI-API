@@ -1,4 +1,5 @@
 using eUNI_API.Data;
+using eUNI_API.Exception;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Dto.Group;
@@ -86,10 +87,10 @@ public class FieldOfStudyService(AppDbContext context, IGroupRepository groupRep
             .ToList();
 
         if (fieldsToUpgrade.Count != upgradeFieldsOfStudyLogsRequest.FieldOfStudyLogIds.Count())
-            throw new ArgumentException("Some fields are not in the database.");
+            throw new HttpNotFoundException("Some fields are not in the database.");
 
         if (fieldsToUpgrade.All(fieldOfStudyLog => fieldOfStudyLog.OrganizationsOfTheYear == organizationToUpgrade))
-            throw new ArgumentException("Some fields cannot be upgraded!");
+            throw new HttpBadRequestHttpException("Some fields cannot be upgraded!");
 
         var newFieldsLogs = new List<FieldOfStudyLog>();
         fieldsToUpgrade.ForEach(field =>

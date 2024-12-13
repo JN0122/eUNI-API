@@ -1,5 +1,6 @@
 using eUNI_API.Data;
 using eUNI_API.Enums;
+using eUNI_API.Exception;
 using eUNI_API.Models.Dto.Group;
 using eUNI_API.Models.Dto.Student;
 using eUNI_API.Models.Entities.FieldOfStudy;
@@ -25,28 +26,28 @@ public class StudentRepository(AppDbContext context): IStudentRepository
             .AsNoTracking()
             .Include(f=>f.FieldOfStudy)
             .First(f => f.Id == fieldOfStudyLogId);
-        if(fieldOfStudy == null) throw new ArgumentException("Group not found");
+        if(fieldOfStudy == null) throw new HttpNotFoundException("Group not found");
         return fieldOfStudy.FieldOfStudy;
     }
 
     private Group GetGroup(int groupId)
     {
         var group = _context.Groups.FirstOrDefault(g => g.Id == groupId);
-        if(group == null) throw new ArgumentException("Group not found");
+        if(group == null) throw new HttpNotFoundException("Group not found");
         return group;
     }
     
     private StudentFieldsOfStudyLog GetStudentFieldOfStudyLog(int studentFieldOfStudyLogId)
     {
         var studentFieldOfStudyLog = _context.StudentFieldsOfStudyLogs.FirstOrDefault(sf => sf.Id == studentFieldOfStudyLogId);
-        if(studentFieldOfStudyLog == null) throw new ArgumentException($"StudentFieldOfStudyLog not found: id={studentFieldOfStudyLogId}");
+        if(studentFieldOfStudyLog == null) throw new HttpNotFoundException($"StudentFieldOfStudyLog not found: id={studentFieldOfStudyLogId}");
         return studentFieldOfStudyLog;
     }
 
     private StudentGroup GetStudentGroup(int studentGroupId)
     {
         var studentGroup = _context.StudentGroups.FirstOrDefault(sg => sg.Id == studentGroupId);
-        if(studentGroup == null) throw new ArgumentException($"Student group not found");
+        if(studentGroup == null) throw new HttpNotFoundException($"Student group not found");
         return studentGroup;
     }
     
@@ -144,7 +145,7 @@ public class StudentRepository(AppDbContext context): IStudentRepository
     {
         var studentFieldOfStudyLog = _context.StudentFieldsOfStudyLogs.FirstOrDefault(sf =>
             sf.FieldsOfStudyLogId == fieldOfStudyLogId && sf.UserId == userId);
-        if(studentFieldOfStudyLog == null) throw new ArgumentException("Student field of study log not found");
+        if(studentFieldOfStudyLog == null) throw new HttpNotFoundException("Student field of study log not found");
         return studentFieldOfStudyLog;
     }
 

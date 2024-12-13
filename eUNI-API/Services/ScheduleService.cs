@@ -1,5 +1,6 @@
 using eUNI_API.Data;
 using eUNI_API.Enums;
+using eUNI_API.Exception;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.Schedule;
@@ -133,7 +134,7 @@ public class ScheduleService(AppDbContext context, IOrganizationRepository organ
                 var prop = scheduleWeekDays.GetType().GetProperty(weekDay);
                 var group = _groupRepository.GetGroupName(thisWeekClass.classEntity.Id);
                 
-                if(prop == null) throw new Exception($"Property '{weekDay}' not found in ScheduleWeekDays");
+                if(prop == null) throw new HttpNotFoundException($"Property '{weekDay}' not found in ScheduleWeekDays");
                 prop.SetValue(scheduleWeekDays, new ScheduleClass
                 {
                     Hours = thisWeekClass.classEntity.EndHourId - thisWeekClass.classEntity.StartHourId + 1,

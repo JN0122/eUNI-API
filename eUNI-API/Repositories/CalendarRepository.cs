@@ -1,3 +1,4 @@
+using eUNI_API.Exception;
 using eUNI_API.Models.Dto.Calendar;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Repositories.Interfaces;
@@ -59,7 +60,7 @@ public class CalendarRepository(IWebHostEnvironment env): ICalendarRepository
     public string GetCalendarFilePath(FieldOfStudyInfoDto fieldOfStudyInfo, string groupName)
     {
         var studiesCycle = fieldOfStudyInfo.StudiesCycle == 1 ? "inz" : 
-            fieldOfStudyInfo.StudiesCycle == 2? "mgr":throw new Exception("Not defined studies cycle");
+            fieldOfStudyInfo.StudiesCycle == 2? "mgr" : throw new HttpNotFoundException("Not defined studies cycle");
         var typeOfStudies = fieldOfStudyInfo.IsFullTime ? "Stacjonarne" : "Niestacjonarne";
 
         var sanitizedPaths = new List<string> { CalendarFolder };

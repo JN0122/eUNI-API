@@ -1,3 +1,4 @@
+using eUNI_API.Exception;
 using eUNI_API.Models.Dto;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Dto.Organization;
@@ -34,10 +35,10 @@ public class AdminController(IAdminService adminService, IUserService userServic
         var user = await _userService.FindUserByClaim(User.Claims);
         
         if (user == null)
-            throw new UnauthorizedAccessException();
+            throw new HttpUnauthorizedHttpException();
 
         if (user.Id.Equals(id))
-            throw new ArgumentException("Cannot delete this user!");
+            throw new HttpForbiddenException("Cannot delete this user!");
         
         await _adminService.RemoveUser(id);
         return Ok();

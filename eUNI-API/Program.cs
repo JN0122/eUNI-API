@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text;
 using eUNI_API.Configuration;
 using eUNI_API.Data;
+using eUNI_API.Middlewares;
 using eUNI_API.Repositories;
 using eUNI_API.Repositories.Interfaces;
 using eUNI_API.Services;

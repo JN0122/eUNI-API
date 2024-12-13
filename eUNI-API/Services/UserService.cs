@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using eUNI_API.Data;
+using eUNI_API.Exception;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto;
 using eUNI_API.Models.Entities.Auth;
@@ -18,13 +19,13 @@ public class UserService(AppDbContext context): IUserService
         var userIdClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         
         if(userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
-            throw new ArgumentException("Invalid user ID claim present in token.");
+            throw new HttpBadRequestHttpException("Invalid user ID claim present in token.");
 
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null)
-            throw new ArgumentException("Invalid user ID");
+            throw new HttpBadRequestHttpException("Invalid user ID");
 
         return user;
     }

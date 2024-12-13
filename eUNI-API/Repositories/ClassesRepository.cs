@@ -1,5 +1,6 @@
 using eUNI_API.Data;
 using eUNI_API.Enums;
+using eUNI_API.Exception;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Entities.FieldOfStudy;
@@ -17,7 +18,7 @@ public class ClassesRepository(AppDbContext context): IClassesRepository
     {
         var classEntity = _context.Classes.FirstOrDefault(c => c.Id == classId);
         if(classEntity == null)
-            throw new ArgumentException($"Class not found: {classId}");
+            throw new HttpNotFoundException($"Class not found: {classId}");
         return classEntity;
     }
 
@@ -50,7 +51,7 @@ public class ClassesRepository(AppDbContext context): IClassesRepository
             .Include(c => c.FieldOfStudyLog)
             .ThenInclude(f => f.FieldOfStudy)
             .FirstOrDefault(c => c.Id == classId);
-        if(classEntity == null) throw new ArgumentException($"Class not found: {classId}");
+        if(classEntity == null) throw new HttpNotFoundException($"Class not found: {classId}");
         return classEntity.FieldOfStudyLog.FieldOfStudy.Abbr + group.Abbr;
     }
 

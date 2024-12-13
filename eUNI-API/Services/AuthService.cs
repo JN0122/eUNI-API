@@ -1,5 +1,6 @@
 using eUNI_API.Configuration;
 using eUNI_API.Enums;
+using eUNI_API.Exception;
 using eUNI_API.Helpers;
 using eUNI_API.Models.Dto.Auth;
 using eUNI_API.Models.Entities.Auth;
@@ -19,10 +20,10 @@ public class AuthService(IOptions<JwtSettings> jwtSettings, IAuthRepository auth
     public async Task<User> Register(RegisterRequest registerRequest)
     {
         if(registerRequest.Password != registerRequest.RepeatPassword) 
-            throw new ArgumentException("Passwords don't match");
+            throw new HttpBadRequestHttpException("Passwords don't match");
         
         if(registerRequest.AgreedToTerms == false) 
-            throw new ArgumentException("Please agree to terms!");
+            throw new HttpBadRequestHttpException("Please agree to terms!");
 
         return await _userRepository.CreateUser(
             registerRequest.FirstName, 
@@ -37,12 +38,12 @@ public class AuthService(IOptions<JwtSettings> jwtSettings, IAuthRepository auth
         var user = await _authRepository.GetUserWithRole(loginDto.Email);
 
         if (user == null || user.IsDeleted)
-            throw new UnauthorizedAccessException();
+            throw new HttpUnauthorizedHttpException();
     
         var isValidPassword = PasswordHasher.VerifyHashedPassword(loginDto.Password, user.Salt, user.PasswordHash);
 
         if (!isValidPassword)
-            throw new UnauthorizedAccessException();
+            throw new HttpUnauthorizedHttpException();
         return user;
     }
 

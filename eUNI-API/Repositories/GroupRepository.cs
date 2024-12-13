@@ -1,5 +1,6 @@
 using eUNI_API.Data;
 using eUNI_API.Enums;
+using eUNI_API.Exception;
 using eUNI_API.Models.Dto.Group;
 using eUNI_API.Models.Entities.Student;
 using eUNI_API.Repositories.Interfaces;
@@ -15,7 +16,7 @@ public class GroupRepository(AppDbContext context): IGroupRepository
         var classEntity = _context.Classes
             .Include(c=>c.Group)
             .FirstOrDefault(c => c.Id == classId);
-        if (classEntity == null) throw new ArgumentException($"Class not found: {classId}");
+        if (classEntity == null) throw new HttpNotFoundException($"Class not found: {classId}");
         return new GroupDto
         {
             GroupId = classEntity.GroupId,
@@ -27,7 +28,7 @@ public class GroupRepository(AppDbContext context): IGroupRepository
     public Group GetGroupById(int groupId)
     {
         var group = _context.Groups.FirstOrDefault(g => g.Id == groupId);
-        if(group == null) throw new ArgumentException($"Group not found: {groupId}");
+        if(group == null) throw new HttpNotFoundException($"Group not found: {groupId}");
         return group;
     }
     
@@ -38,7 +39,7 @@ public class GroupRepository(AppDbContext context): IGroupRepository
             .ThenInclude(f => f.FieldOfStudy)
             .FirstOrDefault(c => c.Id == classId); 
         
-        if(classEntity == null) throw new NullReferenceException($"Class not found: classId={classId}");
+        if(classEntity == null) throw new HttpNotFoundException($"Class not found: classId={classId}");
 
         if (classEntity.Group.Type != (int)GroupType.DeanGroup)
             return classEntity.Group.Abbr;
@@ -55,7 +56,7 @@ public class GroupRepository(AppDbContext context): IGroupRepository
             .AsNoTracking()
             .Include(f => f.FieldOfStudy)
             .FirstOrDefault(f => f.Id == fieldOfStudyLogId); 
-        if(fieldOfStudyLog == null) throw new ArgumentException($"Field Of Study Log not found: id={fieldOfStudyLogId}");
+        if(fieldOfStudyLog == null) throw new HttpNotFoundException($"Field Of Study Log not found: id={fieldOfStudyLogId}");
         return fieldOfStudyLog.FieldOfStudy.Abbr + group.Abbr;
     }
 }
