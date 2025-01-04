@@ -34,8 +34,6 @@ public class ErrorHandlingMiddleware(RequestDelegate next)
         const HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
         const string message = "An unexpected error occurred.";
         
-        Console.WriteLine(exception);
-        
         return ReturnExceptionAsync(context, (int)statusCode, message);
     }
 
