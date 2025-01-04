@@ -6,9 +6,9 @@ public class HttpCustomException(int statusCode, string message) : System.Except
     public override string Message { get; } = message;
 }
 
-public class HttpBadRequestHttpException(string message = "") : HttpCustomException(400, message);
+public class HttpBadRequestException(string message = "") : HttpCustomException(400, message);
 
-public class HttpUnauthorizedHttpException(string message = "") : HttpCustomException(401, message);
+public class HttpUnauthorizedException(string message = "") : HttpCustomException(401, message);
 
 public class HttpForbiddenException(string message = "") : HttpCustomException(403, message);
 

@@ -36,7 +36,7 @@ public class AdminController(IAdminService adminService, IUserService userServic
         var user = await _userService.FindUserByClaim(User.Claims);
         
         if (user == null)
-            throw new HttpUnauthorizedHttpException();
+            throw new HttpUnauthorizedException();
 
         if (user.Id.Equals(id))
             throw new HttpForbiddenException("Cannot delete this user!");

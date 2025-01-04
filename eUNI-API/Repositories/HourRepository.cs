@@ -18,7 +18,7 @@ public class HourRepository(AppDbContext context): IHourRepository
 
     public IEnumerable<Hour> GetHoursRange(int startId, int endId)
     {
-        if(startId > endId) throw new HttpBadRequestHttpException("StartHourId cannot be greater than EndHourId");
+        if(startId > endId) throw new HttpBadRequestException("StartHourId cannot be greater than EndHourId");
         return _context.Hours.Where(h=>h.Id >= startId && h.Id <= endId);
     }
 }

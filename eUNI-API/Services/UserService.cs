@@ -19,13 +19,13 @@ public class UserService(AppDbContext context): IUserService
         var userIdClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         
         if(userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
-            throw new HttpBadRequestHttpException("Invalid user ID claim present in token.");
+            throw new HttpBadRequestException("Invalid user ID claim present in token.");
 
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null)
-            throw new HttpBadRequestHttpException("Invalid user ID");
+            throw new HttpBadRequestException("Invalid user ID");
 
         return user;
     }

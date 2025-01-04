@@ -90,7 +90,7 @@ public class FieldOfStudyService(AppDbContext context, IGroupRepository groupRep
             throw new HttpNotFoundException("Some fields are not in the database.");
 
         if (fieldsToUpgrade.All(fieldOfStudyLog => fieldOfStudyLog.OrganizationsOfTheYear == organizationToUpgrade))
-            throw new HttpBadRequestHttpException("Some fields cannot be upgraded!");
+            throw new HttpBadRequestException("Some fields cannot be upgraded!");
 
         var newFieldsLogs = new List<FieldOfStudyLog>();
         fieldsToUpgrade.ForEach(field =>

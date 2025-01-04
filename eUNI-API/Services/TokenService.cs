@@ -98,7 +98,7 @@ public class TokenService(AppDbContext context, IOptions<JwtSettings> jwtSetting
             .FirstOrDefault(r => r.Token == refreshToken);
         
         if(refreshTokenEntity == null)
-            throw new HttpUnauthorizedHttpException("Refresh token doesn't exist");
+            throw new HttpUnauthorizedException("Refresh token doesn't exist");
         
         return refreshTokenEntity.UserId;
     }

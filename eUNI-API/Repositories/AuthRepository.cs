@@ -17,7 +17,7 @@ public class AuthRepository(AppDbContext context): IAuthRepository
         var user =  await _context.Users
             .Include(u => u.Role)
             .FirstOrDefaultAsync(u => u.Email == email);
-        if(user == null) throw new HttpUnauthorizedHttpException("Cannot find user");
+        if(user == null) throw new HttpUnauthorizedException("Cannot find user");
         return user;
     }
 

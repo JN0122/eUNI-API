@@ -20,10 +20,10 @@ public class AuthService(IOptions<JwtSettings> jwtSettings, IAuthRepository auth
     public async Task<User> Register(RegisterRequest registerRequest)
     {
         if(registerRequest.Password != registerRequest.RepeatPassword) 
-            throw new HttpBadRequestHttpException("Passwords don't match");
+            throw new HttpBadRequestException("Passwords don't match");
         
         if(registerRequest.AgreedToTerms == false) 
-            throw new HttpBadRequestHttpException("Please agree to terms!");
+            throw new HttpBadRequestException("Please agree to terms!");
 
         return await _userRepository.CreateUser(
             registerRequest.FirstName, 
@@ -38,12 +38,12 @@ public class AuthService(IOptions<JwtSettings> jwtSettings, IAuthRepository auth
         var user = await _authRepository.GetUserWithRole(loginDto.Email);
 
         if (user == null || user.IsDeleted)
-            throw new HttpUnauthorizedHttpException();
+            throw new HttpUnauthorizedException();
     
         var isValidPassword = PasswordHasher.VerifyHashedPassword(loginDto.Password, user.Salt, user.PasswordHash);
 
         if (!isValidPassword)
-            throw new HttpUnauthorizedHttpException();
+            throw new HttpUnauthorizedException();
         return user;
     }
 

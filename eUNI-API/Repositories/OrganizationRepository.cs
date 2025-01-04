@@ -56,7 +56,7 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
         var fieldsOfStudyLogs = await _context.FieldOfStudyLogs.Where(f=>f.OrganizationsOfTheYearId == yearOrganizationId).ToListAsync();
         
         if(fieldsOfStudyLogs.Count > 0)
-            throw new HttpBadRequestHttpException("Some of the fields of study logs are not in the organization");
+            throw new HttpBadRequestException("Some of the fields of study logs are not in the organization");
             
         _context.Remove(organization);
         await _context.SaveChangesAsync();

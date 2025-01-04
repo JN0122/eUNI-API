@@ -128,7 +128,7 @@ public class RepresentativeService(AppDbContext context,
         }).Entity;
         
         var dates = CalculateClassDate(organization, classRequestDto.IsOddWeek, classRequestDto.WeekDay);
-        if (dates.Count == 0) throw new HttpBadRequestHttpException("Cannot create class with no dates, please check if you selected a valid days.");
+        if (dates.Count == 0) throw new HttpBadRequestException("Cannot create class with no dates, please check if you selected a valid days.");
         
         _context.ClassDates.AddRange(dates.Select(d=>new ClassDate
         {

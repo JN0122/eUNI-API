@@ -34,7 +34,7 @@ public class AdminService(AppDbContext context, IUserService userService, IUserR
     {
         var user = _context.Users.Find(id);
         if (user == null)
-            throw new HttpBadRequestHttpException("Could not find user");
+            throw new HttpBadRequestException("Could not find user");
         
         user.IsDeleted = true;
         context.Users.Update(user);
@@ -44,7 +44,7 @@ public class AdminService(AppDbContext context, IUserService userService, IUserR
     public async Task CreateUser(CreateUserRequestDto createUserRequestDto)
     {
         if(!await IsValidRole(createUserRequestDto.RoleId))
-            throw new HttpBadRequestHttpException("Invalid role");
+            throw new HttpBadRequestException("Invalid role");
         
         var salt = PasswordHasher.GenerateSalt();
         
