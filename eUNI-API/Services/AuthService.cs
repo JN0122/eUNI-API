@@ -53,7 +53,7 @@ public class AuthService(IOptions<JwtSettings> jwtSettings, IAuthRepository auth
         {
             HttpOnly = true,
             Secure = true,
-            SameSite = SameSiteMode.Strict,
+            SameSite = SameSiteMode.Lax,
             Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays)
         });
     }
