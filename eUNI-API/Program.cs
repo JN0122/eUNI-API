@@ -105,7 +105,7 @@ builder.Services.AddCors(options =>
             policy.WithOrigins("http://localhost:3000",
                     "https://localhost:5173", 
                     "https://localhost:4173",
-                    "euni.jakubniewelt.pl"
+                    "https://euni.jakubniewelt.pl"
                     )
                 .AllowAnyHeader()
                 .AllowCredentials()
