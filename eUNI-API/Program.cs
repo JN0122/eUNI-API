@@ -97,16 +97,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+var origins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000",
-                    "https://localhost:5173", 
-                    "https://localhost:4173",
-                    "https://euni.jakubniewelt.pl"
-                    )
+            policy
+                .WithOrigins(origins)
                 .AllowAnyHeader()
                 .AllowCredentials()
                 .AllowAnyMethod();
