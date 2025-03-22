@@ -2,10 +2,6 @@
 services:
   db:
     image: postgres:bullseye
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=adUtfMaDlRmHMAR
-      - POSTGRES_DB=eUNI
     restart: always
     volumes:
       - db:/var/lib/postgresql/data
@@ -20,10 +16,6 @@ services:
     build:
       context: .
       dockerfile: eUNI-API/Dockerfile
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Server=db;Port=5432;Database=eUNI;;Username=postgres;Password=adUtfMaDlRmHMAR
-      - JWT__Key=98e93b22d690672e0ec612d84088affaa766444f5fae4dc923e0bff04d26ed8984ace4bab8bd866a226cd2dca8f3e486c1d6409012462ffd46e3f2f510ba09875efe0fbd5743ef7020b200ed4adca61145720f7eeca730eb1b9507bb0737a3159c30f2e64b231bd61350011de1676f49351b8107e646878fa0fbdc9c5c9cd323d9653eeec403aa8371ada8ab78869b3d78050ff591c4baeb4e1be6925cdfaed544fb970c6ba1c59508e2b21ee3cdf4ab3217aa5598804e7194212c0a7772a53d7c88816ca583485adaedc10d5a289ea2cde591024c9ff5a5a6ab6fbb4c5a5ddaa88c2bfbb292c6fd6410eebc08df10e43b8a8aa955702362172299f0b40e1eeb
     networks:
       - euni
 volumes:
