@@ -4,9 +4,10 @@ using eUNI_API.Exception;
 
 namespace eUNI_API.Middlewares;
 
-public class ErrorHandlingMiddleware(RequestDelegate next)
+public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
 {
     private readonly RequestDelegate _next = next;
+    private readonly ILogger<ErrorHandlingMiddleware> _logger = logger;
 
     public async Task Invoke(HttpContext context)
     {
@@ -20,6 +21,7 @@ public class ErrorHandlingMiddleware(RequestDelegate next)
         }
         catch (System.Exception ex)
         {
+            _logger.LogError(ex, "An unhandled exception occurred.");
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -38,8 +40,8 @@ public class ErrorHandlingMiddleware(RequestDelegate next)
     }
 
     private static Task ReturnExceptionAsync(HttpContext context, int statusCode, string message)
-    {
-        var result = JsonSerializer.Serialize(new { message });
+    {        
+        var result = JsonSerializer.Serialize(new { message , traceId = context.TraceIdentifier});
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = statusCode;
 
