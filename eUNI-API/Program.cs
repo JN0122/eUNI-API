@@ -47,6 +47,7 @@ builder.Services.AddScoped<IClassesRepository, ClassesRepository>();
 builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 builder.Services.AddScoped<IFieldOfStudyRepository, FieldOfStudyRepository>();
 builder.Services.AddScoped<IHourRepository, HourRepository>();
+builder.Services.AddScoped<ISetupService, SetupService>();
 
 builder.Services.AddEndpointsApiExplorer();
 

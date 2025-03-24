@@ -18,6 +18,14 @@ public class UserRepository(AppDbContext context): IUserRepository
             .AsNoTracking()
             .FirstOrDefault(u => u.Email == email.ToLower());
     }
+
+    public void RemoveUserByEmail(string email)
+    {
+        var user = GetUserByEmail(email);
+        if(user == null) return;
+        _context.Users.Remove(user);
+        _context.SaveChanges();
+    }
     
     public async Task<User> CreateUser(string firstName, string lastName, string email, string password, int roleId)
     {

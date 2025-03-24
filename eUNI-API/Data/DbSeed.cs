@@ -31,19 +31,6 @@ public static class DbSeed
             }
         );
         
-        modelBuilder.Entity<User>().HasData(
-            new User
-            {
-                Id = new Guid("c49c2319-2e87-45fe-be3b-1d9e724df781"), 
-                FirstName = "Jan", 
-                LastName = "Kowalski", 
-                Email = "root@euni.com", 
-                RoleId = (int)UserRole.Admin,
-                PasswordHash =  "NTWxiNrLLLT2HkXuG9JiPYN0z5UN2eHW5gMsxbP4ATY=", 
-                Salt = "mwmeU7TZlMdR/NMWAJMzrQ=="
-            }
-        );
-        
         modelBuilder.Entity<Group>().HasData(
             new Group { Id = 1, Abbr = "P01", Type = (int)GroupType.Project },
             new Group { Id = 2, Abbr = "P02", Type = (int)GroupType.Project },
