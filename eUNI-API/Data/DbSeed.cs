@@ -15,9 +15,10 @@ public static class DbSeed
             new Role { Id = (int)UserRole.Admin, Name = "Admin" },
             new Role { Id = (int)UserRole.Student, Name = "Student" }
         );
-        
+
+        var currentYear = DateTime.Now.Year;
         modelBuilder.Entity<Year>().HasData(
-            new Year { Id = 1, Name="2024/2025" }
+            new Year { Id = 1, Name=$"{currentYear}/{currentYear+1}" }
         );
         
         modelBuilder.Entity<OrganizationOfTheYear>().HasData(
@@ -26,8 +27,8 @@ public static class DbSeed
                 Id = 1,
                 FirstHalfOfYear = true,
                 YearId = 1,
-                StartDay = new DateOnly(2024, 10, 1),
-                EndDay = new DateOnly(2025, 1, 26)
+                StartDay = new DateOnly(currentYear, 10, 1),
+                EndDay = new DateOnly(currentYear+1, 1, 26)
             }
         );
         

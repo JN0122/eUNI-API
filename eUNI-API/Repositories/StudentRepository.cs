@@ -149,11 +149,23 @@ public class StudentRepository(AppDbContext context): IStudentRepository
         return studentFieldOfStudyLog;
     }
 
+    public async Task DeleteAllStudentLogs()
+    {
+        _context.StudentFieldsOfStudyLogs.RemoveRange(_context.StudentFieldsOfStudyLogs);
+        await _context.SaveChangesAsync();
+    }
+
     public StudentGroup? GetStudentGroup(int studentFieldOfStudyLogId, int groupType)
     {
         return _context.StudentGroups
             .Include(sg => sg.Group)
             .FirstOrDefault(sg => sg.StudentsFieldsOfStudyLogId == studentFieldOfStudyLogId && sg.Group.Type == groupType);
+    }
+
+    public async Task DeleteAllStudentGroups()
+    {
+        _context.StudentGroups.RemoveRange(_context.StudentGroups);
+        await _context.SaveChangesAsync();
     }
 
     public void JoinGroup(int studentFieldOfStudyLogId, int groupId)

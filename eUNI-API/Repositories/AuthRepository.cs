@@ -25,4 +25,10 @@ public class AuthRepository(AppDbContext context): IAuthRepository
     {
         return _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == userId)?.RoleId == (int)UserRole.Admin;
     }
+
+    public async Task RevokeAllTokens()
+    {
+        _context.RefreshTokens.RemoveRange(_context.RefreshTokens);
+        await _context.SaveChangesAsync();
+    }
 }

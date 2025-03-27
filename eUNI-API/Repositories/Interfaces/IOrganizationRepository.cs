@@ -18,4 +18,5 @@ public interface IOrganizationRepository
     public Task<List<Year>> GetYears();
     public Task<Year?> GetPreviousYear(int yearId);
     public Task<Year> GetOrCreateNextYear(int yearId);
+    public Task DeleteAllYearOrganizations();
 }

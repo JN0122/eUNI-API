@@ -57,6 +57,12 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
         await _context.SaveChangesAsync();
     }
 
+    public async Task DeleteAllFieldsOfStudy()
+    {
+        _context.FieldOfStudies.RemoveRange(_context.FieldOfStudies);
+        await _context.SaveChangesAsync();
+    }
+
     public FieldOfStudyLog GetFieldOfStudyLogById(int fieldOfStudyLogId)
     {
         var fieldOfStudyLog = _context.FieldOfStudyLogs.FirstOrDefault(f => f.Id == fieldOfStudyLogId);
@@ -130,6 +136,12 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
     {
         var fieldOfStudy = GetFieldOfStudyLogById(fieldOfStudyLog);
         _context.Remove(fieldOfStudy);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAllFieldOfStudyLogs()
+    {
+        _context.FieldOfStudyLogs.RemoveRange(_context.FieldOfStudyLogs);
         await _context.SaveChangesAsync();
     }
 }

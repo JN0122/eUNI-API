@@ -9,7 +9,8 @@ public interface IFieldOfStudyRepository
     public Task<List<FieldOfStudy>> GetFieldsOfStudy();
     public Task CreateFieldOfStudy(CreateFieldOfStudyRequest createFieldOfStudyRequest); 
     public Task UpdateFieldOfStudy(int id, CreateFieldOfStudyRequest createFieldOfStudyRequest); 
-    public Task DeleteFieldOfStudy(int id); 
+    public Task DeleteFieldOfStudy(int id);
+    public Task DeleteAllFieldsOfStudy();
     public FieldOfStudyLog GetFieldOfStudyLogById(int fieldOfStudyLogId);
     public FieldOfStudyInfoDto GetFieldOfStudyInfo(int fieldOfStudyLogId);
     public Task<List<FieldOfStudyInfoDto>?> GetFieldOfStudyLogs(int academicOrganizationId);
@@ -18,4 +19,5 @@ public interface IFieldOfStudyRepository
     public FieldOfStudy GetFieldOfStudy(int id);
     public Task CreateFieldOfStudyLog(FieldOfStudy fieldOfStudy, OrganizationOfTheYear organization, byte semester);
     public Task DeleteFieldOfStudyLog(int fieldOfStudyLog);
+    public Task DeleteAllFieldOfStudyLogs();
 }

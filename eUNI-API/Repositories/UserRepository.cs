@@ -55,4 +55,10 @@ public class UserRepository(AppDbContext context): IUserRepository
         
         return user;
     }
+
+    public void DeleteAllUsers()
+    {
+        _context.Users.RemoveRange(_context.Users);
+        _context.SaveChanges();
+    }
 }

@@ -219,4 +219,14 @@ public class OrganizationRepository(AppDbContext context): IOrganizationReposito
         await _context.SaveChangesAsync();
         return newYear;
     }
+
+    public async Task DeleteAllYearOrganizations()
+    {
+        _context.DaysOff.RemoveRange(_context.DaysOff);
+        _context.OrganizationsOfTheYear.RemoveRange(
+            _context.OrganizationsOfTheYear.Where(o => o.Id != 1)
+            );
+        
+        await _context.SaveChangesAsync();
+    }
 }

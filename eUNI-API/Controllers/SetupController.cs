@@ -18,4 +18,12 @@ public class SetupController(ISetupService setupService, IHostEnvironment env) :
         await _setupService.ResetRootAccount(rootDto.Password);
         return Ok();
     }
+
+    [HttpPost("reset-db")]
+    public IActionResult ResetDatabase()
+    {
+        if (_env.IsProduction()) return Forbid();
+        _setupService.ResetDb();
+        return Ok();
+    }
 }
