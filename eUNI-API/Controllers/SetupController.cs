@@ -6,14 +6,16 @@ namespace eUNI_API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SetupController(ISetupService setupService) : ControllerBase
+public class SetupController(ISetupService setupService, IHostEnvironment env) : ControllerBase
 {
     private readonly ISetupService _setupService = setupService;
+    private readonly IHostEnvironment _env = env;
     
     [HttpPost("set-password")]
     public async Task<IActionResult> SetRootPassword([FromBody] RootDto rootDto)
     {
+        if (_env.IsProduction()) return Forbid();
         await _setupService.ResetRootAccount(rootDto.Password);
-        return Ok("Root password set!");
+        return Ok();
     }
 }
