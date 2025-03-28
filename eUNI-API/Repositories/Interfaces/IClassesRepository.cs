@@ -11,5 +11,5 @@ public interface IClassesRepository
     public IQueryable<Class> GetClasses(int fieldOfStudyLogId);
     public IQueryable<ClassDate> GetClassDates(int classId);
     public List<ClassDto> GetClassesDto(IQueryable<Class> classEntity);
-    public Task DeleteAllClasses();
+    public void DeleteAllClasses();
 }

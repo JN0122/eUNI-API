@@ -79,10 +79,10 @@ public class ClassesRepository(AppDbContext context): IClassesRepository
             .ToList();
     }
 
-    public async Task DeleteAllClasses()
+    public void DeleteAllClasses()
     {
         _context.ClassDates.RemoveRange(_context.ClassDates);
         _context.Classes.RemoveRange(_context.Classes);
-        await _context.SaveChangesAsync();
+        _context.SaveChanges();
     }
 }

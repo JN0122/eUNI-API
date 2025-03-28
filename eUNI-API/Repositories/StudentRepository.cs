@@ -149,10 +149,10 @@ public class StudentRepository(AppDbContext context): IStudentRepository
         return studentFieldOfStudyLog;
     }
 
-    public async Task DeleteAllStudentLogs()
+    public void DeleteAllStudentLogs()
     {
         _context.StudentFieldsOfStudyLogs.RemoveRange(_context.StudentFieldsOfStudyLogs);
-        await _context.SaveChangesAsync();
+        _context.SaveChanges();
     }
 
     public StudentGroup? GetStudentGroup(int studentFieldOfStudyLogId, int groupType)
@@ -162,10 +162,10 @@ public class StudentRepository(AppDbContext context): IStudentRepository
             .FirstOrDefault(sg => sg.StudentsFieldsOfStudyLogId == studentFieldOfStudyLogId && sg.Group.Type == groupType);
     }
 
-    public async Task DeleteAllStudentGroups()
+    public void DeleteAllStudentGroups()
     {
         _context.StudentGroups.RemoveRange(_context.StudentGroups);
-        await _context.SaveChangesAsync();
+        _context.SaveChanges();
     }
 
     public void JoinGroup(int studentFieldOfStudyLogId, int groupId)

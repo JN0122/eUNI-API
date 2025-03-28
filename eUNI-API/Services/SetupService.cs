@@ -27,15 +27,14 @@ public class SetupService(IUserRepository userRepository, IOrganizationRepositor
         );
     }
 
-    public async void ResetDb()
+    public void ResetDb()
     {
-        await _authRepository.RevokeAllTokens();
-        await _classesRepository.DeleteAllClasses();
-        await _fieldOfStudyRepository.DeleteAllFieldsOfStudy();
-        await _studentRepository.DeleteAllStudentGroups();
-        
-        await _fieldOfStudyRepository.DeleteAllFieldOfStudyLogs();
-        await _studentRepository.DeleteAllStudentLogs();
+        _authRepository.RevokeAllTokens();
+        _classesRepository.DeleteAllClasses();
+        _studentRepository.DeleteAllStudentGroups();
+        _fieldOfStudyRepository.DeleteAllFieldOfStudyLogs();
+        _fieldOfStudyRepository.DeleteAllFieldsOfStudy();
+        _studentRepository.DeleteAllStudentLogs();
         _userRepository.DeleteAllUsers();
     }
 }

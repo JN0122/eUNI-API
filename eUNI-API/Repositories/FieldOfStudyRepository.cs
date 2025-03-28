@@ -57,10 +57,10 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAllFieldsOfStudy()
+    public void DeleteAllFieldsOfStudy()
     {
         _context.FieldOfStudies.RemoveRange(_context.FieldOfStudies);
-        await _context.SaveChangesAsync();
+        _context.SaveChanges();
     }
 
     public FieldOfStudyLog GetFieldOfStudyLogById(int fieldOfStudyLogId)
@@ -139,9 +139,9 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAllFieldOfStudyLogs()
+    public async void DeleteAllFieldOfStudyLogs()
     {
         _context.FieldOfStudyLogs.RemoveRange(_context.FieldOfStudyLogs);
-        await _context.SaveChangesAsync();
+        _context.SaveChanges();
     }
 }

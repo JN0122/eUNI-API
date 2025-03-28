@@ -6,5 +6,5 @@ public interface IAuthRepository
 {
     public Task<User> GetUserWithRole(string email);
     public bool IsAdmin(Guid userId);
-    public Task RevokeAllTokens();
+    public void RevokeAllTokens();
 }

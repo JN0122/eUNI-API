@@ -14,9 +14,9 @@ public interface IStudentRepository
     public bool IsRepresentative(Guid userId);
     public IEnumerable<StudentFieldOfStudyDto>? GetRepresentativeFieldsOfStudy(Guid userId);
     public StudentFieldsOfStudyLog GetStudentFieldOfStudyLog(int fieldOfStudyLogId, Guid userId);
-    public Task DeleteAllStudentLogs();
+    public void DeleteAllStudentLogs();
     public StudentGroup? GetStudentGroup(int studentFieldOfStudyLogId, int groupType);
-    public Task DeleteAllStudentGroups();
+    public void DeleteAllStudentGroups();
     public void JoinGroup(int studentFieldOfStudyLogId, int groupId);
     public void ChangeGroup(int studentGroupId, int groupId);
     public Task UpdateRepresentativeFields(Guid userId, List<int> representativeFieldsOfStudyLogIds);
