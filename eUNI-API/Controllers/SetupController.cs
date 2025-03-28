@@ -1,4 +1,5 @@
 using eUNI_API.Enums;
+using eUNI_API.Exception;
 using eUNI_API.Models.Dto.Classes;
 using eUNI_API.Models.Dto.FieldOfStudy;
 using eUNI_API.Models.Dto.Setup;
@@ -53,14 +54,19 @@ public class SetupController(ISetupService setupService, IStudentService student
             StudiesCycle = 1
         });
         
+        var time = DateOnly.FromDateTime(DateTime.Now);
         var organizations = await _organizationService.GetYearOrganizations();
-        var newestOrganizationId = organizations.Max(o => o.Id);
+        var newestOrganization = organizations.FirstOrDefault(
+            o => o.StartDate < time && o.EndDate > time);
+
+        if (newestOrganization == null) 
+            throw new HttpBadRequestException($"Create new organization that includes current date: {time.Day}/{time.Month}/{time.Year} !");
         
         var fieldOfStudyLog = await _fieldOfStudyService.CreateFieldOfStudyLog(new CreateFieldOfStudyLogRequest
         {
             CurrentSemester = 1,
             FieldOfStudyId = fieldOfStudy.Id,
-            OrganizationId = newestOrganizationId
+            OrganizationId = newestOrganization.Id
         });
         
         var user = await _adminService.CreateUser(new CreateUserRequestDto
