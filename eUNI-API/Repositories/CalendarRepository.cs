@@ -11,7 +11,8 @@ namespace eUNI_API.Repositories;
 
 public class CalendarRepository(IWebHostEnvironment env): ICalendarRepository
 {
-    private const string CalendarFolder = "/calendars";
+    private readonly IWebHostEnvironment _env = env;
+    private const string CalendarFolder = "calendars";
 
     public Calendar CreateGroupCalendar(List<EventDto> events)
     {
@@ -42,7 +43,7 @@ public class CalendarRepository(IWebHostEnvironment env): ICalendarRepository
 
     public async Task WriteCalendarFileAsync(string relativeFilePath, Calendar calendar)
     {
-        var absoluteFilePath = env.WebRootPath + relativeFilePath;
+        var absoluteFilePath = Path.Combine(_env.ContentRootPath, "wwwroot", relativeFilePath);
         var absoluteDirectoryPath = Path.GetDirectoryName(absoluteFilePath);
         var serializer = new CalendarSerializer();
         var calendarString = serializer.SerializeToString(calendar);
