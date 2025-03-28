@@ -18,4 +18,6 @@ public class CreateUserRequestDto
 
     [Required]
     public string Password { get; set; }
+
+    public List<int> RepresentativeFieldsOfStudyLogIds { get; set; } = [];
 }

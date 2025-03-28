@@ -60,6 +60,8 @@ public class AdminService(AppDbContext context, IUserService userService, IUserR
         
         await _context.Users.AddAsync(newUser);
         await _context.SaveChangesAsync();
+        await _studentRepository.UpdateRepresentativeFields(newUser.Id, 
+            createUserRequestDto.RepresentativeFieldsOfStudyLogIds);
     }
 
     public async Task UpdateUser(Guid userId, UpdateUserRequestDto updateUserRequestDto)
