@@ -12,10 +12,10 @@ public class SetupController(ISetupService setupService, IHostEnvironment env) :
     private readonly IHostEnvironment _env = env;
     
     [HttpPost("set-password")]
-    public async Task<IActionResult> SetRootPassword([FromBody] RootDto rootDto)
+    public async Task<IActionResult> SetRootPassword([FromBody] UserDto userDto)
     {
         if (_env.IsProduction()) return Forbid();
-        await _setupService.ResetRootAccount(rootDto.Password);
+        await _setupService.ResetRootAccount(userDto.Password);
         return Ok();
     }
 

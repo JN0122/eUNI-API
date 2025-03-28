@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace eUNI_API.Models.Dto.Setup;
 
-public class RootDto
+public class UserDto
 {
     [Required]
     public string Password { get; set; }
