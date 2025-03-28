@@ -41,7 +41,7 @@ public class AdminService(AppDbContext context, IUserService userService, IUserR
         return context.SaveChangesAsync();
     }
     
-    public async Task CreateUser(CreateUserRequestDto createUserRequestDto)
+    public async Task<User> CreateUser(CreateUserRequestDto createUserRequestDto)
     {
         if(!await IsValidRole(createUserRequestDto.RoleId))
             throw new HttpBadRequestException("Invalid role");
@@ -62,6 +62,7 @@ public class AdminService(AppDbContext context, IUserService userService, IUserR
         await _context.SaveChangesAsync();
         await _studentRepository.UpdateRepresentativeFields(newUser.Id, 
             createUserRequestDto.RepresentativeFieldsOfStudyLogIds);
+        return newUser;
     }
 
     public async Task UpdateUser(Guid userId, UpdateUserRequestDto updateUserRequestDto)

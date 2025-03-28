@@ -25,17 +25,19 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
         return await _context.FieldOfStudies.ToListAsync();
     }
 
-    public async Task CreateFieldOfStudy(CreateFieldOfStudyRequest createFieldOfStudyRequest)
+    public async Task<FieldOfStudy> CreateFieldOfStudy(CreateFieldOfStudyRequest createFieldOfStudyRequest)
     {
-        _context.Add(new FieldOfStudy
+        var fieldOfStudy = new FieldOfStudy
         {
             Name = createFieldOfStudyRequest.Name,
             Abbr = createFieldOfStudyRequest.Abbr,
             StudiesCycle = createFieldOfStudyRequest.StudiesCycle,
             SemesterCount = createFieldOfStudyRequest.SemesterCount,
             IsFullTime = createFieldOfStudyRequest.FullTime
-        });
+        };
+        _context.Add(fieldOfStudy);
         await _context.SaveChangesAsync();
+        return fieldOfStudy;
     }
 
     public async Task UpdateFieldOfStudy(int id, CreateFieldOfStudyRequest createFieldOfStudyRequest)
@@ -120,7 +122,7 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
         return field;
     }
 
-    public async Task CreateFieldOfStudyLog(FieldOfStudy fieldOfStudy, OrganizationOfTheYear organization, byte semester)
+    public async Task<FieldOfStudyLog> CreateFieldOfStudyLog(FieldOfStudy fieldOfStudy, OrganizationOfTheYear organization, byte semester)
     {
         var fieldOfStudyLog = new FieldOfStudyLog
         {
@@ -130,6 +132,7 @@ public class FieldOfStudyRepository(AppDbContext context): IFieldOfStudyReposito
         };
         _context.Add(fieldOfStudyLog);
         await _context.SaveChangesAsync();
+        return fieldOfStudyLog;
     }
 
     public async Task DeleteFieldOfStudyLog(int fieldOfStudyLog)

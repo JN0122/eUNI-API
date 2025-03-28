@@ -8,6 +8,6 @@ public interface IAdminService
 {
     public Task<List<User>> GetUsers();
     public Task RemoveUser(Guid id);
-    public Task CreateUser(CreateUserRequestDto createUserRequestDto);
+    public Task<User> CreateUser(CreateUserRequestDto createUserRequestDto);
     public Task UpdateUser(Guid userId, UpdateUserRequestDto updateUserRequestDto);
 }

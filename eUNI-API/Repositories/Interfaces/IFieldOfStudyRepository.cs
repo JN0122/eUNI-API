@@ -7,7 +7,7 @@ namespace eUNI_API.Repositories.Interfaces;
 public interface IFieldOfStudyRepository
 {
     public Task<List<FieldOfStudy>> GetFieldsOfStudy();
-    public Task CreateFieldOfStudy(CreateFieldOfStudyRequest createFieldOfStudyRequest); 
+    public Task<FieldOfStudy> CreateFieldOfStudy(CreateFieldOfStudyRequest createFieldOfStudyRequest); 
     public Task UpdateFieldOfStudy(int id, CreateFieldOfStudyRequest createFieldOfStudyRequest); 
     public Task DeleteFieldOfStudy(int id);
     public void DeleteAllFieldsOfStudy();
@@ -17,7 +17,7 @@ public interface IFieldOfStudyRepository
     public List<DayOff> GetDaysOff(int fieldOfStudyLogId);
     public Task<List<FieldOfStudyLog>> GetFieldsOfStudyLogs();
     public FieldOfStudy GetFieldOfStudy(int id);
-    public Task CreateFieldOfStudyLog(FieldOfStudy fieldOfStudy, OrganizationOfTheYear organization, byte semester);
+    public Task<FieldOfStudyLog> CreateFieldOfStudyLog(FieldOfStudy fieldOfStudy, OrganizationOfTheYear organization, byte semester);
     public Task DeleteFieldOfStudyLog(int fieldOfStudyLog);
     public void DeleteAllFieldOfStudyLogs();
 }

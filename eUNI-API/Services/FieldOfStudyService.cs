@@ -33,9 +33,9 @@ public class FieldOfStudyService(AppDbContext context, IGroupRepository groupRep
         });
     }
 
-    public async Task CreateFieldOfStudy(CreateFieldOfStudyRequest createFieldOfStudyRequest)
+    public async Task<FieldOfStudy> CreateFieldOfStudy(CreateFieldOfStudyRequest createFieldOfStudyRequest)
     {
-        await _fieldOfStudyRepository.CreateFieldOfStudy(createFieldOfStudyRequest);
+        return await _fieldOfStudyRepository.CreateFieldOfStudy(createFieldOfStudyRequest);
     }
 
     public async Task UpdateFieldOfStudy(int id, CreateFieldOfStudyRequest createFieldOfStudyRequest)
@@ -64,12 +64,12 @@ public class FieldOfStudyService(AppDbContext context, IGroupRepository groupRep
         return fieldsOfStudy.Select(ConvertDtos.ToFieldOfStudyInfoDto).ToList();
     }
 
-    public async Task CreateFieldOfStudyLog(CreateFieldOfStudyLogRequest createFieldOfStudyLogRequest)
+    public async Task<FieldOfStudyLog> CreateFieldOfStudyLog(CreateFieldOfStudyLogRequest createFieldOfStudyLogRequest)
     {
         var fieldOfStudy = _fieldOfStudyRepository.GetFieldOfStudy(createFieldOfStudyLogRequest.FieldOfStudyId);
         var organization = _organizationRepository.GetOrganizationOfTheYear(createFieldOfStudyLogRequest.OrganizationId);
 
-        await _fieldOfStudyRepository.CreateFieldOfStudyLog(fieldOfStudy, organization, createFieldOfStudyLogRequest.CurrentSemester);
+        return await _fieldOfStudyRepository.CreateFieldOfStudyLog(fieldOfStudy, organization, createFieldOfStudyLogRequest.CurrentSemester);
     }
 
     public async Task DeleteFieldOfStudyLog(int id)
