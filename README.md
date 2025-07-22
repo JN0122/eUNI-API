@@ -105,7 +105,7 @@ node -e "console.log(require('crypto').randomBytes(256).toString('hex'));"
 
 # Development
 
-When `ASPNETCORE_ENVIRONMENT` is set to `Development` in the `.env` file, the Swagger UI is available at (http://localhost:5000/swagger)[http://localhost:5000/swagger]
+When `ASPNETCORE_ENVIRONMENT` is set to `Development` in the `.env` file, the Swagger UI is available at [http://localhost:5000/swagger](http://localhost:5000/swagger)
 
 # Demo version
 
