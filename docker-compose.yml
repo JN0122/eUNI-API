@@ -5,6 +5,8 @@ services:
     restart: always
     volumes:
       - db:/var/lib/postgresql/data
+    env_file:
+      - "eUNI-API/.env"
     networks:
       - euni
   api:
@@ -16,6 +18,8 @@ services:
     build:
       context: .
       dockerfile: eUNI-API/Dockerfile
+    env_file:
+      - "eUNI-API/.env"
     networks:
       - euni
 volumes:
